@@ -3,6 +3,8 @@
  */
 import { CROPS, CROP_BY_ID, type CropData } from '../../data/crops';
 import { ITEMS } from '../../data/items';
+import { FISH, type FishData } from '../../data/fish';
+import { FORAGE, RESOURCES, type ForageData, type ResourceData } from '../../data/gathering';
 import { Painter, shade, type Color } from '../painter';
 
 const S = 16;
@@ -161,6 +163,108 @@ function seedIcon(c: CropData): IconFn {
     p.rect(5, 7, 6, 1, shade(c.art.color, 0.35));
     p.px(8, 9, c.art.leaf).px(7, 10, c.art.leaf).px(9, 10, c.art.leaf);
     if (c.rare) p.px(12, 4, 0xffe066).px(11, 3, 0xffe066).px(13, 3, 0xffe066);
+  };
+}
+
+// ───────────── 물고기 / 채집물 / 자원 ─────────────
+function fishIcon(f: FishData): IconFn {
+  const { body, belly, fin, shape } = f.art;
+  return (p) => {
+    if (f.id === 'old_boot') {
+      p.rect(4, 3, 6, 9, body).rect(4, 10, 10, 4, body).rect(4, 13, 10, 1, fin).rect(5, 4, 1, 6, belly);
+      return;
+    }
+    const len = shape === 'long' ? 7 : shape === 'big' ? 6 : 6;
+    const ht = shape === 'round' || shape === 'big' ? 4 : shape === 'long' ? 2 : 3;
+    p.ellipse(8, 8, len, ht, body);
+    p.ellipse(8, 9, len - 1, Math.max(1, ht - 2), belly);
+    p.tri(1, 4, 1, 12, 4, 8, fin); // 꼬리
+    p.tri(6, 8 - ht, 10, 8 - ht, 8, 8 - ht - 2, fin); // 등지느러미
+    p.px(12, 7, 0x1a1a1a).px(12, 6, 0xffffff);
+    if (shape === 'long') p.line(3, 8, 13, 8, belly);
+    if (f.rarity === 'legend') p.px(14, 2, 0xffe066).px(13, 1, 0xffe066).px(15, 1, 0xffe066).px(14, 0, 0xffffff);
+  };
+}
+
+function forageIcon(f: ForageData): IconFn {
+  const { shape, color, color2 } = f.art;
+  return (p) => {
+    switch (shape) {
+      case 'berry':
+        for (const [x, y] of [[5, 9], [9, 8], [7, 12], [11, 11], [7, 6]]) p.circle(x, y, 2, color).px(x - 1, y - 1, shade(color, 0.4));
+        p.rect(7, 2, 4, 2, LEAF);
+        break;
+      case 'mushroom':
+        p.rect(7, 9, 3, 6, color2 ?? 0xf0e6d0).ellipse(8, 8, 6, 4, color).ellipse(6, 6, 2, 1, shade(color, 0.35));
+        if (f.id === 'enoki') for (const x of [4, 12]) p.rect(x, 5, 1, 10, color2 ?? 0xfffaf0).circle(x, 4, 1, color);
+        break;
+      case 'leaf':
+        p.ellipse(8, 7, 4, 6, color).line(8, 2, 8, 15, shade(color, -0.3)).line(8, 7, 5, 5, shade(color, -0.3)).line(8, 10, 11, 8, shade(color, -0.3));
+        if (color2) p.ellipse(8, 13, 3, 2, color2);
+        break;
+      case 'flower':
+        for (let a = 0; a < 5; a++) p.circle(8 + Math.round(Math.cos(a * 1.26) * 3), 6 + Math.round(Math.sin(a * 1.26) * 3), 2, color);
+        p.circle(8, 6, 1, color2 ?? 0xf7d84a).rect(8, 9, 1, 6, LEAF).rect(9, 11, 3, 1, LEAF);
+        break;
+      case 'nut':
+        p.ellipse(8, 9, 5, 5, color).ellipse(6, 7, 2, 2, shade(color, 0.3));
+        if (f.id === 'acorn') p.ellipse(8, 5, 5, 2, 0x8a6a3a).px(8, 2, 0x6a4a2a);
+        else p.tri(4, 7, 12, 7, 8, 2, color).px(8, 2, 0xe8d8b0);
+        break;
+      case 'cone':
+        p.ellipse(8, 9, 4, 6, color);
+        for (let y = 5; y < 15; y += 2) p.line(5, y, 11, y + 1, shade(color, -0.3));
+        break;
+      case 'shell':
+        if (f.id === 'river_snail') {
+          p.circle(8, 9, 5, color).circle(8, 9, 3, color2 ?? shade(color, 0.3)).circle(8, 9, 1, color);
+        } else {
+          p.ellipse(8, 9, 6, 5, color).rect(2, 9, 13, 5, 0x000000, 0);
+          for (let x = 4; x < 13; x += 2) p.line(8, 13, x, 5, color2 ?? shade(color, -0.25));
+          p.rect(6, 13, 5, 2, color2 ?? shade(color, -0.25));
+        }
+        break;
+      case 'reed':
+        for (const x of [5, 8, 11]) p.line(x, 15, x + 1, 4, 0x8a9a4a).ellipse(x + 1, 4, 1, 3, color);
+        break;
+    }
+  };
+}
+
+function resourceIcon(r: ResourceData): IconFn {
+  const { shape, color, color2 } = r.art;
+  return (p) => {
+    switch (shape) {
+      case 'log':
+        p.rect(2, 6, 12, 6, color).ellipse(13, 9, 2, 3, color2 ?? 0xd8b07a).ellipse(13, 9, 1, 1, shade(color, -0.2));
+        p.rect(2, 10, 12, 2, shade(color, -0.2)).rect(4, 4, 9, 3, color).ellipse(12, 5, 1, 2, color2 ?? 0xd8b07a);
+        break;
+      case 'stick':
+        p.line(2, 13, 14, 3, color).line(3, 13, 15, 3, shade(color, 0.2)).line(8, 8, 11, 10, color);
+        break;
+      case 'sap':
+        p.ellipse(8, 10, 5, 5, color).tri(8, 2, 4, 9, 12, 9, color).px(6, 8, 0xfff0a0).px(6, 9, 0xfff0a0);
+        break;
+      case 'stone':
+        p.ellipse(8, 10, 6, 4, color).ellipse(7, 9, 4, 2, shade(color, 0.2));
+        break;
+      case 'clay':
+        p.ellipse(8, 10, 6, 4, color).ellipse(6, 8, 3, 2, shade(color, 0.25)).px(10, 11, shade(color, -0.25));
+        break;
+      case 'coal':
+        p.ellipse(8, 9, 5, 4, color).px(6, 7, 0x8a8a90).px(10, 10, 0x6a6a70).px(7, 11, 0x1a1a1a);
+        break;
+      case 'ore':
+        p.ellipse(8, 9, 6, 5, color);
+        for (const [x, y] of [[6, 7], [10, 9], [7, 11], [9, 6]]) p.rect(x, y, 2, 2, color2 ?? 0xffffff);
+        break;
+      case 'gem':
+        p.tri(8, 2, 3, 8, 13, 8, shade(color, 0.2)).tri(3, 8, 13, 8, 8, 15, color).line(8, 2, 8, 15, shade(color, 0.4));
+        break;
+      case 'brick':
+        p.rect(2, 6, 12, 7, color).line(2, 9, 13, 9, shade(color, -0.3)).line(8, 6, 8, 9, shade(color, -0.3)).line(5, 9, 5, 12, shade(color, -0.3));
+        break;
+    }
   };
 }
 
@@ -381,6 +485,32 @@ const OTHER: Record<string, IconFn> = {
   },
   truffle_risotto: plate(0xf0e6c8, 0x5a3e2e),
   ostrich_omelette: plate(0xf2c84a, 0xf7e08a, 0x4f9a3a),
+  grilled_fish: (p) => {
+    p.ellipse(8, 11, 7, 3, 0xf6f2ea).ellipse(8, 9, 5, 2, 0xb8743a).tri(2, 7, 2, 11, 4, 9, 0x9a5a2a).px(11, 8, 0x1a1a1a).line(5, 8, 10, 10, 0x6a3a1a);
+  },
+  spicy_fish_stew: bowl(0xd8442c, 0xf2e6c8, 0x4f9a3a),
+  fish_rice_bowl: bowl(0xf6f0e0, 0xe8946a, 0x4f9a3a),
+  eel_rice: bowl(0xf6f0e0, 0x7a4a2a, 0xf2c83a),
+  mushroom_soup: bowl(0xe8d8b8, 0x8a5a3a),
+  mushroom_rice: bowl(0xf6f0e0, 0x8a5a3a, 0x4f9a3a),
+  roasted_chestnut: (p) => {
+    for (const [x, y] of [[5, 9], [10, 8], [8, 12]]) p.ellipse(x, y, 3, 3, 0x6a3a1a).px(x, y - 1, 0xf2c87a);
+  },
+  acorn_jelly: plate(0x8a6a4a, 0x6a4a2a, 0x4f9a3a),
+  clam_soup: bowl(0xf0ead8, 0xd8c8b8, 0x4f9a3a),
+  fern_bibim: bowl(0xf6f0e0, 0x7cbf4a, 0xf2c83a),
+  wild_berry_jam: jar(0xc82c4a),
+  herbal_tea: bottle(0xa8b85a, 0x6a8a3a),
+  maple_syrup: bottle(0xc8782a, 0x8a4a1a),
+  brick: (p) => {
+    p.rect(2, 6, 12, 7, 0xb8583a).line(2, 9, 13, 9, 0x7a3a2a).line(8, 6, 8, 9, 0x7a3a2a).line(5, 9, 5, 12, 0x7a3a2a).line(11, 9, 11, 12, 0x7a3a2a);
+  },
+  smoked_fish: (p) => {
+    p.ellipse(8, 9, 6, 3, 0x9a5a2a).tri(1, 6, 1, 12, 4, 9, 0x7a3a1a).px(12, 8, 0x1a1a1a).line(3, 10, 13, 9, 0x6a3a1a);
+  },
+  rare_bait: (p) => {
+    p.line(8, 1, 8, 6, 0x8a96a4).ellipse(8, 10, 3, 4, 0xe86a8a).ellipse(7, 9, 1, 2, 0xffb0c8).px(10, 12, 0xffe066).px(5, 13, 0xffe066);
+  },
 };
 
 // ───────────── UI 아이콘 ─────────────
@@ -553,6 +683,27 @@ const UI: Record<string, IconFn> = {
   tool_shovel: (p) => {
     p.line(4, 12, 12, 3, 0x8a5a3a).ellipse(4, 12, 3, 3, 0x8a96a4).px(3, 11, 0xc8d2dc).rect(11, 1, 4, 2, 0x8a5a3a);
   },
+  tool_axe: (p) => {
+    p.line(4, 14, 11, 3, 0x8a5a3a).line(5, 14, 12, 3, 0xa0784e);
+    p.tri(9, 2, 15, 3, 13, 9, 0x8a96a4).tri(9, 2, 13, 9, 10, 6, 0xc8d2dc);
+  },
+  tool_pickaxe: (p) => {
+    p.line(3, 14, 11, 4, 0x8a5a3a).line(4, 14, 12, 4, 0xa0784e);
+    p.line(5, 3, 14, 6, 0x8a96a4).line(5, 2, 14, 5, 0xc8d2dc).px(4, 4, 0x8a96a4).px(15, 7, 0x8a96a4);
+  },
+  tool_rod: (p) => {
+    p.line(2, 15, 13, 1, 0x8a5a3a).line(3, 15, 14, 1, 0xa0784e).line(14, 1, 14, 11, 0xd8d8d8).circle(14, 12, 1, 0xe8584a).rect(3, 12, 2, 2, 0x4a4a52);
+  },
+  ic_fish: (p) => {
+    p.ellipse(8, 8, 6, 3, 0x6a9ad8).ellipse(8, 9, 5, 1, 0xd8e8f6).tri(1, 4, 1, 12, 4, 8, 0x4a7ab8).px(12, 7, 0x1a1a1a);
+  },
+  ic_forage: (p) => {
+    p.rect(7, 9, 3, 6, 0xf0e6d0).ellipse(8, 8, 6, 4, 0x8a5a3a).ellipse(6, 6, 2, 1, 0xb88a6a).ellipse(13, 13, 2, 2, 0xe8424a);
+  },
+  ic_region: (p) => {
+    p.rect(2, 9, 12, 6, 0x8cc35a).tri(1, 10, 7, 2, 12, 10, 0x8a958c).tri(6, 10, 11, 4, 15, 10, 0x6a756c).rect(1, 12, 14, 2, 0x5a9ad8).rect(7, 6, 2, 4, 0xffffff);
+  },
+  ic_farm: (p) => UI.ic_house(p),
   tool_area: (p) => {
     for (let y = 0; y < 3; y++) for (let x = 0; x < 3; x++) p.rect(2 + x * 4, 2 + y * 4, 3, 3, 0x8cc35a);
     p.frame(1, 1, 14, 14, 0xf6efe0);
@@ -577,8 +728,12 @@ export function buildIcons(): IconEntry[] {
     out.push(render(`it_${c.id}`, cropIcon(c)));
     out.push(render(`it_seed_${c.id}`, seedIcon(c)));
   }
+  for (const f of FISH) out.push(render(`it_${f.id}`, fishIcon(f)));
+  for (const f of FORAGE) out.push(render(`it_${f.id}`, forageIcon(f)));
+  for (const r of RESOURCES) out.push(render(`it_${r.id}`, resourceIcon(r)));
+  const done = new Set(out.map((o) => o.key));
   for (const it of ITEMS) {
-    if (it.category === 'seed' || CROP_BY_ID[it.id]) continue;
+    if (it.category === 'seed' || CROP_BY_ID[it.id] || done.has(it.icon)) continue;
     const fn = OTHER[it.id] ?? ((p: Painter) => p.circle(8, 8, 5, 0xc8a0d8));
     out.push(render(it.icon, fn));
   }

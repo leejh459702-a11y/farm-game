@@ -6,7 +6,8 @@ import { ANIMALS, ANIMAL_BY_ID, TRAIT_BY_ID } from '../../data/animals';
 import { ITEMS, ITEM_BY_ID } from '../../data/items';
 import { RECIPES, RECIPE_BY_ID } from '../../data/recipes';
 import { BUILDINGS, BUILDING_BY_ID } from '../../data/buildings';
-import { SEASON_BY_ID } from '../../data/seasons';
+import { FISH, FISH_BY_ID, RARITY_NAME } from '../../data/fish';
+import { SEASON_BY_ID, WEATHER_INFO } from '../../data/seasons';
 import { cx, esc } from '../dom';
 
 export class CodexPanel extends Panel {
@@ -15,6 +16,9 @@ export class CodexPanel extends Panel {
   tabs = [
     { id: 'crop', label: '작물', icon: 'it_carrot' },
     { id: 'animal', label: '동물', icon: 'ic_livestock' },
+    { id: 'fish', label: '물고기', icon: 'ic_fish' },
+    { id: 'forage', label: '채집물', icon: 'ic_forage' },
+    { id: 'resource', label: '자원', icon: 'it_wood' },
     { id: 'processed', label: '가공품', icon: 'it_cheese' },
     { id: 'cooking', label: '요리', icon: 'it_bibimbap' },
     { id: 'building', label: '시설', icon: 'ic_house' },
@@ -45,6 +49,13 @@ export class CodexPanel extends Panel {
         const found = ANIMALS.filter((a) => w.state.codex.animals[a.id]?.discovered).length;
         return this.progress(found, ANIMALS.length) + `<div class="grid auto-sm">${ANIMALS.map((a) => this.tile(a.id, `portrait_${a.id}`, a.name, !!w.state.codex.animals[a.id]?.discovered)).join('')}</div>`;
       }
+      case 'fish': {
+        const list = FISH.filter((f) => f.id !== 'old_boot');
+        const found = list.filter((f) => items[f.id]?.discovered).length;
+        return this.progress(found, list.length) + `<div class="grid auto-sm">${list.map((f) => this.tile(f.id, f.spriteKey, f.name, !!items[f.id]?.discovered)).join('')}</div>`;
+      }
+      case 'forage':
+      case 'resource':
       case 'processed':
       case 'cooking': {
         const list = ITEMS.filter((i) => i.category === this.tab);
@@ -77,6 +88,15 @@ export class CodexPanel extends Panel {
       const best = e.bestAnimalId ? w.state.pedigree[e.bestAnimalId] : null;
       return `${iconHtml(`portrait_${id}`, 40)}<div class="grow small"><b>${esc(a.name)}</b> · 발견 등급 ${[...e.grades].sort().map((g) => `${g}등급`).join(', ')} · 브리딩 ${e.breedCount}회 · 생산 ${e.produced}개
         <div class="tiny muted">발견 특성: ${e.traits.map((t) => TRAIT_BY_ID[t].name).join(', ') || '-'} · 최고 개체: ${best ? `${esc(best.name)} (${best.id}, ${best.grade}등급)` : '-'}</div></div>`;
+    }
+    if (this.tab === 'fish') {
+      const f = FISH_BY_ID[id];
+      const e = w.state.codex.items[id];
+      const rec = w.state.fishRecords[id];
+      const when = `${f.season.map((x) => SEASON_BY_ID[x].name).join('·')} · ${f.dayOrNight === 'any' ? '하루 종일' : f.dayOrNight === 'day' ? '낮' : '밤'} · ${f.weather === 'any' ? '날씨 무관' : f.weather.map((x) => WEATHER_INFO[x].name).join('·')}`;
+      if (!e?.discovered) return `<span class="muted">아직 낚지 못했어요. 힌트: ${esc(when)} · ${RARITY_NAME[f.rarity]}</span>`;
+      return `${iconHtml(f.spriteKey, 40)}<div class="grow small"><b>${esc(f.name)}</b> <span class="chip">${RARITY_NAME[f.rarity]}</span> · ${esc(when)}
+        <div class="tiny muted">포획 ${rec?.count ?? 0}회 · 최대 크기 ${(rec?.maxSize ?? 0).toFixed(1)}cm · 최고 판매가 ${e.bestPrice.toLocaleString()}G · 기본가 ${f.baseSellPrice}G</div></div>`;
     }
     if (this.tab === 'building') {
       const b = BUILDING_BY_ID[id];

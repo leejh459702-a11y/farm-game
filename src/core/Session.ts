@@ -31,6 +31,8 @@ export interface AppEvents {
   plotSelection: { keys: string[] };
   /** 튜토리얼 강조 위치 갱신 */
   layout: void;
+  /** 현재 위치 (농장 / 외곽 지역) */
+  location: { id: 'farm' | 'river' | 'forest' | 'hill' };
 }
 
 class SessionImpl {
@@ -38,6 +40,8 @@ class SessionImpl {
   readonly save = new SaveSystem();
   world: World | null = null;
   slot = 1;
+  /** 현재 위치 */
+  location: 'farm' | 'river' | 'forest' | 'hill' = 'farm';
   private saveTimer: number | null = null;
   private saving = false;
   private unsub: (() => void)[] = [];
@@ -47,6 +51,7 @@ class SessionImpl {
     this.slot = slot;
     const w = new World(state);
     this.world = w;
+    this.location = 'farm';
     this.unsub.push(
       w.events.on('majorChange', (e) => {
         if (e.reason === 'dayStart') void this.autoSave(true);

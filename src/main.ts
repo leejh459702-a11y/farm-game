@@ -11,6 +11,7 @@ import { MenuScene } from './scenes/MenuScene';
 import { FarmScene } from './scenes/FarmScene';
 import { OverlayScene } from './scenes/OverlayScene';
 import { ControlsScene } from './scenes/ControlsScene';
+import { RegionScene } from './scenes/RegionScene';
 import { AppRef } from './core/AppRef';
 import { Session } from './core/Session';
 import { installOpeners } from './ui/openers';
@@ -70,7 +71,7 @@ async function boot(): Promise<void> {
     input: { activePointers: 3 },
     fps: { target: SettingsStore.value.fpsLimit, limit: SettingsStore.value.fpsLimit, smoothStep: true },
     render: { powerPreference: 'high-performance', batchSize: 4096 },
-    scene: [BootScene, MenuScene, FarmScene, OverlayScene, ControlsScene],
+    scene: [BootScene, MenuScene, FarmScene, new RegionScene('river'), new RegionScene('forest'), new RegionScene('hill'), OverlayScene, ControlsScene],
   });
   registerServiceWorker();
   // QA 용 디버그 훅 (?debug)

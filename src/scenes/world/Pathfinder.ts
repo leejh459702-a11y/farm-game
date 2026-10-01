@@ -7,9 +7,11 @@ export function findPath(
   goals: { x: number; y: number }[],
   blocked: (x: number, y: number) => boolean,
   limit = 2500,
+  width: number = FW,
+  height: number = FH,
 ): { x: number; y: number }[] | null {
   if (!goals.length) return null;
-  const key = (x: number, y: number) => y * FW + x;
+  const key = (x: number, y: number) => y * width + x;
   const goalSet = new Set(goals.map((g) => key(g.x, g.y)));
   if (goalSet.has(key(sx, sy))) return [];
   const h = (x: number, y: number) => Math.min(...goals.map((g) => Math.abs(g.x - x) + Math.abs(g.y - y)));
@@ -26,7 +28,7 @@ export function findPath(
       const path: { x: number; y: number }[] = [];
       let k: number | undefined = ck;
       while (k !== undefined && k !== key(sx, sy)) {
-        path.unshift({ x: k % FW, y: Math.floor(k / FW) });
+        path.unshift({ x: k % width, y: Math.floor(k / width) });
         k = came.get(k);
       }
       return path;
@@ -39,7 +41,7 @@ export function findPath(
     ]) {
       const nx = cur.x + dx;
       const ny = cur.y + dy;
-      if (nx < 0 || ny < 0 || nx >= FW || ny >= FH) continue;
+      if (nx < 0 || ny < 0 || nx >= width || ny >= height) continue;
       const nk = key(nx, ny);
       if (blocked(nx, ny) && !goalSet.has(nk)) continue;
       const g = cur.g + 1;

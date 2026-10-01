@@ -210,6 +210,7 @@ export class RegionSystem {
       }
     }
     st.lastGen = day;
+    this.w.events.emit('regions', { id });
   }
 
   forageCandidates(id: RegionId): { x: number; y: number }[] {
@@ -258,6 +259,7 @@ export class RegionSystem {
       this.w.life.addXp('foraging', BALANCE.life.xp.forage);
       this.w.codex.recordHarvest(n.itemId!, qty);
       this.w.events.emit('sfx', { key: 'harvest' });
+      this.w.events.emit('regions', { id });
       return { ok: true, drops, depleted: true, hpLeft: 0 };
     }
     if (n.kind === 'chest') {
@@ -274,6 +276,7 @@ export class RegionSystem {
       st.nodes = st.nodes.filter((x) => x !== n);
       this.w.life.addXp('foraging', BALANCE.life.xp.chest);
       this.w.events.emit('sfx', { key: 'special' });
+      this.w.events.emit('regions', { id });
       return { ok: true, drops, depleted: true, hpLeft: 0, deco };
     }
     const tools = this.w.state.tools;
@@ -303,6 +306,7 @@ export class RegionSystem {
       this.w.life.addXp('foraging', BALANCE.life.xp.mine + rock.tier * 2);
     }
     for (const d of drops) this.w.codex.recordHarvest(d.itemId, d.qty);
+    this.w.events.emit('regions', { id });
     return { ok: true, drops, depleted: true, hpLeft: 0 };
   }
 

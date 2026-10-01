@@ -19,6 +19,11 @@ import { BORDER, DEFAULT_ZOOM, DEPTH, FH, FW, TS, WORLD_MIN } from './world/cons
 import { InputState } from './InputState';
 import { Bridge } from './Bridge';
 import { Panels } from '../ui/PanelManager';
+import { RegionSelectPanel } from '../ui/panels/RegionSelectPanel';
+
+/** 농장 출구 위치 (최대 영역 바로 아래, 가운데) */
+const GATE = { x: 14, y: FH };
+const isGate = (x: number, y: number): boolean => y >= FH && y <= FH + 1 && x >= 13 && x <= 17;
 
 interface PointerTrack {
   id: number;
@@ -124,7 +129,7 @@ export class FarmScene extends Phaser.Scene {
       }),
       ev.on('floatText', (e) => this.floatText(e.x, e.y, e.text, e.color)),
       Session.app.on('focusTile', (e) => this.focusTile(e.x, e.y)),
-      Session.app.on('action', () => this.doAction()),
+      Session.app.on('action', () => this.scene.isActive() && this.doAction()),
     );
 
     Bridge.farm = {
@@ -151,7 +156,32 @@ export class FarmScene extends Phaser.Scene {
         this.animals.syncAll();
       },
       zoomBy: (f) => this.zoomBy(f),
+      useGate: () => this.useGate(),
     };
+
+    InputState.tap = (x, y) => this.onTap(x, y);
+    // 외곽 지역에서 돌아올 때
+    this.events.on(Phaser.Scenes.Events.WAKE, () => {
+      InputState.tap = (x, y) => this.onTap(x, y);
+      const p = this.w.state.player;
+      this.player.setPos(p.x, p.y);
+      this.player.ensureFree();
+      this.cameras.main.startFollow(this.player.sprite, true, 0.12, 0.12);
+      this.cameras.main.centerOn(p.x, p.y);
+      this.following = true;
+      this.cameras.main.fadeIn(250, 20, 14, 10);
+      this.ground.checkSeason();
+      this.crops.syncAll();
+      this.buildings.syncAll();
+      this.animals.syncAll();
+      this.lastContext = '';
+    });
+    // 농장 아래쪽 출구 (외곽 지역으로 가는 길)
+    this.add.image(GATE.x * TS + TS + 16, (GATE.y + 1) * TS + 2, 'node_exit').setOrigin(0.5, 1).setDepth(DEPTH.objects + (GATE.y + 1) * TS);
+    this.add
+      .text(GATE.x * TS + TS + 16, GATE.y * TS - 10, '외곽', { fontFamily: 'Galmuri11', fontSize: '9px', color: '#fff6e2', stroke: '#3b2a22', strokeThickness: 3 })
+      .setOrigin(0.5, 1)
+      .setDepth(DEPTH.ui - 50);
 
     this.scene.launch('Overlay');
     this.scene.launch('Controls');
@@ -172,6 +202,7 @@ export class FarmScene extends Phaser.Scene {
   }
 
   private cleanup(): void {
+    InputState.tap = null;
     for (const u of this.unsubs) u();
     this.unsubs = [];
     this.scale.off('resize', this.onResize, this);
@@ -325,6 +356,7 @@ export class FarmScene extends Phaser.Scene {
       Bridge.openMerchant?.();
       return;
     }
+    if (isGate(t.x, t.y)) return this.useGate();
     if (t.x < 0 || t.y < 0 || t.x >= FW || t.y >= FH) return;
     const b = this.w.grid.buildingAt(t.x, t.y);
     if (b) {
@@ -362,10 +394,20 @@ export class FarmScene extends Phaser.Scene {
     if (!ok) Session.app.emit('toast', { text: '그곳까지 갈 수 없어요', tone: 'warn' });
   }
 
+  /** 농장 출구 → 외곽 지역 선택 */
+  private useGate(): void {
+    const p = this.player.tile();
+    const open = (): void => void Panels.open(new RegionSelectPanel());
+    if (p.y >= FH - 1 && Math.abs(p.x - 15) <= 2) return open();
+    const ok = this.player.walkTo([{ x: 15, y: FH - 1 }, { x: 14, y: FH - 1 }, { x: 16, y: FH - 1 }], { x: 15, y: FH }, open);
+    if (!ok) open();
+  }
+
   /** 행동 버튼 */
   doAction(): void {
     if (this.build.active || Panels.isOpen()) return;
     const t = this.targetTile();
+    if (isGate(t.x, t.y)) return this.useGate();
     const b = this.w.grid.buildingAt(t.x, t.y);
     if (b) {
       const a = resolveAction(this.w, t.x, t.y);
@@ -492,6 +534,14 @@ export class FarmScene extends Phaser.Scene {
     }
     if (this.build.active || (this.w.tutorial.active && this.w.tutorial.step < 3)) return;
     const t = this.targetTile();
+    if (isGate(t.x, t.y)) {
+      const sig = 'gate';
+      if (sig !== this.lastContext) {
+        this.lastContext = sig;
+        Session.app.emit('context', { label: '외곽으로', icon: 'ic_region', enabled: true });
+      }
+      return;
+    }
     const a = resolveAction(this.w, t.x, t.y);
     const col = a.enabled ? 0xfff6a0 : 0xffffff;
     const tiles = a.enabled && ['harvest', 'till', 'plant', 'water', 'fertilize'].includes(a.kind) ? areaTiles(this.w, t.x, t.y) : [t];

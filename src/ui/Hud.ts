@@ -19,6 +19,9 @@ import { mountBuildBar, unmountBuildBar } from './BuildBar';
 import { showDaySummary, showMonthSummary } from './panels/SummaryPanels';
 import { SettingsStore } from '../services/SettingsStore';
 import { BirthResultPanel } from './panels/BreedingPanel';
+import { RegionSelectPanel } from './panels/RegionSelectPanel';
+import { goToFarm } from '../scenes/Travel';
+import { REGION_BY_ID } from '../data/gathering';
 
 let root: HTMLElement | null = null;
 let unsubs: (() => void)[] = [];
@@ -53,11 +56,14 @@ export function mountHud(): void {
         <button class="hud-btn interactive" data-act="menu">${iconHtml('ic_menu', 22)}<span>메뉴</span></button>
         <button class="hud-btn interactive" data-act="overview">${iconHtml('ic_chart', 24)}<span>농장</span></button>
         <button class="hud-btn interactive" data-act="bag" data-tut="bag">${iconHtml('ic_bag', 24)}<span>가방</span></button>
+        <button class="hud-btn interactive" data-act="region" data-h="regionBtn" style="display:none">${iconHtml('ic_region', 24)}<span>외곽</span></button>
+        <button class="hud-btn interactive" data-act="farm">${iconHtml('ic_house', 24)}<span>농장</span></button>
         <button class="hud-btn interactive" data-act="build" data-tut="build">${iconHtml('ic_build', 24)}<span>건설</span></button>
       </div>
       <button class="action-btn interactive" data-act="action" data-h="action" data-tut="action"><span data-h="actionIcon"></span><span data-h="actionLabel">조사</span></button>
     </div>
     <div class="hud-hint" data-h="hint"></div>
+    <div class="hud-box region-chip" data-h="regionChip"></div>
     <div class="hud-bottom interactive" data-h="toolbar" data-tut="toolbar"></div>`;
   $ui().appendChild(root);
 
@@ -72,12 +78,14 @@ export function mountHud(): void {
 
   renderToolbar();
   renderStatic();
+  renderLocation();
   const ev = w.events;
   unsubs.push(
     ev.on('gold', renderStatic),
     ev.on('levelUp', renderStatic),
     ev.on('house', renderStatic),
     ev.on('weather', renderStatic),
+    ev.on('tutorial', () => renderStatic()),
     ev.on('dayStarted', () => {
       renderStatic();
       renderToolbar();
@@ -97,6 +105,8 @@ export function mountHud(): void {
     Session.app.on('saved', (s) => {
       if (!s.auto) showToast({ key: 'saved', text: '저장되었습니다', icon: 'ic_save', tone: 'good' });
     }),
+    Session.app.on('location', () => renderLocation()),
+    w.events.on('regions', () => renderLocation()),
     Session.app.on('buildMode', (b) => {
       root!.style.display = b.on ? 'none' : '';
       if (b.on) mountBuildBar();
@@ -166,7 +176,20 @@ function renderStatic(): void {
   mb.style.display = m.present ? '' : 'none';
   mb.classList.toggle('special', m.special);
   mb.querySelector('span')!.textContent = m.special ? '특급' : '상인';
+  q('[data-h=regionBtn]').style.display = (w.state.regionsDiscovered || !w.tutorial.active) && Session.location === 'farm' ? '' : 'none';
   if (w.finance.hasDebt()) q('[data-h=gold]').innerHTML = `${Math.floor(w.state.gold).toLocaleString()}G <span class="chip red tiny">미납</span>`;
+}
+
+function renderLocation(): void {
+  const w = Session.world;
+  if (!w || !root) return;
+  const loc = Session.location;
+  root.classList.toggle('in-region', loc !== 'farm');
+  if (loc !== 'farm') {
+    const r = REGION_BY_ID[loc];
+    q('[data-h=regionChip]').innerHTML = `${iconHtml(r.icon, 22)}<b>${r.name}</b><span class="small">${w.regions.summary(loc)}</span>`;
+  }
+  renderStatic();
 }
 
 function renderToolbar(): void {
@@ -223,7 +246,18 @@ function onHudAction(act: string, arg: string): void {
   const w = Session.world!;
   switch (act) {
     case 'action':
-      Bridge.farm?.doAction();
+      Session.app.emit('action', undefined);
+      break;
+    case 'region':
+      // 처음에는 실제 출구까지 걸어가며 길을 알려 주고, 발견 후에는 바로 이동
+      if (w.state.regionsDiscovered) Panels.open(new RegionSelectPanel());
+      else {
+        showToast({ key: 'gate', text: '농장 아래쪽 출구로 걸어가요…', icon: 'ic_region' });
+        Bridge.farm?.useGate();
+      }
+      break;
+    case 'farm':
+      goToFarm();
       break;
     case 'tool': {
       const i = Number(arg);

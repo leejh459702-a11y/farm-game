@@ -2,7 +2,7 @@
 import { Panel, type Watch } from '../Panel';
 import { iconHtml } from '../../assets/AssetRegistry';
 import { BUILDING_BY_ID } from '../../data/buildings';
-import { ITEM_BY_ID } from '../../data/items';
+import { ITEM_BY_ID, TAG_PRICE, inputIcon, inputName } from '../../data/items';
 import { RECIPE_BY_ID, STATION_NAME, type RecipeData } from '../../data/recipes';
 import { SKILL_BY_ID } from '../../data/skills';
 import { cx, esc } from '../dom';
@@ -45,11 +45,11 @@ export class StationPanel extends Panel {
     const out = ITEM_BY_ID[r.output];
     const inputs = r.inputs
       .map((i) => {
-        const have = w.inventory.countAll(i.id);
-        return `<span class="chip ${have >= i.qty ? 'green' : 'red'}">${iconHtml(ITEM_BY_ID[i.id].icon, 16)}${esc(ITEM_BY_ID[i.id].name)} ${have}/${i.qty}</span>`;
+        const have = w.inventory.countMatching(i.id);
+        return `<span class="chip ${have >= i.qty ? 'green' : 'red'}">${iconHtml(inputIcon(i.id), 16)}${esc(inputName(i.id))} ${have}/${i.qty}</span>`;
       })
       .join(' ');
-    const sumIn = r.inputs.reduce((s, i) => s + ITEM_BY_ID[i.id].basePrice * i.qty, 0);
+    const sumIn = r.inputs.reduce((s, i) => s + (i.id.startsWith('#') ? TAG_PRICE[i.id.slice(1)] ?? 10 : ITEM_BY_ID[i.id].basePrice) * i.qty, 0);
     return `<div class="${cx('list-row', (!unlocked || !enough) && 'locked')}">${iconHtml(out.icon, 40)}
       <div class="grow" style="min-width:0"><b>${esc(r.outputName)}</b> <span class="tiny muted">${fmtMinutes(r.minutes)}${out.basePrice ? ` · 판매 ${out.basePrice.toLocaleString()}G (재료 ${sumIn.toLocaleString()}G)` : ''}</span>
       <div class="row wrap" style="gap:3px">${inputs}</div>

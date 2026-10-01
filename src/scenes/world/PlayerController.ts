@@ -10,6 +10,13 @@ const SPEED = 128; // px/s
 const HALF_W = 6;
 const FOOT_H = 5;
 
+/** 플레이어가 걸어 다니는 지도 (농장 / 외곽 지역) */
+export interface WalkMap {
+  width: number;
+  height: number;
+  blocked(x: number, y: number): boolean;
+}
+
 export class PlayerController {
   sprite!: Phaser.GameObjects.Sprite;
   private path: { x: number; y: number }[] = [];
@@ -20,13 +27,22 @@ export class PlayerController {
   moving = false;
   enabled = true;
 
+  private map: WalkMap;
+  /** 위치를 세이브(state.player)에 기록할지 — 농장에서만 */
+  private persist: boolean;
+
   constructor(
     private scene: Phaser.Scene,
     private w: World,
-  ) {}
+    map?: WalkMap,
+    private start?: { x: number; y: number },
+  ) {
+    this.persist = !map;
+    this.map = map ?? { width: FW, height: FH, blocked: (x, y) => this.w.grid.isBlocked(x, y) };
+  }
 
   create(): void {
-    const p = this.w.state.player;
+    const p = this.start ?? this.w.state.player;
     this.sprite = this.scene.add.sprite(p.x, p.y, 'player', 0).setOrigin(0.5, 0.94);
     const kb = this.scene.input.keyboard;
     if (kb) {
@@ -39,13 +55,13 @@ export class PlayerController {
   /** 현재 위치가 막혀 있으면 가까운 빈 칸으로 */
   ensureFree(): void {
     const t = this.tile();
-    if (!this.w.grid.isBlocked(t.x, t.y)) return;
+    if (!this.map.blocked(t.x, t.y)) return;
     for (let r = 1; r < 30; r++)
       for (let dy = -r; dy <= r; dy++)
         for (let dx = -r; dx <= r; dx++) {
           const x = t.x + dx;
           const y = t.y + dy;
-          if (x >= 0 && y >= 0 && x < FW && y < FH && !this.w.grid.isBlocked(x, y)) {
+          if (x >= 0 && y >= 0 && x < this.map.width && y < this.map.height && !this.map.blocked(x, y)) {
             this.setPos(x * TS + TS / 2, y * TS + TS - 6);
             return;
           }
@@ -54,8 +70,10 @@ export class PlayerController {
 
   setPos(x: number, y: number): void {
     this.sprite.setPosition(x, y);
-    this.w.state.player.x = x;
-    this.w.state.player.y = y;
+    if (this.persist) {
+      this.w.state.player.x = x;
+      this.w.state.player.y = y;
+    }
   }
 
   tile(): { x: number; y: number } {
@@ -71,8 +89,8 @@ export class PlayerController {
   }
 
   private blockedAt(px: number, py: number): boolean {
-    if (px < 2 || py < 2 || px > FW * TS - 2 || py > FH * TS - 1) return true;
-    return this.w.grid.isBlocked(Math.floor(px / TS), Math.floor(py / TS));
+    if (px < 2 || py < 2 || px > this.map.width * TS - 2 || py > this.map.height * TS - 1) return true;
+    return this.map.blocked(Math.floor(px / TS), Math.floor(py / TS));
   }
 
   private canStand(x: number, y: number): boolean {
@@ -81,8 +99,8 @@ export class PlayerController {
 
   walkTo(goals: { x: number; y: number }[], face: { x: number; y: number } | null, onArrive: () => void): boolean {
     const t = this.tile();
-    const valid = goals.filter((g) => g.x >= 0 && g.y >= 0 && g.x < FW && g.y < FH && !this.w.grid.isBlocked(g.x, g.y));
-    const path = findPath(t.x, t.y, valid, (x, y) => this.w.grid.isBlocked(x, y));
+    const valid = goals.filter((g) => g.x >= 0 && g.y >= 0 && g.x < this.map.width && g.y < this.map.height && !this.map.blocked(g.x, g.y));
+    const path = findPath(t.x, t.y, valid, (x, y) => this.map.blocked(x, y), 2500, this.map.width, this.map.height);
     if (!path) return false;
     this.path = path;
     this.onArrive = onArrive;
@@ -113,6 +131,7 @@ export class PlayerController {
   update(dt: number): void {
     let vx = 0;
     let vy = 0;
+    let maxStep = Infinity;
     if (this.enabled) {
       if (InputState.joyActive) {
         vx = InputState.joyX;
@@ -143,6 +162,7 @@ export class PlayerController {
       } else {
         vx = dx / d;
         vy = dy / d;
+        maxStep = d; // 프레임이 길어도 목표 칸을 지나치지 않도록
       }
     }
     const len = Math.hypot(vx, vy);
@@ -152,7 +172,7 @@ export class PlayerController {
         vx /= len;
         vy /= len;
       }
-      const sp = SPEED * Math.min(1, Math.max(len, 0.45));
+      const sp = Math.min(SPEED * Math.min(1, Math.max(len, 0.45)), maxStep / Math.max(dt, 1e-4));
       const nx = this.sprite.x + vx * sp * dt;
       const ny = this.sprite.y + vy * sp * dt;
       if (this.canStand(nx, this.sprite.y)) this.sprite.x = nx;
@@ -160,8 +180,10 @@ export class PlayerController {
       const f: Facing = Math.abs(vx) > Math.abs(vy) ? (vx > 0 ? 'right' : 'left') : vy > 0 ? 'down' : 'up';
       this.w.state.player.facing = f;
       this.animT += dt;
-      this.w.state.player.x = this.sprite.x;
-      this.w.state.player.y = this.sprite.y;
+      if (this.persist) {
+        this.w.state.player.x = this.sprite.x;
+        this.w.state.player.y = this.sprite.y;
+      }
     } else this.animT = 0;
     this.applyFrame();
     this.sprite.setDepth(DEPTH.objects + this.sprite.y);

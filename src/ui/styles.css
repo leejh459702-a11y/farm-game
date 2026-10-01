@@ -1134,3 +1134,131 @@ input[type='range'] {
   .toast { font-size: 0.78rem; padding: 0.25rem 0.5rem; }
   .toasts .toast:nth-child(n + 4) { display: none; }
 }
+
+/* ───────── 낚시 미니게임 ───────── */
+.fishing-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  touch-action: none;
+  pointer-events: auto;
+}
+.fish-bobber {
+  position: absolute;
+  width: 12px;
+  height: 16px;
+  margin: -8px 0 0 -6px;
+  border-radius: 6px 6px 8px 8px;
+  background: linear-gradient(#e8584a 50%, #fff6e2 50%);
+  border: 2px solid #3b2a22;
+  animation: castIn 0.6s ease-out;
+}
+.fish-bobber.floating { animation: bob 1.2s ease-in-out infinite; }
+.fish-bobber.bite { animation: biteShake 0.12s linear infinite; }
+@keyframes castIn { from { transform: translate(-80px, -60px) scale(0.6); opacity: 0; } }
+@keyframes biteShake { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+.fish-msg {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--edge) + var(--safe-t) + 3.4rem);
+  transform: translateX(-50%);
+  background: var(--hud-bg);
+  color: #fff6e2;
+  padding: 0.45rem 1rem;
+  border-radius: 12px;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+}
+.fish-msg.result {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--paper);
+  color: var(--ink);
+  border: 4px solid var(--wood-dark);
+  padding: 0.8rem 1.1rem;
+  white-space: normal;
+  animation: popIn 0.2s ease-out;
+}
+.fish-msg .bite { color: #ffe066; font-size: 1.4em; }
+.fish-gauge {
+  position: absolute;
+  right: calc(var(--edge) + var(--safe-r) + 1rem);
+  top: 50%;
+  transform: translateY(-50%);
+  height: min(62vh, 26rem);
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+}
+.fish-track {
+  position: relative;
+  width: max(52px, 3.6rem);
+  height: 100%;
+  background: linear-gradient(#6ab0e8, #2a5a8a);
+  border: 4px solid var(--wood-dark);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
+}
+.fish-zone {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  background: rgba(138, 216, 106, 0.55);
+  border: 2px solid #c8f0a8;
+  border-radius: 8px;
+}
+.fish-zone.on { background: rgba(138, 216, 106, 0.85); box-shadow: 0 0 10px #c8f0a8; }
+.fish-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  line-height: 0;
+}
+.fish-icon.rare { filter: drop-shadow(0 0 4px #ffe066); }
+.fish-progress {
+  width: 14px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.35);
+  border: 3px solid var(--wood-dark);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.fish-progress > i { display: block; width: 100%; }
+.fish-hint {
+  position: absolute;
+  right: calc(var(--edge) + var(--safe-r) + 6.5rem);
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--paper);
+  border: 3px solid var(--wood-dark);
+  border-radius: 12px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+.fish-cancel {
+  position: absolute;
+  left: calc(var(--edge) + var(--safe-l));
+  bottom: calc(var(--edge) + var(--safe-b));
+}
+
+/* 외곽 지역 HUD */
+.hud.in-region .hud-bottom,
+.hud.in-region [data-act='build'],
+.hud.in-region [data-act='overview'] { display: none; }
+.hud:not(.in-region) [data-act='farm'] { display: none; }
+.region-chip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--edge) + var(--safe-b));
+  transform: translateX(-50%);
+  display: none;
+}
+.hud.in-region .region-chip { display: flex; }

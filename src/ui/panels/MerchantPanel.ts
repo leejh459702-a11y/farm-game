@@ -104,7 +104,7 @@ export class MerchantPanel extends Panel {
   private sellTab(): string {
     const w = this.w;
     const ids = this.includeStorage ? ['bag', ...w.inventory.storageIds()] : ['bag'];
-    const ORDER = ['crop', 'animal', 'processed', 'cooking', 'other', 'seed'];
+    const ORDER = ['crop', 'animal', 'fish', 'forage', 'processed', 'cooking', 'resource', 'other', 'seed'];
     const entries: { cid: string; i: number; s: ItemStack }[] = [];
     for (const cid of ids) w.state.containers[cid].slots.forEach((s, i) => s && entries.push({ cid, i, s }));
     entries.sort((a, b) => ORDER.indexOf(ITEM_BY_ID[a.s.itemId].category) - ORDER.indexOf(ITEM_BY_ID[b.s.itemId].category));
@@ -112,7 +112,7 @@ export class MerchantPanel extends Panel {
     {
       for (const { cid, i, s } of entries) {
         const d = ITEM_BY_ID[s.itemId];
-        const unit = w.merchant.unitPrice(s.itemId, s.freshness);
+        const unit = w.merchant.unitPrice(s.itemId, s.freshness, s.bonus ?? 0);
         const fav = w.state.favorites.includes(s.itemId);
         const crop = CROP_BY_ID[s.itemId];
         rows.push(`<div class="list-row">${iconHtml(d.icon, 36)}<div class="grow" style="min-width:0">
@@ -132,7 +132,7 @@ export class MerchantPanel extends Panel {
       .join('');
     return `<div class="row wrap" style="margin-bottom:0.5rem">
         <button class="${cx('btn small', this.includeStorage && 'blue')}" data-act="storage">${this.includeStorage ? '창고 포함' : '가방만'}</button>
-        <button class="btn small gold" data-act="sellBag">가방 농산물 모두 판매 (★ 제외)</button></div>
+        <button class="btn small gold" data-act="sellBag">가방 농수산물 모두 판매 (★ 제외)</button></div>
       <div class="list">${rows.join('') || '<div class="empty-msg">판매할 물건이 없어요</div>'}</div>
       ${animalRows ? `<div class="section-title">${iconHtml('ic_livestock', 20)} 동물 판매</div><div class="list">${animalRows}</div>` : ''}`;
   }
@@ -155,7 +155,7 @@ export class MerchantPanel extends Panel {
       const [cid, slot] = arg.split('|');
       const s = w.state.containers[cid]?.slots[Number(slot)];
       if (!s) return;
-      const unit = m.unitPrice(s.itemId, s.freshness);
+      const unit = m.unitPrice(s.itemId, s.freshness, s.bonus ?? 0);
       quantityDialog('판매 수량', ITEM_BY_ID[s.itemId].icon, s.qty, unit, '판매', (q) => {
         const r = m.sellSlot(cid, Number(slot), q);
         if (!r.ok) this.toast(r.reason ?? '', 'warn');
@@ -171,7 +171,7 @@ export class MerchantPanel extends Panel {
       bag.slots.forEach((s, i) => {
         if (!s) return;
         const d = ITEM_BY_ID[s.itemId];
-        if (w.state.favorites.includes(s.itemId) || !['crop', 'animal', 'processed', 'cooking'].includes(d.category)) return;
+        if (w.state.favorites.includes(s.itemId) || !['crop', 'animal', 'fish', 'forage', 'processed', 'cooking'].includes(d.category)) return;
         const r = m.sellSlot('bag', i, s.qty);
         if (r.ok) total += r.gold!;
       });

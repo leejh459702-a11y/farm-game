@@ -3,6 +3,7 @@ import { Panel, type Watch } from '../Panel';
 import { iconHtml } from '../../assets/AssetRegistry';
 import { SKILL_BY_ID, type SkillTree } from '../../data/skills';
 import { cx, esc } from '../dom';
+import { LIFE_PERKS, type LifeSkill } from '../../systems/LifeSystem';
 
 const COL_NAMES: Record<SkillTree, string[]> = {
   farming: ['작물 · 비료', '관개 · 자동화', '저장', '가공 · 온실'],
@@ -15,11 +16,12 @@ export class SkillTreePanel extends Panel {
   tabs = [
     { id: 'farming', label: '농사', icon: 'ic_farming' },
     { id: 'livestock', label: '목축', icon: 'ic_livestock' },
+    { id: 'life', label: '생활 숙련도', icon: 'ic_fish' },
   ];
   watch: Watch = ['gold', 'research', 'levelUp'];
   private sel: string | null = null;
 
-  constructor(tree: SkillTree) {
+  constructor(tree: SkillTree | 'life') {
     super();
     this.tab = tree;
   }
@@ -28,8 +30,23 @@ export class SkillTreePanel extends Panel {
     this.sel = null;
   }
 
+  private lifeTab(): string {
+    const w = this.w;
+    const block = (k: LifeSkill, name: string, icon: string, desc: string) => {
+      const p = w.life.progress(k);
+      const perks = Object.entries(LIFE_PERKS[k])
+        .map(([lv, t]) => `<div class="row small ${Number(lv) <= p.level ? 'good' : 'muted'}"><span class="chip ${Number(lv) <= p.level ? 'green' : ''}">Lv.${lv}</span>${esc(t)}</div>`)
+        .join('');
+      return `<div class="card"><div class="row">${iconHtml(icon, 32)}<b>${name} Lv.${p.level}</b><div class="bar grow"><i style="width:${p.ratio * 100}%"></i></div><span class="tiny muted">${p.level >= 10 ? 'MAX' : `${p.cur}/${p.need}`}</span></div>
+        <div class="tiny muted" style="margin:0.3rem 0">${desc}</div><div class="col" style="gap:3px">${perks}</div></div>`;
+    };
+    return `<div class="small muted" style="margin-bottom:0.5rem">생활 숙련도는 완전히 선택 콘텐츠예요. 농사·목축 레벨이나 기술 연구 조건과는 관계없어요.</div>
+      <div class="grid cols-2">${block('fishing', '낚시', 'ic_fish', '강가에서 물고기를 낚으면 경험치를 얻어요.')}${block('foraging', '채집', 'ic_forage', '채집·벌목·채광·상자 열기로 경험치를 얻어요.')}</div>`;
+  }
+
   renderBody(): string {
     const w = this.w;
+    if (this.tab === 'life') return this.lifeTab();
     const tree = this.tab as SkillTree;
     const prog = w.skills.progress(tree);
     const other = w.skills.progress(tree === 'farming' ? 'livestock' : 'farming');
@@ -63,6 +80,7 @@ export class SkillTreePanel extends Panel {
   }
 
   renderFoot(): string {
+    if (this.tab === 'life') return '';
     if (!this.sel) return `<span class="muted small">기술을 탭하면 자세한 설명이 나와요.</span>`;
     const n = SKILL_BY_ID[this.sel];
     const w = this.w;

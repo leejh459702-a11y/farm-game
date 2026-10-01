@@ -90,7 +90,7 @@ export class OverlayScene extends Phaser.Scene {
 
     // 조명
     const cam = farm.cameras.main;
-    const lights = farm.buildings?.lights ?? [];
+    const lights = Session.location === 'farm' ? farm.buildings?.lights ?? [] : [];
     const glowAlpha = Math.max(0, dark - 0.15) * 1.1;
     while (this.glows.length < lights.length) this.glows.push(this.add.image(0, 0, 'glow').setBlendMode(Phaser.BlendModes.ADD));
     this.glows.forEach((g, i) => {

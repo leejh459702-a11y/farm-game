@@ -9,6 +9,10 @@ import { Session } from '../../core/Session';
 import { cx } from '../dom';
 import { openPanel } from '../openers';
 import { confirmDialog } from '../dialogs';
+import { TOOL_TIERS, type UpgradableTool } from '../../data/tools';
+import { ITEM_BY_ID } from '../../data/items';
+import { RegionSelectPanel } from './RegionSelectPanel';
+import { esc } from '../dom';
 
 export class HousePanel extends Panel {
   readonly id = 'house';
@@ -17,6 +21,7 @@ export class HousePanel extends Panel {
   tabs = [
     { id: 'home', label: '집', icon: 'ic_house' },
     { id: 'upgrade', label: '집 업그레이드', icon: 'ic_star' },
+    { id: 'tools', label: '도구', icon: 'tool_axe' },
   ];
   watch: Watch = ['gold', 'house', 'levelUp'];
 
@@ -38,7 +43,25 @@ export class HousePanel extends Panel {
             ${debt > 0 ? `<div class="row" style="margin-top:0.3rem"><span class="chip red">미납 ${debt.toLocaleString()}G</span><button class="btn small gold right" data-act="pay">납부</button></div><div class="tiny muted">미납 중: 토지 구매·집 업그레이드·고급 연구 제한 (농사·축산·판매는 가능)</div>` : '<div class="tiny good">미납 없음</div>'}
           </div>
           <div class="row"><button class="btn grow" data-act="save">${iconHtml('ic_save', 20)}저장</button><button class="btn grow" data-act="skills">${iconHtml('ic_research', 20)}기술 연구</button></div>
+          ${w.state.regionsDiscovered ? `<button class="btn blue block" data-act="region">${iconHtml('ic_region', 20)}외곽 이동 (강가·숲·바위 언덕)</button>` : ''}
         </div></div>`;
+    }
+    if (this.tab === 'tools') {
+      const rows = (['axe', 'pickaxe', 'rod'] as UpgradableTool[])
+        .map((t) => {
+          const def = TOOL_TIERS[t];
+          const info = w.life.toolInfo(t);
+          const lv = w.state.tools[t];
+          const owned = t !== 'rod' || w.state.tools.rodOwned;
+          const next = info.next !== null ? def.tiers[info.next] : null;
+          return `<div class="card"><div class="row">${iconHtml(def.icon, 36)}<div class="grow"><b>${owned ? def.tiers[lv].name : `${def.label} (미보유)`}</b><div class="tiny muted">${esc(def.effect[lv])}</div></div></div>
+            ${next ? `<div class="row wrap" style="margin-top:0.3rem"><span class="small">→ <b>${next.name}</b>: ${esc(def.effect[info.next!])}</span></div>
+            <div class="row wrap" style="margin-top:0.3rem"><span class="${cx('chip', w.state.gold >= next.cost ? 'green' : 'red')}">${next.cost.toLocaleString()}G</span>
+            ${next.mats.map((m) => `<span class="${cx('chip', w.inventory.countAll(m.id) >= m.qty ? 'green' : 'red')}">${iconHtml(ITEM_BY_ID[m.id].icon, 14)}${ITEM_BY_ID[m.id].name} ${w.inventory.countAll(m.id)}/${m.qty}</span>`).join('')}
+            <button class="btn small green right" data-act="tool" data-arg="${t}" ${info.ok ? '' : 'disabled'}>${info.ok ? '업그레이드' : esc(info.reason ?? '')}</button></div>` : '<span class="chip gold">최고 단계</span>'}</div>`;
+        })
+        .join('');
+      return `<div class="small muted" style="margin-bottom:0.5rem">도구는 가방 칸을 차지하지 않아요. 광석은 바위 언덕에서 캐거나 특급상인에게 살 수 있어요.</div><div class="col">${rows}</div>`;
     }
     // 업그레이드
     const req = w.house.nextReq();
@@ -66,7 +89,7 @@ export class HousePanel extends Panel {
     return `${action}<div class="section-title">단계</div><div class="list">${rows}</div>`;
   }
 
-  onAction(act: string): void {
+  onAction(act: string, arg: string): void {
     const w = this.w;
     if (act === 'endday') {
       const dry = w.crops.allPlots().filter((p) => p.cropId && !p.mature && !p.wateredToday).length;
@@ -83,6 +106,12 @@ export class HousePanel extends Panel {
     } else if (act === 'upgrade') {
       const r = w.house.upgrade();
       if (!r.ok) this.toast(r.reason ?? '', 'warn');
+    } else if (act === 'tool') {
+      const r = w.life.upgradeTool(arg as UpgradableTool);
+      if (!r.ok) this.toast(r.reason ?? '', 'warn');
+    } else if (act === 'region') {
+      this.manager.open(new RegionSelectPanel());
+      return;
     } else if (act === 'save') void Session.saveNow(false);
     else if (act === 'skills') openPanel('skills');
     this.refresh();

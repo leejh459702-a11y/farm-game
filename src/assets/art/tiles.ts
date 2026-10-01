@@ -21,7 +21,13 @@ export const TILE = {
   decorRock: 51,
   decorStump: 52,
   decorMushroom: 53,
-  count: 54,
+  waterA: 54,
+  waterB: 55,
+  sand: 56,
+  rockA: 57,
+  rockB: 58,
+  cliff: 59,
+  count: 60,
 } as const;
 
 interface SeasonPal {
@@ -192,6 +198,43 @@ function path(p: Painter) {
   p.speckle(0, 0, TS, TS, 0xdcbc90, 0.08, 23);
 }
 
+function water(p: Painter, seed: number) {
+  p.rect(0, 0, TS, TS, 0x4a8ac8);
+  p.speckle(0, 0, TS, TS, 0x3a7ab8, 0.08, seed);
+  const r = hashRand(seed);
+  for (let i = 0; i < 5; i++) {
+    const x = Math.floor(r() * 26);
+    const y = Math.floor(r() * 30);
+    p.rect(x, y, 4 + Math.floor(r() * 4), 1, 0x8ac8f0).px(x + 1, y - 1, 0xb8e0f8);
+  }
+}
+
+function sand(p: Painter) {
+  p.rect(0, 0, TS, TS, 0xe0cc98);
+  p.speckle(0, 0, TS, TS, 0xc8b07a, 0.1, 31);
+  p.speckle(0, 0, TS, TS, 0xf0e0b8, 0.06, 33);
+  p.px(9, 20, 0xffffff).px(22, 7, 0xf2d8d0);
+}
+
+function rockGround(p: Painter, seed: number) {
+  p.rect(0, 0, TS, TS, 0xa89c88);
+  p.speckle(0, 0, TS, TS, 0x8a7e6a, 0.12, seed);
+  p.speckle(0, 0, TS, TS, 0xc0b6a2, 0.07, seed + 1);
+  const r = hashRand(seed);
+  for (let i = 0; i < 3; i++) {
+    const x = Math.floor(r() * 28);
+    const y = Math.floor(r() * 28);
+    p.rect(x, y, 3, 2, 0x8a857c).px(x, y, 0xb8b2a8);
+  }
+}
+
+function cliff(p: Painter) {
+  p.rect(0, 0, TS, TS, 0x7a6e5e);
+  for (let y = 4; y < TS; y += 8) p.rect(0, y, TS, 2, 0x5a5044).rect(0, y - 1, TS, 1, 0x9a8e7a);
+  p.speckle(0, 0, TS, TS, 0x6a5e4e, 0.1, 41);
+  p.rect(0, 0, TS, 3, 0x8a9a5a);
+}
+
 /** 1px 익스트루전 포함 타일셋 캔버스 (margin 1, spacing 2) */
 export function buildTileset(): { canvas: HTMLCanvasElement; tileW: number; margin: number; spacing: number } {
   const tiles: Painter[] = [];
@@ -228,6 +271,17 @@ export function buildTileset(): { canvas: HTMLCanvasElement; tileW: number; marg
   const mush = new Painter(TS, TS);
   decorMushroom(mush);
   tiles.push(soilDry, soilWet, pth, rock, stump, mush);
+  const mk2 = (fn: (p: Painter) => void) => {
+    const p = new Painter(TS, TS);
+    fn(p);
+    tiles.push(p);
+  };
+  mk2((p) => water(p, 51));
+  mk2((p) => water(p, 77));
+  mk2((p) => sand(p));
+  mk2((p) => rockGround(p, 61));
+  mk2((p) => rockGround(p, 87));
+  mk2((p) => cliff(p));
 
   const cell = TS + 2;
   const c = document.createElement('canvas');

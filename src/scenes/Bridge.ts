@@ -13,6 +13,8 @@ export interface FarmBridge {
   merchantScreen(): { x: number; y: number } | null;
   refreshAll(): void;
   zoomBy(f: number): void;
+  /** 농장 출구까지 걸어가서 외곽 이동 */
+  useGate(): void;
 }
 
 /** 농지 다중 선택 모드 (농지 관리 패널이 열려 있을 때) */

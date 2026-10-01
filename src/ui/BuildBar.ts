@@ -8,6 +8,7 @@ import { confirmDialog, infoDialog } from './dialogs';
 import { AudioManager } from '../audio/AudioManager';
 import { SKILL_BY_ID } from '../data/skills';
 import { openPanel } from './openers';
+import { ITEM_BY_ID } from '../data/items';
 
 let root: HTMLElement | null = null;
 let unsubs: (() => void)[] = [];
@@ -66,7 +67,8 @@ function render(): void {
   else if (b.mode === 'place' && b.placeType) {
     const d = BUILDING_BY_ID[b.placeType];
     const stock = w.state.buildStock[b.placeType] ?? 0;
-    banner = `${esc(d.name)} 설치 (${d.w}×${d.h}) · ${stock > 0 ? '보관함 (무료)' : `${d.price.toLocaleString()}G`}${valid.ok ? '' : `<br><span class="small" style="color:#ffb0a0">${esc(valid.reason ?? '')}</span>`}`;
+    const matTxt = d.materials?.length ? ` · 재료 ${d.materials.map((m) => `${ITEM_BY_ID[m.id].name} ${w.inventory.countAll(m.id)}/${m.qty}`).join(', ')}` : '';
+    banner = `${esc(d.name)} 설치 (${d.w}×${d.h}) · ${stock > 0 ? '보관함 (무료)' : `${d.price.toLocaleString()}G${matTxt}`}${valid.ok ? '' : `<br><span class="small" style="color:#ffb0a0">${esc(valid.reason ?? '')}</span>`}`;
   } else if (b.mode === 'move') banner = `이동할 위치를 탭하거나 드래그하세요 (${sel.length}개)${valid.ok ? '' : `<br><span class="small" style="color:#ffb0a0">${esc(valid.reason ?? '')}</span>`}`;
   else banner = sel.length ? `${sel.length}개 선택됨: ${esc(sel.map((s) => BUILDING_BY_ID[s.type].name).slice(0, 3).join(', '))}${sel.length > 3 ? '…' : ''}` : `건설 모드 · 시간 정지 · 시설을 탭해 선택하세요`;
 
@@ -116,7 +118,8 @@ function render(): void {
     } else {
       list = BUILDINGS.filter((d) => d.category === cat && !d.hidden && d.id !== 'house').map((d) => {
         const locked = d.unlockSkill && !w.skills.has(d.unlockSkill) ? `${SKILL_BY_ID[d.unlockSkill]?.name ?? ''} 연구 필요` : '';
-        return itemCard(d.id, locked || `${d.price.toLocaleString()}G`, !!locked, false);
+        const mats = d.materials?.length ? ' + ' + d.materials.map((m) => `${ITEM_BY_ID[m.id].name}${m.qty}`).join(' ') : '';
+        return itemCard(d.id, locked || `${d.price.toLocaleString()}G${mats}`, !!locked, false);
       });
     }
     bottom += `<div class="build-bottom"><div class="build-cats">${catHtml}</div><div class="build-items">${list.join('')}</div></div>`;

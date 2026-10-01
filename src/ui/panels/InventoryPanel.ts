@@ -23,7 +23,7 @@ const KIND_INFO: Record<string, string> = {
 
 export class InventoryPanel extends Panel {
   readonly id = 'inventory';
-  tabs = (['all', 'crop', 'animal', 'processed', 'cooking', 'seed', 'other'] as Cat[]).map((c) => ({ id: c, label: CATEGORY_NAME[c as ItemCategory | 'all'] })).concat([{ id: 'fav', label: '★ 즐겨찾기' }]);
+  tabs = (['all', 'crop', 'animal', 'fish', 'forage', 'resource', 'processed', 'cooking', 'seed', 'other'] as Cat[]).map((c) => ({ id: c, label: CATEGORY_NAME[c as ItemCategory | 'all'] })).concat([{ id: 'fav', label: '★ 즐겨찾기' }]);
   watch: Watch = ['inventory'];
   private search = '';
   private sel: { cid: string; slot: number } | null = null;

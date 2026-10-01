@@ -42,5 +42,7 @@ export interface WorldEvents {
   majorChange: { reason: string };
   processing: void;
   birth: { motherId: string; babyIds: string[] };
+  /** 외곽 지역 노드 변화 */
+  regions: { id: string };
   floatText: { x: number; y: number; text: string; color?: string };
 }

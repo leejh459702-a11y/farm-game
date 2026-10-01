@@ -42,6 +42,8 @@ export class GroundRenderer {
       if (this.w.grid.isOwned(fx, fy)) return base + (r < 0.08 ? TILE.grassFlower : fx % 2 === 0 ? TILE.grassA : TILE.grassB);
       return base + (r < 0.5 ? TILE.wildA : TILE.wildB);
     }
+    // 농장 출구로 이어지는 길
+    if (fy >= FH && (fx === 14 || fx === 15)) return TILE.path;
     const d = Math.max(-fx, -fy, fx - (FW - 1), fy - (FH - 1));
     if (d <= 1) return base + (r < 0.35 ? TILE.treeA : TILE.forestFloor);
     return base + (r < 0.5 ? TILE.treeA : TILE.treeB);

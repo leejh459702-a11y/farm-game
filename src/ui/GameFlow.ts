@@ -47,6 +47,7 @@ export async function quitToMenu(save = true): Promise<void> {
   Panels.closeAll();
   unmountHud();
   const game = AppRef.game!;
+  for (const key of ['River', 'Forest', 'Hill']) if (game.scene.isActive(key) || game.scene.isSleeping(key)) game.scene.stop(key);
   game.scene.stop('Farm');
   Session.end();
   game.scene.start('Menu');

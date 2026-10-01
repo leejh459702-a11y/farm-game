@@ -8,6 +8,7 @@ import { buildCropSheets, CROP_FW, CROP_FH } from './art/crops';
 import { buildIcons } from './art/icons';
 import { buildBuildingTextures, buildGlow } from './art/buildings';
 import { animalPortrait, buildCharacterTextures } from './art/characters';
+import { buildNodeTextures } from './art/nodes';
 import { ANIMALS } from '../data/animals';
 import { CROPS } from '../data/crops';
 
@@ -31,6 +32,7 @@ class Registry {
     for (const b of buildBuildingTextures()) this.canvases.set(b.key, { canvas: b.canvas });
     for (const c of buildCharacterTextures()) this.canvases.set(c.key, { canvas: c.canvas, frameW: c.frameW, frameH: c.frameH });
     this.canvases.set('glow', { canvas: buildGlow() });
+    for (const n of buildNodeTextures()) this.canvases.set(n.key, { canvas: n.canvas });
     // 동물 초상 (DOM 용)
     for (const a of ANIMALS) this.canvases.set(`portrait_${a.id}`, { canvas: animalPortrait(a.id) });
     // 1px 흰 텍스처 (파티클/오버레이)

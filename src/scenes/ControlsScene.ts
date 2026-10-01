@@ -18,6 +18,8 @@ export class ControlsScene extends Phaser.Scene {
     super('Controls');
   }
 
+  private downAt = { x: 0, y: 0, t: 0, far: false };
+
   create(): void {
     this.base = this.add.circle(0, 0, this.R, 0x3b2a22, 0.35).setStrokeStyle(4, 0xfff6e2, 0.5);
     this.ring = this.add.circle(0, 0, this.R * 0.55, 0x000000, 0).setStrokeStyle(2, 0xfff6e2, 0.25);
@@ -27,6 +29,7 @@ export class ControlsScene extends Phaser.Scene {
       if (!this.enabledNow() || this.pid !== null) return;
       if (p.x > this.scale.width * 0.42) return;
       this.pid = p.id;
+      this.downAt = { x: p.x, y: p.y, t: this.time.now, far: false };
       InputState.capturedPointers.add(p.id);
       this.origin = { x: p.x, y: p.y };
       this.base.setPosition(p.x, p.y);
@@ -39,6 +42,7 @@ export class ControlsScene extends Phaser.Scene {
     });
     this.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       if (p.id !== this.pid) return;
+      if (Math.hypot(p.x - this.downAt.x, p.y - this.downAt.y) > 12) this.downAt.far = true;
       let dx = p.x - this.origin.x;
       let dy = p.y - this.origin.y;
       const d = Math.hypot(dx, dy);
@@ -58,6 +62,8 @@ export class ControlsScene extends Phaser.Scene {
     const up = (p: Phaser.Input.Pointer) => {
       if (p.id !== this.pid) return;
       this.release();
+      // 거의 움직이지 않은 짧은 터치 = 탭 (왼쪽 화면의 물체도 누를 수 있게)
+      if (!this.downAt.far && this.time.now - this.downAt.t < 350) InputState.tap?.(p.x, p.y);
       // pointerup 이후에 Farm 이 탭으로 오인하지 않도록 한 프레임 뒤 해제
       this.time.delayedCall(0, () => InputState.capturedPointers.delete(p.id));
     };
