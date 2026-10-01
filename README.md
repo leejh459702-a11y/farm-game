@@ -62,4 +62,6 @@ IndexedDB의 `my-little-farm` 데이터베이스에 슬롯 3개를 저장합니�
 - [TASKS.md](TASKS.md): 단계별 검증과 후속 작업.
 - [CHANGELOG.md](CHANGELOG.md): 버전 기록.
 
-GitHub 저장소: https://github.com/leejh459702-a11y/farm-game
+이 구현은 `codex/playable-farm` 브랜치에 저장되어 있습니다. 업로드 시점에 `main`의 별도 구현을 확인해 그대로 보존했습니다.
+
+GitHub 저장소: https://github.com/leejh459702-a11y/farm-game/tree/codex/playable-farm
