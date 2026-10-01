@@ -39,5 +39,6 @@ export interface WorldEvents {
   /** 자동 저장 트리거 (주요 변경) */
   majorChange: { reason: string };
   processing: void;
+  birth: { motherId: string; babyIds: string[] };
   floatText: { x: number; y: number; text: string; color?: string };
 }

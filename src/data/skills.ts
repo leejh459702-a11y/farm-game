@@ -77,7 +77,7 @@ export const SKILLS: SkillNode[] = [
   n('l_autoClean', 'livestock', '자동 청소', '축사 자동 청소.', 4000, 5, 4, ['l_autoFeed'], 3, 5),
   n('l_autoCollect', 'livestock', '자동 수거', '생산품을 창고로 자동 수거.', 9000, 6, 5, ['l_autoClean'], 3, 6),
   n('l_autoFeed2', 'livestock', '자동 급식 II', '사료가 없어도 자동 조달 (소액 비용).', 15000, 7, 6, ['l_autoCollect'], 3, 7),
-  n('l_barnExpand', 'livestock', '축사 확장', '축사 수용량 업그레이드.', 5000, 4, 2, ['l_chicken'], 2, 0),
+  n('l_barnExpand', 'livestock', '축사 확장', '축사 수용량 업그레이드.', 5000, 4, 2, ['l_chicken'], 3, 1),
 ];
 
 export const SKILL_BY_ID: Record<string, SkillNode> = Object.fromEntries(SKILLS.map((s) => [s.id, s]));

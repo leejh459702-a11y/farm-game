@@ -161,6 +161,7 @@ export class BreedingSystem {
     this.w.notify({ key: 'birth', text: `${mother.name}(${mother.id})이(가) 출산했습니다! (${gradeTxt})`, icon: `an_${mother.species}`, tone: 'good' });
     if (babies.some((b) => !b.buildingUid)) this.w.notify({ key: 'homeless', text: '축사가 가득 차 새끼가 머물 곳이 없습니다. 축사를 늘려 주세요.', icon: 'ic_warn', tone: 'warn' });
     this.w.events.emit('sfx', { key: 'birth' });
+    this.w.events.emit('birth', { motherId: mother.id, babyIds: babies.map((b) => b.id) });
     return babies;
   }
 

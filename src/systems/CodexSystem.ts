@@ -17,7 +17,7 @@ export class CodexSystem {
       e.discovered = true;
       if (ITEM_BY_ID[id].category !== 'seed') {
         this.w.finance.today().discoveries.push(ITEM_BY_ID[id].name);
-        this.w.notify({ key: 'discover', text: `새로운 발견: ${ITEM_BY_ID[id].name}`, icon: ITEM_BY_ID[id].icon, tone: 'good' });
+        this.w.notify({ key: `discover_${id}`, text: `새로운 발견: ${ITEM_BY_ID[id].name}`, icon: ITEM_BY_ID[id].icon, tone: 'good' });
       }
     }
   }
