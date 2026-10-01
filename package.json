@@ -1,0 +1,24 @@
+{
+  "name": "my-little-farm",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "나의 작은 농장 — 모바일 가로형 픽셀아트 농장 힐링 경영 게임 (Phaser 3 + TypeScript)",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "phaser": "3.90.0"
+  },
+  "devDependencies": {
+    "fake-indexeddb": "^6.2.5",
+    "typescript": "~5.9.3",
+    "vite": "^6.4.3",
+    "vitest": "^3.2.7"
+  }
+}

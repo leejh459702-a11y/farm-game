@@ -1,0 +1,135 @@
+import type { ItemCategory, SeasonId } from '../types/game';
+import { CROPS, CROP_BY_ID } from './crops';
+import { RECIPES } from './recipes';
+
+export interface ItemDef {
+  id: string;
+  name: string;
+  category: ItemCategory;
+  basePrice: number;
+  /** 하루 신선도 감소 (0 = 신선도 없음) */
+  decay: number;
+  /** 제철 계절 (판매 보너스) */
+  season?: SeasonId[];
+  /** 아이콘 텍스처 key */
+  icon: string;
+  maxStack: number;
+  sellable: boolean;
+  desc: string;
+  /** 씨앗 → 작물 id */
+  cropId?: string;
+  tags?: string[];
+}
+
+const items: ItemDef[] = [];
+const add = (d: Omit<ItemDef, 'icon' | 'maxStack' | 'sellable' | 'desc'> & Partial<ItemDef>) =>
+  items.push({ icon: `it_${d.id}`, maxStack: 99, sellable: true, desc: '', ...d });
+
+// 작물 / 씨앗
+for (const crop of CROPS) {
+  add({ id: crop.id, name: crop.name, category: 'crop', basePrice: crop.baseSellPrice, decay: crop.freshnessDecay, season: crop.season, tags: crop.tags, desc: `${crop.name} — 농작물` });
+  add({
+    id: `seed_${crop.id}`,
+    name: `${crop.name} 씨앗`,
+    category: 'seed',
+    basePrice: Math.max(1, Math.round(crop.seedPrice / 2)),
+    decay: 0,
+    cropId: crop.id,
+    icon: `it_seed_${crop.id}`,
+    desc: `${crop.growDays}일 성장${crop.regrowDays ? `, ${crop.regrowDays}일마다 재수확` : ''}`,
+  });
+}
+
+// 축산물
+const animalProducts: [string, string, number, number][] = [
+  ['egg', '달걀', 50, 3],
+  ['duck_egg', '오리알', 95, 3],
+  ['rabbit_wool', '토끼털', 180, 0],
+  ['wool', '양털', 260, 0],
+  ['goat_milk', '염소젖', 180, 8],
+  ['milk', '우유', 120, 8],
+  ['truffle', '송로버섯', 450, 5],
+  ['alpaca_wool', '알파카털', 700, 0],
+  ['goose_egg', '거위알', 160, 3],
+  ['turkey_egg', '칠면조알', 150, 3],
+  ['buffalo_milk', '물소젖', 420, 8],
+  ['ostrich_egg', '타조알', 900, 2],
+  ['chicken_meat', '닭고기', 180, 10],
+  ['duck_meat', '오리고기', 260, 10],
+  ['mutton', '양고기', 500, 10],
+  ['goat_meat', '염소고기', 450, 10],
+  ['beef', '소고기', 900, 10],
+  ['pork', '돼지고기', 700, 10],
+  ['goose_meat', '거위고기', 340, 10],
+  ['turkey_meat', '칠면조고기', 360, 10],
+  ['buffalo_meat', '물소고기', 1200, 10],
+  ['ostrich_meat', '타조고기', 1400, 10],
+];
+for (const [id, name, price, decay] of animalProducts) add({ id, name, category: 'animal', basePrice: price, decay, desc: '축산물' });
+
+// 기타
+add({ id: 'hay', name: '건초 사료', category: 'other', basePrice: 10, decay: 0, desc: '동물 기본 사료' });
+add({ id: 'treat', name: '동물 간식', category: 'other', basePrice: 40, decay: 0, desc: '쓰다듬기 대신 주면 애정 크게 상승' });
+add({ id: 'basic_fertilizer', name: '기본 비료', category: 'other', basePrice: 30, decay: 0, desc: '수확량 증가 확률 +20%' });
+add({ id: 'growth_fertilizer', name: '성장 비료', category: 'other', basePrice: 60, decay: 0, desc: '성장 속도 +25%' });
+add({ id: 'premium_fertilizer', name: '고급 비료', category: 'other', basePrice: 120, decay: 0, desc: '성장 +25%, 수확량 +35%' });
+add({ id: 'special_fertilizer', name: '특별 비료', category: 'other', basePrice: 400, decay: 0, desc: '특급상인 전용. 성장 +50%, 수확량 +50%' });
+add({ id: 'compost', name: '퇴비', category: 'other', basePrice: 15, decay: 0, desc: '천연 비료. 수확량 +12%' });
+add({ id: 'rotten', name: '부패물', category: 'other', basePrice: 0, decay: 0, sellable: false, desc: '판매 불가. 퇴비 기술로 재활용 가능' });
+add({ id: 'breed_charm', name: '번식 부적', category: 'other', basePrice: 1500, decay: 0, desc: '특급상인 전용. 다음 브리딩 상위 등급 확률 증가' });
+add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 300, decay: 0, desc: '특급상인 전용. 축사 전체 하루 급식 + 애정 상승' });
+
+// 가공품 / 요리 — 가격은 재료 기본가 × 배율로 산출
+const byId: Record<string, ItemDef> = Object.fromEntries(items.map((i) => [i.id, i]));
+const pending = [...RECIPES];
+let guard = 0;
+while (pending.length && guard++ < 20) {
+  for (let i = pending.length - 1; i >= 0; i--) {
+    const rec = pending[i];
+    if (!rec.inputs.every((inp) => byId[inp.id])) continue;
+    pending.splice(i, 1);
+    if (byId[rec.output]) continue; // compost 등 이미 존재
+    const sum = rec.inputs.reduce((s, inp) => s + byId[inp.id].basePrice * inp.qty, 0);
+    const def: ItemDef = {
+      id: rec.output,
+      name: rec.outputName,
+      category: rec.category === 'cooking' ? 'cooking' : 'processed',
+      basePrice: Math.round((sum * rec.valueMul) / rec.outQty),
+      decay: rec.decay,
+      icon: `it_${rec.output}`,
+      maxStack: 99,
+      sellable: true,
+      desc: rec.category === 'cooking' ? '정성 가득 요리' : '가공품',
+    };
+    items.push(def);
+    byId[def.id] = def;
+  }
+}
+if (pending.length) throw new Error('레시피 재료 해석 실패: ' + pending.map((p) => p.id).join(','));
+
+// 작물의 가공 용도 역산
+for (const rec of RECIPES) {
+  for (const inp of rec.inputs) {
+    const crop = CROP_BY_ID[inp.id];
+    if (crop && !crop.processingUses.includes(rec.id)) crop.processingUses.push(rec.id);
+  }
+}
+
+export const ITEMS = items;
+export const ITEM_BY_ID: Record<string, ItemDef> = byId;
+
+export function item(id: string): ItemDef {
+  const d = ITEM_BY_ID[id];
+  if (!d) throw new Error(`Unknown item ${id}`);
+  return d;
+}
+
+export const CATEGORY_NAME: Record<ItemCategory | 'all', string> = {
+  all: '전체',
+  crop: '작물',
+  animal: '축산물',
+  processed: '가공품',
+  cooking: '요리',
+  seed: '씨앗',
+  other: '기타',
+};

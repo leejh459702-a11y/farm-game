@@ -1,0 +1,286 @@
+/** 게임 전역 공용 타입 정의 — 순수 데이터 (Phaser 비의존) */
+
+export type SeasonId = 'spring' | 'summer' | 'autumn' | 'winter';
+export type WeatherId = 'sunny' | 'cloudy' | 'rain' | 'storm' | 'snow';
+export type ItemCategory = 'crop' | 'animal' | 'processed' | 'cooking' | 'seed' | 'other';
+export type Grade = 1 | 2 | 3;
+export type Gender = 'F' | 'M';
+export type GrowthStage = 'baby' | 'juvenile' | 'adult';
+export type Facing = 'down' | 'up' | 'left' | 'right';
+export type ToolId = 'hand' | 'hoe' | 'water' | 'seed' | 'fertilizer' | 'feed' | 'shovel';
+
+export interface ItemStack {
+  itemId: string;
+  qty: number;
+  /** 0~100. undefined = 신선도 없음 */
+  freshness?: number;
+}
+
+export type ContainerKind = 'bag' | 'chest' | 'warehouse' | 'fridge' | 'coldStorage' | 'bigWarehouse' | 'output';
+
+export interface Container {
+  id: string;
+  kind: ContainerKind;
+  slots: (ItemStack | null)[];
+  /** 신선도 감소 배율 (1 = 일반, 0.4 = 60% 감소) */
+  decayMul: number;
+}
+
+export interface PlotUpgrades {
+  irrigation: number;
+  soil: number;
+  pest: number;
+  autoHarvest: number;
+}
+
+export interface Plot {
+  x: number;
+  y: number;
+  cropId: string | null;
+  /** 누적 성장일 (소수 가능) */
+  growth: number;
+  watered: boolean;
+  /** 재수확 대기 중 */
+  regrowing: boolean;
+  harvests: number;
+  fertilizer: { id: string; daysLeft: number } | null;
+  upgrades: PlotUpgrades;
+  /** 온실 내부 슬롯이면 해당 건물 uid */
+  greenhouse?: string;
+}
+
+export interface ProcessJob {
+  recipeId: string;
+  /** 남은 게임 분(min) */
+  remaining: number;
+  total: number;
+}
+
+export interface BuildingInstance {
+  uid: string;
+  type: string;
+  x: number;
+  y: number;
+  /** 0 = 기본, 1 = 90° 회전 (w,h 교환) */
+  rot: 0 | 1;
+  /** 보관 시설 컨테이너 id */
+  containerId?: string;
+  /** 축사 */
+  animalIds?: string[];
+  upgrades?: Record<string, number>;
+  dirt?: number;
+  /** 축사 생산물 대기 (자동 수거 전) */
+  outputId?: string;
+  /** 가공 시설 */
+  queue?: ProcessJob[];
+  autoInput?: boolean;
+  autoRecipe?: string | null;
+  /** 장식 스킨 */
+  skin?: string;
+}
+
+export interface AnimalTraitRef {
+  id: string;
+}
+
+export interface Animal {
+  id: string; // e.g. COW-000127
+  species: string;
+  name: string;
+  gender: Gender;
+  /** 나이 (일) */
+  age: number;
+  grade: Grade;
+  stage: GrowthStage;
+  stats: { productivity: number; growth: number; health: number; fertility: number; physique: number };
+  traits: string[];
+  motherId: string | null;
+  fatherId: string | null;
+  childIds: string[];
+  births: number;
+  produced: number;
+  affection: number;
+  fedToday: boolean;
+  pettedToday: boolean;
+  /** 생산 카운트다운 (일) */
+  productTimer: number;
+  pregnant: { fatherId: string; daysLeft: number } | null;
+  breedCooldown: number;
+  buildingUid: string | null;
+  lineage: string | null;
+  bornDay: number;
+  /** 출하 진행 */
+  shipping?: { daysLeft: number } | null;
+  favorite?: boolean;
+}
+
+/** 혈통 기록 (판매/출하 후에도 유지) */
+export interface PedigreeRecord {
+  id: string;
+  species: string;
+  name: string;
+  gender: Gender;
+  grade: Grade;
+  motherId: string | null;
+  fatherId: string | null;
+  traits: string[];
+  lineage: string | null;
+  status: 'alive' | 'sold' | 'shipped';
+}
+
+export interface ShopEntry {
+  kind: 'item' | 'animal' | 'deco';
+  id: string;
+  price: number;
+  stock: number;
+  /** 동물 판매 시 미리 생성된 개체 정보 */
+  animal?: { gender: Gender; grade: Grade; traits: string[] };
+  special?: boolean;
+}
+
+export interface MerchantState {
+  nextVisitDay: number;
+  present: boolean;
+  special: boolean;
+  /** 특급상인 미등장 연속 횟수 (비공개 보정) */
+  missStreak: number;
+  sellBonus: number;
+  discount: number;
+  stock: ShopEntry[];
+  visits: number;
+}
+
+export interface Ledger {
+  income: number;
+  expense: number;
+  sales: Record<string, { qty: number; gold: number }>;
+  births: number;
+  discoveries: string[];
+  builds: string[];
+  farmingXp: number;
+  livestockXp: number;
+  landBought: number;
+}
+
+export interface MonthSummary {
+  year: number;
+  monthIndex: number;
+  income: number;
+  expense: number;
+  operatingCost: number;
+  net: number;
+  topQtyItem: string | null;
+  topGoldItem: string | null;
+  births: number;
+  landGained: number;
+  farmValueStart: number;
+  farmValueEnd: number;
+}
+
+export interface FinanceState {
+  today: Ledger;
+  month: Ledger;
+  months: MonthSummary[];
+  /** 지난달 판매수익 */
+  lastMonthSales: number;
+  /** 미납 운영비 */
+  debt: number;
+  totalEarned: number;
+  monthStartFarmValue: number;
+  dailyIncome: number[]; // 최근 30일
+}
+
+export interface CodexEntry {
+  discovered: boolean;
+  count: number;
+  bestPrice: number;
+}
+
+export interface AnimalCodexEntry {
+  discovered: boolean;
+  grades: Grade[];
+  traits: string[];
+  breedCount: number;
+  bestAnimalId: string | null;
+  bestScore: number;
+  produced: number;
+}
+
+export interface Blueprint {
+  id: string;
+  name: string;
+  createdDay: number;
+  buildings: { uid: string; type: string; x: number; y: number; rot: 0 | 1 }[];
+}
+
+export interface HotbarState {
+  selected: number;
+  seedId: string | null;
+  fertilizerId: string | null;
+  /** 대량 작업 범위 (1 = 1칸, 3 = 3×3) */
+  area: 1 | 3;
+}
+
+export interface GameState {
+  version: number;
+  meta: {
+    farmName: string;
+    createdAt: number;
+    savedAt: number;
+    playTimeSec: number;
+  };
+  rng: number;
+  uid: number;
+  time: { day: number; elapsed: number };
+  weather: { today: WeatherId; tomorrow: WeatherId };
+  gold: number;
+  land: { owned: number[]; boughtAtLevel: number; totalBought: number };
+  house: { level: number };
+  buildings: Record<string, BuildingInstance>;
+  plots: Record<string, Plot>;
+  containers: Record<string, Container>;
+  player: { x: number; y: number; facing: Facing };
+  hotbar: HotbarState;
+  skills: { farmingXp: number; livestockXp: number; researched: string[] };
+  animals: Record<string, Animal>;
+  pedigree: Record<string, PedigreeRecord>;
+  animalCounters: Record<string, number>;
+  merchant: MerchantState;
+  finance: FinanceState;
+  codex: {
+    items: Record<string, CodexEntry>;
+    animals: Record<string, AnimalCodexEntry>;
+    buildings: string[];
+  };
+  tutorial: { step: number; done: boolean; flags: Record<string, boolean> };
+  blueprints: Blueprint[];
+  /** 건설 인벤토리 (구매한 장식 등 무료 설치 가능 수량) */
+  buildStock: Record<string, number>;
+  bagUpgrades: number;
+  /** 즐겨찾기 아이템 */
+  favorites: string[];
+  /** 마지막 브리딩 부적 사용 여부 */
+  breedCharmActive: boolean;
+  stats: {
+    totalHarvested: number;
+    totalSold: number;
+    daysPlayed: number;
+    animalsBorn: number;
+  };
+}
+
+export interface Settings {
+  bgmVolume: number;
+  sfxVolume: number;
+  ambientVolume: number;
+  uiVolume: number;
+  uiScale: number;
+  cameraSpeed: number;
+  vibration: boolean;
+  joystickOpacity: number;
+  controlMode: 'joystick' | 'tap';
+  fpsLimit: 30 | 60;
+  screenShake: boolean;
+  autosave: boolean;
+  showDaySummary: boolean;
+}

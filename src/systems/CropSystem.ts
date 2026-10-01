@@ -1,0 +1,320 @@
+/**
+ * CropSystem — 농지(1×1), 파종, 물주기, 성장, 수확, 비료, 농지 내부 업그레이드.
+ * 제철이 아니면 성장이 멈출 뿐 죽지 않는다. 다 자란 작물은 언제든 수확 가능.
+ */
+import { BALANCE } from '../data/balance';
+import { CROP_BY_ID, type CropData } from '../data/crops';
+import { ITEM_BY_ID } from '../data/items';
+import { WEATHER_INFO } from '../data/seasons';
+import type { Plot, PlotUpgrades, SeasonId } from '../types/game';
+import { tileKey } from '../utils/format';
+import type { World } from '../core/World';
+
+export type PlotUpgradeType = keyof PlotUpgrades;
+
+export interface ActionResult {
+  ok: boolean;
+  reason?: string;
+}
+
+export function newPlot(x: number, y: number, greenhouse?: string): Plot {
+  return {
+    x,
+    y,
+    cropId: null,
+    growth: 0,
+    watered: false,
+    regrowing: false,
+    harvests: 0,
+    fertilizer: null,
+    upgrades: { irrigation: 0, soil: 0, pest: 0, autoHarvest: 0 },
+    ...(greenhouse ? { greenhouse } : {}),
+  };
+}
+
+/** 성장 단계 0(씨앗)~4(수확 가능) */
+export function cropStage(p: Plot): number {
+  if (!p.cropId) return -1;
+  const c = CROP_BY_ID[p.cropId];
+  if (p.growth >= c.growDays) return 4;
+  if (p.regrowing) return 3;
+  const r = p.growth / c.growDays;
+  if (p.growth <= 0) return 0;
+  if (r < 0.34) return 1;
+  if (r < 0.67) return 2;
+  return 3;
+}
+
+export const isReady = (p: Plot): boolean => !!p.cropId && p.growth >= CROP_BY_ID[p.cropId].growDays;
+
+/** 오늘 성장할 수 있는가 */
+export function canGrowToday(p: Plot, season: SeasonId): boolean {
+  if (!p.cropId) return false;
+  const c = CROP_BY_ID[p.cropId];
+  const seasonOk = !!p.greenhouse || c.season.includes(season);
+  return seasonOk && p.watered;
+}
+
+export class CropSystem {
+  constructor(private w: World) {}
+
+  plotAt(x: number, y: number): Plot | undefined {
+    return this.w.state.plots[tileKey(x, y)];
+  }
+
+  key(p: Plot): string {
+    return p.greenhouse ? `gh:${p.greenhouse}:${p.x}` : tileKey(p.x, p.y);
+  }
+
+  isUnlocked(cropId: string): boolean {
+    const c = CROP_BY_ID[cropId];
+    if (!c) return false;
+    if (this.w.skills.level('farming') < c.unlockLevel) return false;
+    if (c.unlockSkill && !this.w.skills.has(c.unlockSkill)) return false;
+    return true;
+  }
+
+  lockReason(c: CropData): string | null {
+    if (this.w.skills.level('farming') < c.unlockLevel) return `농사 Lv.${c.unlockLevel} 필요`;
+    if (c.unlockSkill && !this.w.skills.has(c.unlockSkill)) return '연구 필요';
+    return null;
+  }
+
+  canTill(x: number, y: number): ActionResult {
+    if (!this.w.grid.isOwned(x, y)) return { ok: false, reason: '소유한 토지가 아닙니다' };
+    if (this.w.grid.buildingAt(x, y)) return { ok: false, reason: '시설이 있습니다' };
+    if (this.plotAt(x, y)) return { ok: false, reason: '이미 농지입니다' };
+    return { ok: true };
+  }
+
+  till(x: number, y: number): ActionResult {
+    const c = this.canTill(x, y);
+    if (!c.ok) return c;
+    const p = newPlot(x, y);
+    // 비 오는 날 갈면 바로 젖음
+    if (WEATHER_INFO[this.w.state.weather.today].waters) p.watered = true;
+    this.w.state.plots[tileKey(x, y)] = p;
+    this.changed([tileKey(x, y)]);
+    this.w.events.emit('sfx', { key: 'till' });
+    this.w.tutorial.signal('tilled');
+    return { ok: true };
+  }
+
+  /** 삽: 빈 농지를 다시 잔디로 */
+  untill(x: number, y: number): ActionResult {
+    const p = this.plotAt(x, y);
+    if (!p) return { ok: false, reason: '농지가 아닙니다' };
+    if (p.cropId) return { ok: false, reason: '작물이 있습니다' };
+    delete this.w.state.plots[tileKey(x, y)];
+    this.changed([tileKey(x, y)]);
+    return { ok: true };
+  }
+
+  canPlant(p: Plot | undefined, seedItemId: string): ActionResult {
+    if (!p) return { ok: false, reason: '먼저 괭이로 농지를 만드세요' };
+    if (p.cropId) return { ok: false, reason: '이미 작물이 있습니다' };
+    const cropId = ITEM_BY_ID[seedItemId]?.cropId;
+    if (!cropId) return { ok: false, reason: '씨앗이 아닙니다' };
+    if (!this.isUnlocked(cropId)) return { ok: false, reason: this.lockReason(CROP_BY_ID[cropId]) ?? '잠김' };
+    if (this.w.inventory.countAll(seedItemId) <= 0) return { ok: false, reason: '씨앗이 없습니다' };
+    return { ok: true };
+  }
+
+  plant(p: Plot | undefined, seedItemId: string): ActionResult {
+    const c = this.canPlant(p, seedItemId);
+    if (!c.ok || !p) return c;
+    this.w.inventory.consume(seedItemId, 1);
+    p.cropId = ITEM_BY_ID[seedItemId].cropId!;
+    p.growth = 0;
+    p.regrowing = false;
+    p.harvests = 0;
+    this.w.skills.addXp('farming', BALANCE.xp.plant);
+    this.changed([this.key(p)]);
+    this.w.events.emit('sfx', { key: 'plant' });
+    this.w.tutorial.signal('planted');
+    return { ok: true };
+  }
+
+  water(p: Plot | undefined): ActionResult {
+    if (!p) return { ok: false, reason: '농지가 아닙니다' };
+    if (p.watered) return { ok: false, reason: '이미 촉촉합니다' };
+    p.watered = true;
+    this.changed([this.key(p)]);
+    this.w.events.emit('sfx', { key: 'water' });
+    this.w.tutorial.signal('watered');
+    return { ok: true };
+  }
+
+  fertilize(p: Plot | undefined, fertId: string): ActionResult {
+    if (!p) return { ok: false, reason: '농지가 아닙니다' };
+    const f = BALANCE.crops.fertilizer[fertId];
+    if (!f) return { ok: false, reason: '비료가 아닙니다' };
+    if (fertId !== 'compost' && !this.w.skills.has('f_fert1')) return { ok: false, reason: '비료 연구가 필요합니다' };
+    if (fertId === 'premium_fertilizer' && !this.w.skills.has('f_fert2')) return { ok: false, reason: '고급 비료 연구가 필요합니다' };
+    if (p.fertilizer && p.fertilizer.id === fertId && p.fertilizer.daysLeft > 5) return { ok: false, reason: '이미 같은 비료가 적용되어 있습니다' };
+    if (!this.w.inventory.consume(fertId, 1)) return { ok: false, reason: '비료가 없습니다' };
+    p.fertilizer = { id: fertId, daysLeft: f.days };
+    this.changed([this.key(p)]);
+    this.w.events.emit('sfx', { key: 'plant' });
+    return { ok: true };
+  }
+
+  /** 수확량 계산 (난수 사용) */
+  rollYield(p: Plot): number {
+    const c = CROP_BY_ID[p.cropId!];
+    let n = c.yield;
+    const fert = p.fertilizer ? BALANCE.crops.fertilizer[p.fertilizer.id] : null;
+    if (fert && this.w.rand() < fert.extraChance) n++;
+    const soilChance = BALANCE.crops.soilExtraChance[p.upgrades.soil] ?? 0;
+    if (this.w.rand() < soilChance) n++;
+    if (!p.greenhouse && p.upgrades.pest === 0 && this.w.rand() < BALANCE.crops.pestChance) n = Math.max(1, n - 1);
+    return n;
+  }
+
+  /**
+   * 수확. dest = 'bag' (플레이어) 또는 'storage' (자동 수확)
+   * 성공 시 수확 수량 반환
+   */
+  harvest(p: Plot | undefined, dest: 'bag' | 'storage' = 'bag'): { ok: boolean; reason?: string; qty?: number; itemId?: string } {
+    if (!p || !p.cropId) return { ok: false, reason: '작물이 없습니다' };
+    if (!isReady(p)) return { ok: false, reason: '아직 다 자라지 않았습니다' };
+    const c = CROP_BY_ID[p.cropId];
+    const qty = this.rollYield(p);
+    let left: number;
+    if (dest === 'bag') {
+      const cap = this.w.inventory.capacityFor('bag', c.id, 100);
+      if (cap <= 0 && this.w.inventory.storageIds().every((id) => this.w.inventory.capacityFor(id, c.id, 100) <= 0))
+        return { ok: false, reason: '가방이 가득 찼습니다' };
+      left = this.w.inventory.add('bag', c.id, qty, 100);
+      if (left > 0) left = this.w.inventory.store(c.id, left, 100, { x: p.x, y: p.y }, false);
+    } else {
+      left = this.w.inventory.store(c.id, qty, 100, { x: p.x, y: p.y }, false);
+      if (left === qty) return { ok: false, reason: '저장 공간 부족' };
+    }
+    const got = qty - left;
+    p.harvests++;
+    if (c.regrowDays > 0) {
+      p.growth = c.growDays - c.regrowDays;
+      p.regrowing = true;
+    } else {
+      p.cropId = null;
+      p.growth = 0;
+      p.regrowing = false;
+    }
+    // 기록
+    this.w.state.stats.totalHarvested += got;
+    this.w.codex.recordHarvest(c.id, got);
+    const xp = Math.max(BALANCE.xp.harvestMin, Math.round(c.baseSellPrice * got * BALANCE.xp.harvestPerPrice));
+    this.w.skills.addXp('farming', xp);
+    this.changed([this.key(p)]);
+    this.w.events.emit('sfx', { key: 'harvest' });
+    this.w.tutorial.signal('harvested');
+    return { ok: true, qty: got, itemId: c.id };
+  }
+
+  /** 모든 바깥 농지 (온실 제외) */
+  outdoorPlots(): Plot[] {
+    return Object.values(this.w.state.plots).filter((p) => !p.greenhouse);
+  }
+
+  allPlots(): Plot[] {
+    return Object.values(this.w.state.plots);
+  }
+
+  /** 하루 종료 시 성장 처리 */
+  dailyGrowth(season: SeasonId): void {
+    for (const p of this.allPlots()) {
+      if (p.greenhouse) p.watered = true; // 온실 자동 급수
+      if (p.cropId && !isReady(p) && canGrowToday(p, season)) {
+        const fert = p.fertilizer ? BALANCE.crops.fertilizer[p.fertilizer.id] : null;
+        const c = CROP_BY_ID[p.cropId];
+        p.growth = Math.min(c.growDays, p.growth + 1 + (fert?.growthBonus ?? 0));
+        if (p.growth >= c.growDays) p.regrowing = false;
+      }
+      if (p.fertilizer) {
+        // 관개 Lv.2: 비료 지속시간 2배 (격일 소모)
+        const skip = p.upgrades.irrigation >= 2 && this.w.state.time.day % 2 === 1;
+        if (!skip) p.fertilizer.daysLeft--;
+        if (p.fertilizer.daysLeft <= 0) {
+          const id = p.fertilizer.id;
+          p.fertilizer = null;
+          // 관개 Lv.3: 같은 비료를 창고에서 자동 보충
+          if (p.upgrades.irrigation >= 3 && this.w.inventory.consume(id, 1)) p.fertilizer = { id, daysLeft: BALANCE.crops.fertilizer[id].days };
+        }
+      }
+      p.watered = false;
+    }
+    this.changed('all');
+  }
+
+  /** 아침 처리: 비/관개 자동 물주기 */
+  morningWater(): void {
+    const rain = WEATHER_INFO[this.w.state.weather.today].waters;
+    for (const p of this.allPlots()) {
+      if (p.greenhouse) p.watered = true;
+      else if (rain || p.upgrades.irrigation >= 1) p.watered = true;
+    }
+    this.changed('all');
+  }
+
+  readyPlots(): Plot[] {
+    return this.allPlots().filter(isReady);
+  }
+
+  // ───── 농지 내부 업그레이드 ─────
+  upgradeInfo(type: PlotUpgradeType, current: number): { next: number; cost: number; locked: string | null; max: boolean } {
+    const cfg = BALANCE.plotUpgrades[type];
+    const next = current + 1;
+    if (next >= cfg.costs.length) return { next: current, cost: 0, locked: null, max: true };
+    const skill = cfg.skill[next];
+    const locked = skill && !this.w.skills.has(skill) ? '연구 필요' : null;
+    return { next, cost: cfg.costs[next], locked, max: false };
+  }
+
+  /** 여러 농지 일괄 업그레이드. 업그레이드된 수 반환 */
+  upgrade(plots: Plot[], type: PlotUpgradeType): { ok: boolean; count: number; cost: number; reason?: string } {
+    let total = 0;
+    const targets: Plot[] = [];
+    for (const p of plots) {
+      const info = this.upgradeInfo(type, p.upgrades[type]);
+      if (info.max || info.locked) continue;
+      targets.push(p);
+      total += info.cost;
+    }
+    if (!targets.length) return { ok: false, count: 0, cost: 0, reason: '업그레이드할 수 있는 농지가 없습니다' };
+    if (this.w.state.gold < total) return { ok: false, count: 0, cost: total, reason: '골드가 부족합니다' };
+    this.w.spend(total, '농지 업그레이드');
+    for (const p of targets) {
+      p.upgrades[type]++;
+      if (type === 'irrigation' && p.upgrades.irrigation >= 1) p.watered = true;
+    }
+    this.changed(targets.map((p) => this.key(p)));
+    this.w.events.emit('sfx', { key: 'upgrade' });
+    return { ok: true, count: targets.length, cost: total };
+  }
+
+  // ───── 온실 ─────
+  createGreenhousePlots(uid: string, n: number): void {
+    for (let i = 0; i < n; i++) {
+      const p = newPlot(i, 0, uid);
+      p.upgrades.irrigation = 1;
+      p.upgrades.pest = 1;
+      p.watered = true;
+      this.w.state.plots[`gh:${uid}:${i}`] = p;
+    }
+  }
+
+  greenhousePlots(uid: string): Plot[] {
+    return Object.values(this.w.state.plots)
+      .filter((p) => p.greenhouse === uid)
+      .sort((a, b) => a.x - b.x);
+  }
+
+  removeGreenhousePlots(uid: string): void {
+    for (const k of Object.keys(this.w.state.plots)) if (k.startsWith(`gh:${uid}:`)) delete this.w.state.plots[k];
+  }
+
+  changed(keys: string[] | 'all'): void {
+    this.w.events.emit('plots', { keys });
+  }
+}
