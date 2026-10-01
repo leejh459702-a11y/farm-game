@@ -1,0 +1,26 @@
+{
+  "name": "farm-game",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "npm run build && vitest run",
+    "check": "tsc --noEmit",
+    "format": "prettier --write src tests vite.config.ts *.md *.json index.html public/manifest.webmanifest",
+    "format:check": "prettier --check src tests vite.config.ts"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.0",
+    "fake-indexeddb": "^6.2.4",
+    "prettier": "^3.9.9",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.1.11"
+  }
+}
