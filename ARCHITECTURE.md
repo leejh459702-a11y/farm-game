@@ -76,3 +76,10 @@ scripts/       make-icons.mjs (PWA 아이콘 생성)
 `AssetRegistry.registerPhaser` 는 이미 존재하는 key 를 덮어쓰지 않는다. `BootScene.preload()` 에서 같은 key 로
 실제 이미지를 로드하면 플레이스홀더 대신 사용된다. 주요 key: `tiles`, `player`, `merchant`, `cart`, `crop_<id>`(5프레임),
 `bld_<id>`(+`_r` 회전), `bld_house_<1..6>`, `an_<species>`(2프레임), `it_<itemId>`, `ic_*`, `tool_*`, `glow`.
+
+## 외곽 지역 / 생활 콘텐츠
+- 로직: `RegionSystem`(지역 노드 생성·리스폰·상호작용, 레이아웃은 결정적), `FishingSystem`(물고기 선택 가중치 + `FishingGame` 게이지 물리), `LifeSystem`(낚시/채집 숙련도, 도구 업그레이드). 모두 Phaser 비의존 → Vitest 로 검증.
+- Scene: `RegionScene` 인스턴스 3개(`River`/`Forest`/`Hill`). `Travel.goToRegion` 이 Farm 을 sleep 하고 지역 Scene 을 start, `goToFarm` 은 지역 Scene 을 stop 하고 Farm 을 wake. 지역 Scene 도 `GameTimeSystem` 을 tick 하므로 시간은 계속 흐른다.
+- 낚시 UI 는 DOM 오버레이(`ui/FishingOverlay.ts`) — 한 손 누르기 조작, requestAnimationFrame 루프.
+- 입력: `ControlsScene`(가상 조이스틱)이 화면 왼쪽 포인터를 점유하지만, 거의 움직이지 않은 짧은 터치는 `InputState.tap` 으로 현재 월드 Scene 에 탭으로 전달.
+- 저장: `SAVE_VERSION` 3. 마이그레이션 1→2(작물 성장 필드 변환), 2→3(도구/지역 기본값, 튜토리얼 완료 저장은 낚싯대 지급).
