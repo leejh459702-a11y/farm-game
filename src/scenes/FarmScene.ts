@@ -23,7 +23,7 @@ import { RegionSelectPanel } from '../ui/panels/RegionSelectPanel';
 
 /** 농장 출구 위치 (최대 영역 바로 아래, 가운데) */
 const GATE = { x: 14, y: FH };
-const isGate = (x: number, y: number): boolean => y >= FH && y <= FH + 1 && x >= 13 && x <= 17;
+const isGate = (x: number, y: number): boolean => y >= FH && y <= FH + 1 && x >= 13 && x <= 15;
 
 interface PointerTrack {
   id: number;
@@ -407,6 +407,11 @@ export class FarmScene extends Phaser.Scene {
   doAction(): void {
     if (this.build.active || Panels.isOpen()) return;
     const t = this.targetTile();
+    const mt = this.buildings.merchantTile;
+    if (mt && t.y >= mt.y && t.y <= mt.y + 1 && t.x >= mt.x && t.x <= mt.x + 1) {
+      Bridge.openMerchant?.();
+      return;
+    }
     if (isGate(t.x, t.y)) return this.useGate();
     const b = this.w.grid.buildingAt(t.x, t.y);
     if (b) {
@@ -534,6 +539,14 @@ export class FarmScene extends Phaser.Scene {
     }
     if (this.build.active || (this.w.tutorial.active && this.w.tutorial.step < 3)) return;
     const t = this.targetTile();
+    const mt = this.buildings.merchantTile;
+    if (mt && t.y >= mt.y && t.y <= mt.y + 1 && t.x >= mt.x && t.x <= mt.x + 1) {
+      if (this.lastContext !== 'merchant') {
+        this.lastContext = 'merchant';
+        Session.app.emit('context', { label: '상인과 거래', icon: 'ic_merchant', enabled: true });
+      }
+      return;
+    }
     if (isGate(t.x, t.y)) {
       const sig = 'gate';
       if (sig !== this.lastContext) {

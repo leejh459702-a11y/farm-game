@@ -2,13 +2,16 @@
 import Phaser from 'phaser';
 import { BUILDING_BY_ID, footprint } from '../../data/buildings';
 import type { World } from '../../core/World';
-import { DEPTH, TS } from './constants';
+import { DEPTH, FH, TS } from './constants';
 
 export interface LightSpot {
   x: number;
   y: number;
   r: number;
 }
+
+/** 마을 길(x 14~15) 바로 오른쪽, 농장 경계 밖 첫 줄 */
+export const MERCHANT_SPOT = { x: 16, y: FH };
 
 export class BuildingRenderer {
   private images = new Map<string, Phaser.GameObjects.Image>();
@@ -104,25 +107,9 @@ export class BuildingRenderer {
     }
   }
 
-  /** 상인 위치: 집 앞 → 가까운 빈 소유지 → 소유지 바깥 인접 칸 */
+  /** 상인 위치: 농장 아래 마을 길 입구 오른쪽 공터 (밭·시설을 가리지 않음) */
   private findMerchantTile(): { x: number; y: number } {
-    const g = this.w.grid;
-    const house = g.house();
-    const origin = house ? { x: house.x + 2, y: house.y + 2 } : { x: 15, y: 15 };
-    let best: { x: number; y: number; d: number } | null = null;
-    for (let y = 0; y < 30; y++)
-      for (let x = 0; x < 30; x++) {
-        if (x + 1 >= 30 || g.buildingAt(x, y) || g.buildingAt(x + 1, y)) continue;
-        if (this.w.crops.plotAt(x, y) || this.w.crops.plotAt(x + 1, y)) continue;
-        if (g.isOwned(x + 1, y)) continue;
-        const owned = g.isOwned(x, y);
-        // 소유지 밖이지만 붙어있는 칸 우선 (농장 공간을 덜 차지)
-        const adj = !owned && (g.isOwned(x + 1, y) || g.isOwned(x - 1, y) || g.isOwned(x, y + 1) || g.isOwned(x, y - 1));
-        if (!adj) continue;
-        const d = Math.abs(x - origin.x) + Math.abs(y - origin.y);
-        if (!best || d < best.d) best = { x, y, d };
-      }
-    return best ?? { x: origin.x, y: Math.min(29, origin.y + 1) };
+    return { ...MERCHANT_SPOT };
   }
 
   syncMerchant(): void {
