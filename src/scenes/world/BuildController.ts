@@ -227,6 +227,7 @@ export class BuildController {
       const d = BUILDING_BY_ID[this.placeType];
       const free = this.tutorialHouse || (this.w.state.buildStock[this.placeType] ?? 0) > 0;
       if (!free && this.w.state.gold < d.price) return { ok: false, reason: '골드가 부족합니다' };
+      if (!free && !this.w.inventory.hasMats(d.materials)) return { ok: false, reason: '건설 재료가 부족합니다 (목재·돌 등)' };
       return { ok: true };
     }
     if (this.mode === 'move') {
@@ -255,7 +256,7 @@ export class BuildController {
       }
       // 같은 시설 연속 설치 (장식 등) — 비용/재고가 허락하면 유지
       const d = BUILDING_BY_ID[type];
-      const canMore = type !== 'house' && ((this.w.state.buildStock[type] ?? 0) > 0 || (this.w.state.gold >= d.price && d.category === 'decoration'));
+      const canMore = type !== 'house' && ((this.w.state.buildStock[type] ?? 0) > 0 || (this.w.state.gold >= d.price && d.category === 'decoration' && this.w.inventory.hasMats(d.materials)));
       if (canMore) {
         this.snapGhostToValid();
         this.redraw();

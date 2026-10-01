@@ -51,8 +51,16 @@ export class TutorialSystem {
     this.w.events.emit('tutorial', { step: 1 });
   }
 
+  /** 튜토리얼 종료 보상: 낚싯대 무료 지급 */
+  private grantRod(): void {
+    if (this.w.state.tools.rodOwned) return;
+    this.w.state.tools.rodOwned = true;
+    this.w.notify({ key: 'rod', text: '낚싯대를 받았어요! 농장 아래쪽 출구로 나가 강가에서 낚시해 보세요.', icon: 'tool_rod', tone: 'good' });
+  }
+
   skip(): void {
     this.w.state.tutorial.done = true;
+    this.grantRod();
     this.w.state.tutorial.step = 99;
     // 튜토리얼을 건너뛰면 집이 없을 때 자동 배치
     if (!this.w.grid.house()) this.w.autoPlaceHouse();
@@ -85,6 +93,7 @@ export class TutorialSystem {
     t.step++;
     if (t.step > TUTORIAL_STEPS.length) {
       t.done = true;
+      this.grantRod();
       this.w.notify({ key: 'tut', text: '튜토리얼 완료! 이제 자유롭게 농장을 꾸려 보세요.', icon: 'ic_star', tone: 'good' });
       this.w.merchant.scheduleNext();
       this.w.events.emit('majorChange', { reason: 'tutorial' });

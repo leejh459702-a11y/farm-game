@@ -26,7 +26,7 @@ export class ProcessingSystem {
 
   /** 재료 충분 여부 */
   canMake(r: RecipeData, times = 1): boolean {
-    return r.inputs.every((i) => this.w.inventory.countAll(i.id) >= i.qty * times);
+    return r.inputs.every((i) => this.w.inventory.countMatching(i.id) >= i.qty * times);
   }
 
   start(b: BuildingInstance, recipeId: string): { ok: boolean; reason?: string } {
@@ -36,7 +36,7 @@ export class ProcessingSystem {
     if (!this.isUnlocked(r)) return { ok: false, reason: '연구가 필요합니다' };
     if ((b.queue?.length ?? 0) >= (d.queueSize ?? 1)) return { ok: false, reason: '작업 슬롯이 가득 찼습니다' };
     if (!this.canMake(r)) return { ok: false, reason: '재료가 부족합니다' };
-    for (const i of r.inputs) this.w.inventory.consume(i.id, i.qty);
+    for (const i of r.inputs) this.w.inventory.consumeMatching(i.id, i.qty);
     b.queue!.push({ recipeId, remaining: r.minutes, total: r.minutes });
     this.w.events.emit('processing', undefined);
     this.w.events.emit('sfx', { key: 'process' });

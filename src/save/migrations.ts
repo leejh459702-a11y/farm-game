@@ -31,6 +31,13 @@ export const MIGRATIONS: Record<number, Migration> = {
     }
     return { ...s, plots, version: 2 };
   },
+  // 2 → 3: 생활 콘텐츠 (낚시·채집·벌목·채광) — 새 필드는 기본값 보정으로 채워진다
+  2: (s) => {
+    const tut = s.tutorial as { done?: boolean } | undefined;
+    // 튜토리얼을 이미 마친 세이브는 낚싯대 지급
+    const tools = { axe: 0, pickaxe: 0, rod: 0, rodOwned: !!tut?.done };
+    return { ...s, tools: s.tools ?? tools, version: 3 };
+  },
 };
 
 export function migrate(raw: unknown): GameState {

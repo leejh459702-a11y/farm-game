@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { applyGradeBonus, baseGradeDist, inheritTraits, rollGrade } from '../src/systems/BreedingSystem';
-import { freeWorld, giveLand } from './helpers';
+import { freeWorld, giveLand, giveMats } from './helpers';
 import type { Grade } from '../src/types/game';
 
 function sample(a: Grade, b: Grade, n = 20000) {
@@ -64,6 +64,7 @@ describe('유전', () => {
     w.state.skills.farmingXp = 99999;
     w.state.skills.researched.push('l_chicken', 'l_breeding');
     giveLand(w, 5, 5, 8, 6);
+    giveMats(w);
     const spots: [number, number][] = [];
     for (let y = 0; y < 30; y++) for (let x = 0; x < 30; x++) if (w.grid.canPlace('coop', x, y, 0).ok) spots.push([x, y]);
     expect(w.grid.place('coop', spots[0][0], spots[0][1], 0).ok).toBe(true);

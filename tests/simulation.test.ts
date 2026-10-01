@@ -2,7 +2,7 @@
  * 장기 시뮬레이션 QA — 1년(120일) 동안 자동 플레이하며 예외/불변식 확인.
  */
 import { describe, expect, it } from 'vitest';
-import { freeWorld, giveLand } from './helpers';
+import { freeWorld, giveLand, giveMats } from './helpers';
 import { isReady } from '../src/systems/CropSystem';
 import { calendar } from '../src/systems/SeasonSystem';
 import { ITEM_BY_ID } from '../src/data/items';
@@ -12,6 +12,7 @@ describe('1년 자동 플레이 시뮬레이션', () => {
     const w = freeWorld(2024);
     w.state.gold = 50000;
     giveLand(w, 8, 8, 14, 14);
+    giveMats(w);
     w.state.skills.researched.push('l_chicken', 'l_cow', 'f_processing', 'f_kitchen', 'f_storage1', 'f_cold', 'l_breeding', 'f_irrig1', 'l_autoFeed');
     w.state.skills.farmingXp = 2000;
     w.state.skills.livestockXp = 2000;

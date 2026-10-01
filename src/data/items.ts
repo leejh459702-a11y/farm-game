@@ -1,6 +1,8 @@
 import type { ItemCategory, SeasonId } from '../types/game';
 import { CROPS, CROP_BY_ID } from './crops';
 import { RECIPES } from './recipes';
+import { FISH, FISH_BY_ID } from './fish';
+import { FORAGE, RESOURCES } from './gathering';
 
 export interface ItemDef {
   id: string;
@@ -67,6 +69,12 @@ const animalProducts: [string, string, number, number][] = [
 ];
 for (const [id, name, price, decay] of animalProducts) add({ id, name, category: 'animal', basePrice: price, decay, desc: '축산물' });
 
+// 물고기 / 채집물 / 자원 (생활 콘텐츠)
+for (const fsh of FISH) add({ id: fsh.id, name: fsh.name, category: fsh.id === 'old_boot' ? 'other' : 'fish', basePrice: fsh.baseSellPrice, decay: fsh.freshnessDecay, tags: fsh.id === 'old_boot' ? [] : ['fish'], desc: '물고기' });
+for (const fg of FORAGE) add({ id: fg.id, name: fg.name, category: 'forage', basePrice: fg.price, decay: fg.decay, tags: fg.tags, desc: '채집물' });
+for (const rs of RESOURCES) add({ id: rs.id, name: rs.name, category: 'resource', basePrice: rs.price, decay: 0, desc: '건설·업그레이드 재료' });
+add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
+
 // 기타
 add({ id: 'hay', name: '건초 사료', category: 'other', basePrice: 10, decay: 0, desc: '동물 기본 사료' });
 add({ id: 'treat', name: '동물 간식', category: 'other', basePrice: 40, decay: 0, desc: '쓰다듬기 대신 주면 애정 크게 상승' });
@@ -81,19 +89,24 @@ add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 30
 
 // 가공품 / 요리 — 가격은 재료 기본가 × 배율로 산출
 const byId: Record<string, ItemDef> = Object.fromEntries(items.map((i) => [i.id, i]));
+
+/** 태그 재료(#fish 등)의 기준가 — 가공품 가격 산출용 */
+export const TAG_PRICE: Record<string, number> = { fish: 25, mushroom: 22, berry: 13, seafood: 16, shell: 16, herb: 16 };
+const inputPrice = (id: string): number => (id.startsWith('#') ? TAG_PRICE[id.slice(1)] ?? 10 : byId[id]?.basePrice ?? 0);
+const inputKnown = (id: string): boolean => id.startsWith('#') || !!byId[id];
 const pending = [...RECIPES];
 let guard = 0;
 while (pending.length && guard++ < 20) {
   for (let i = pending.length - 1; i >= 0; i--) {
     const rec = pending[i];
-    if (!rec.inputs.every((inp) => byId[inp.id])) continue;
+    if (!rec.inputs.every((inp) => inputKnown(inp.id))) continue;
     pending.splice(i, 1);
     if (byId[rec.output]) continue; // compost 등 이미 존재
-    const sum = rec.inputs.reduce((s, inp) => s + byId[inp.id].basePrice * inp.qty, 0);
+    const sum = rec.inputs.reduce((s, inp) => s + inputPrice(inp.id) * inp.qty, 0);
     const def: ItemDef = {
       id: rec.output,
       name: rec.outputName,
-      category: rec.category === 'cooking' ? 'cooking' : 'processed',
+      category: rec.category === 'cooking' ? 'cooking' : rec.category === 'other' ? 'resource' : 'processed',
       basePrice: Math.round((sum * rec.valueMul) / rec.outQty),
       decay: rec.decay,
       icon: `it_${rec.output}`,
@@ -107,12 +120,31 @@ while (pending.length && guard++ < 20) {
 }
 if (pending.length) throw new Error('레시피 재료 해석 실패: ' + pending.map((p) => p.id).join(','));
 
-// 작물의 가공 용도 역산
+// 작물의 가공 용도 / 물고기 요리 용도 역산
 for (const rec of RECIPES) {
   for (const inp of rec.inputs) {
     const crop = CROP_BY_ID[inp.id];
     if (crop && !crop.processingUses.includes(rec.id)) crop.processingUses.push(rec.id);
+    const fsh = FISH_BY_ID[inp.id];
+    if (fsh && !fsh.cookingUses.includes(rec.id)) fsh.cookingUses.push(rec.id);
+    if (inp.id === '#fish') for (const x of FISH) if (x.id !== 'old_boot' && !x.cookingUses.includes(rec.id)) x.cookingUses.push(rec.id);
   }
+}
+
+/** 아이템이 태그 재료(#tag) 또는 id 와 일치하는가 */
+export function matchesInput(itemId: string, input: string): boolean {
+  if (!input.startsWith('#')) return itemId === input;
+  return !!byId[itemId]?.tags?.includes(input.slice(1));
+}
+
+export function inputName(input: string): string {
+  if (!input.startsWith('#')) return byId[input]?.name ?? input;
+  return ({ fish: '물고기(아무거나)', mushroom: '버섯(아무거나)', berry: '열매(아무거나)', seafood: '조개류(아무거나)', shell: '조개류(아무거나)', herb: '약초' } as Record<string, string>)[input.slice(1)] ?? input;
+}
+
+export function inputIcon(input: string): string {
+  if (!input.startsWith('#')) return byId[input]?.icon ?? 'ic_star';
+  return ({ fish: 'it_crucian', mushroom: 'it_shiitake', berry: 'it_wild_strawberry', seafood: 'it_clam', shell: 'it_clam', herb: 'it_herb' } as Record<string, string>)[input.slice(1)] ?? 'ic_star';
 }
 
 export const ITEMS = items;
@@ -128,6 +160,9 @@ export const CATEGORY_NAME: Record<ItemCategory | 'all', string> = {
   all: '전체',
   crop: '작물',
   animal: '축산물',
+  fish: '물고기',
+  forage: '채집물',
+  resource: '자원',
   processed: '가공품',
   cooking: '요리',
   seed: '씨앗',

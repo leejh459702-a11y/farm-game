@@ -97,11 +97,15 @@ export class FarmGridSystem {
     if (!opts.free && !fromStock) {
       if (d.unlockSkill && !this.w.skills.has(d.unlockSkill)) return { ok: false, reason: '연구가 필요합니다' };
       if (this.w.state.gold < d.price) return { ok: false, reason: '골드가 부족합니다' };
+      if (!this.w.inventory.hasMats(d.materials)) return { ok: false, reason: '건설 재료가 부족합니다' };
     }
     if (type === 'house' && Object.values(this.w.state.buildings).some((b) => b.type === 'house')) return { ok: false, reason: '집은 하나만 지을 수 있습니다' };
     if (!opts.free) {
       if (fromStock) this.w.state.buildStock[type]--;
-      else this.w.spend(d.price, `건설:${d.name}`);
+      else {
+        this.w.spend(d.price, `건설:${d.name}`);
+        this.w.inventory.consumeMats(d.materials);
+      }
     }
     this.clearEmptyPlots(type, x, y, rot);
     const uid = this.w.uid('b');

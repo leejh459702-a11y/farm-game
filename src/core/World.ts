@@ -23,6 +23,9 @@ import { BreedingSystem } from '../systems/BreedingSystem';
 import { ProcessingSystem } from '../systems/ProcessingSystem';
 import { AutomationSystem } from '../systems/AutomationSystem';
 import { GameTimeSystem } from '../systems/GameTimeSystem';
+import { LifeSystem } from '../systems/LifeSystem';
+import { RegionSystem } from '../systems/RegionSystem';
+import { FishingSystem } from '../systems/FishingSystem';
 import { calendar, type CalendarInfo } from '../systems/SeasonSystem';
 import { footprint } from '../data/buildings';
 
@@ -45,6 +48,9 @@ export class World {
   readonly processing: ProcessingSystem;
   readonly automation: AutomationSystem;
   readonly time: GameTimeSystem;
+  readonly life: LifeSystem;
+  readonly regions: RegionSystem;
+  readonly fishing: FishingSystem;
   /** 최근 알림 기록 (세이브 안 함) */
   readonly notifyLog: (GameNotification & { day: number })[] = [];
 
@@ -65,6 +71,9 @@ export class World {
     this.processing = new ProcessingSystem(this);
     this.automation = new AutomationSystem(this);
     this.time = new GameTimeSystem(this);
+    this.life = new LifeSystem(this);
+    this.regions = new RegionSystem(this);
+    this.fishing = new FishingSystem(this);
   }
 
   rand(): number {

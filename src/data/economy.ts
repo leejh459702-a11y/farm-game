@@ -3,6 +3,10 @@
 /** 일반 상인이 항상 취급 가능한 기본 상품 (itemId, 판매가, 재고, 필요 연구) */
 export const MERCHANT_BASICS: { id: string; price: number; stock: number; skill?: string }[] = [
   { id: 'hay', price: 15, stock: 60 },
+  { id: 'wood', price: 8, stock: 99 },
+  { id: 'stone', price: 8, stock: 99 },
+  { id: 'clay', price: 12, stock: 40 },
+  { id: 'brick', price: 40, stock: 20 },
   { id: 'basic_fertilizer', price: 45, stock: 20, skill: 'f_fert1' },
   { id: 'growth_fertilizer', price: 90, stock: 15, skill: 'f_fert1' },
   { id: 'premium_fertilizer', price: 180, stock: 10, skill: 'f_fert2' },
@@ -24,6 +28,9 @@ export const SPECIAL_ITEMS: { id: string; price: number; stock: number }[] = [
   { id: 'special_fertilizer', price: 400, stock: 10 },
   { id: 'breed_charm', price: 1500, stock: 2 },
   { id: 'golden_feed', price: 300, stock: 5 },
+  { id: 'rare_bait', price: 120, stock: 5 },
+  { id: 'copper_ore', price: 40, stock: 20 },
+  { id: 'iron_ore', price: 80, stock: 15 },
 ];
 export const SPECIAL_DECOS: { id: string; price: number }[] = [
   { id: 'cherrytree', price: 1500 },

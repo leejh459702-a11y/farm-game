@@ -173,8 +173,8 @@ export class MerchantSystem {
   }
 
   // ───── 판매 ─────
-  unitPrice(itemId: string, freshness?: number): number {
-    return sellPrice(itemId, freshness, this.priceCtx());
+  unitPrice(itemId: string, freshness?: number, bonus = 0): number {
+    return sellPrice(itemId, freshness, this.priceCtx(), bonus);
   }
 
   sellSlot(containerId: string, slot: number, qty: number): { ok: boolean; reason?: string; gold?: number } {
@@ -182,7 +182,7 @@ export class MerchantSystem {
     const c = this.w.state.containers[containerId];
     const s = c?.slots[slot];
     if (!s) return { ok: false, reason: '없는 아이템' };
-    const unit = this.unitPrice(s.itemId, s.freshness);
+    const unit = this.unitPrice(s.itemId, s.freshness, s.bonus ?? 0);
     if (unit <= 0) return { ok: false, reason: ITEM_BY_ID[s.itemId].sellable ? '부패하여 판매할 수 없습니다' : '판매할 수 없는 물건입니다' };
     const got = this.w.inventory.removeAt(containerId, slot, qty);
     if (!got) return { ok: false };

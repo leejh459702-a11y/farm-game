@@ -4,11 +4,13 @@
  */
 import { BALANCE } from '../data/balance';
 import { BUILDING_BY_ID } from '../data/buildings';
-import { ITEM_BY_ID, item } from '../data/items';
+import { ITEM_BY_ID, item, matchesInput } from '../data/items';
 import type { Container, ContainerKind, ItemCategory, ItemStack } from '../types/game';
 import type { World } from '../core/World';
 
-const CAT_ORDER: ItemCategory[] = ['crop', 'animal', 'processed', 'cooking', 'seed', 'other'];
+const CAT_ORDER: ItemCategory[] = ['crop', 'animal', 'fish', 'forage', 'processed', 'cooking', 'resource', 'seed', 'other'];
+
+export type Mats = { id: string; qty: number }[];
 
 export class InventorySystem {
   constructor(private w: World) {}
@@ -48,7 +50,7 @@ export class InventorySystem {
   }
 
   /** 추가 후 남은 수량 반환 */
-  add(containerId: string, itemId: string, qty: number, freshness?: number, emit = true): number {
+  add(containerId: string, itemId: string, qty: number, freshness?: number, emit = true, bonus?: number): number {
     const c = this.get(containerId);
     if (!c || qty <= 0) return qty;
     const def = item(itemId);
@@ -59,6 +61,7 @@ export class InventorySystem {
       if (s && this.canMerge(s, itemId, fresh)) {
         const n = Math.min(left, def.maxStack - s.qty);
         if (fresh !== undefined) s.freshness = ((s.freshness ?? 100) * s.qty + fresh * n) / (s.qty + n);
+        if (bonus || s.bonus) s.bonus = ((s.bonus ?? 0) * s.qty + (bonus ?? 0) * n) / (s.qty + n);
         s.qty += n;
         left -= n;
       }
@@ -67,6 +70,7 @@ export class InventorySystem {
       if (!c.slots[i]) {
         const n = Math.min(left, def.maxStack);
         c.slots[i] = fresh !== undefined ? { itemId, qty: n, freshness: fresh } : { itemId, qty: n };
+        if (bonus) c.slots[i]!.bonus = bonus;
         left -= n;
       }
     }
@@ -125,6 +129,44 @@ export class InventorySystem {
     if (s.qty <= 0) c.slots[slot] = null;
     this.w.events.emit('inventory', { containerId });
     return { itemId: s.itemId, qty: n, freshness: s.freshness };
+  }
+
+  /** 태그 재료(#fish 등) 포함 보유 수량 */
+  countMatching(input: string): number {
+    if (!input.startsWith('#')) return this.countAll(input);
+    let n = 0;
+    for (const id of ['bag', ...this.storageIds()]) for (const s of this.get(id)!.slots) if (s && matchesInput(s.itemId, input)) n += s.qty;
+    return n;
+  }
+
+  /** 태그 재료 소비 (신선도 낮은 것부터) */
+  consumeMatching(input: string, qty: number): boolean {
+    if (!input.startsWith('#')) return this.consume(input, qty);
+    if (this.countMatching(input) < qty) return false;
+    let left = qty;
+    const all: { cid: string; i: number; f: number }[] = [];
+    for (const id of ['bag', ...this.storageIds()])
+      this.get(id)!.slots.forEach((s, i) => s && matchesInput(s.itemId, input) && all.push({ cid: id, i, f: s.freshness ?? 100 }));
+    all.sort((a, b) => a.f - b.f);
+    for (const e of all) {
+      if (left <= 0) break;
+      const s = this.get(e.cid)!.slots[e.i]!;
+      const got = this.removeAt(e.cid, e.i, Math.min(left, s.qty));
+      left -= got?.qty ?? 0;
+    }
+    return left <= 0;
+  }
+
+  /** 재료 목록 보유 여부 */
+  hasMats(mats: Mats | undefined): boolean {
+    return !mats || mats.every((m) => this.countAll(m.id) >= m.qty);
+  }
+
+  consumeMats(mats: Mats | undefined): boolean {
+    if (!mats?.length) return true;
+    if (!this.hasMats(mats)) return false;
+    for (const m of mats) this.consume(m.id, m.qty);
+    return true;
   }
 
   /** 가방 → 저장시설 순으로 꺼내 쓰기 */

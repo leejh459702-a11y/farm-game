@@ -221,6 +221,43 @@ export const BALANCE = {
     maxVisible: 4,
   },
 
+  /** 생활 숙련도 (낚시·채집) — 농사/목축 진행 조건과 무관한 선택 콘텐츠 */
+  life: {
+    maxLevel: 10,
+    xpBase: 30,
+    xpExp: 1.6,
+    xp: { fishCommon: 6, fishRare: 14, fishEpic: 28, fishLegend: 60, forage: 3, chop: 2, mine: 2, chest: 5 },
+    /** 채집 Lv 별 추가 수확 확률 */
+    forageExtra: [0, 0, 0.1, 0.1, 0.15, 0.15, 0.25, 0.25, 0.3, 0.3, 0.4],
+  },
+
+  fishing: {
+    /** 입질 대기 (초) */
+    waitMin: 2.5,
+    waitMax: 6.5,
+    rarityWeight: { common: 60, rare: 16, epic: 4, legend: 0.6 },
+    /** 시간대 불일치 시 등장 배율 */
+    wrongTimeMul: 0.12,
+    weatherBoost: 2.5,
+    /** 진행률 (0~1): 시작값, 초당 증가/감소 */
+    progressStart: 0.3,
+    progressGain: 0.085,
+    progressDrain: 0.075,
+    zoneSize: 0.24,
+    zoneSizePerRod: 0.04,
+    /** 크기 보너스 최대 (판매가 +10%) */
+    sizeBonusMax: 0.1,
+  },
+
+  regions: {
+    /** 큰 나무 재생 일수 */
+    bigTreeRegrow: [2, 3] as [number, number],
+    smallTreeRegrow: 1,
+    rockRegrow: [1, 2] as [number, number],
+    /** 지역당 매일 오래된 상자 이벤트 확률 */
+    chestChance: 0.07,
+  },
+
   autosave: {
     /** 주요 시설 변경 후 자동저장 디바운스(ms) */
     debounceMs: 1500,

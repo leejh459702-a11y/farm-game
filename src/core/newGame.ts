@@ -1,7 +1,7 @@
 import { BALANCE } from '../data/balance';
 import type { GameState, Ledger } from '../types/game';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 export function emptyLedger(): Ledger {
   return { income: 0, expense: 0, sales: {}, births: 0, discoveries: [], builds: [], farmingXp: 0, livestockXp: 0, landBought: 0 };
@@ -45,6 +45,11 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     bagUpgrades: 0,
     favorites: [],
     breedCharmActive: false,
+    life: { fishingXp: 0, foragingXp: 0 },
+    tools: { axe: 0, pickaxe: 0, rod: 0, rodOwned: false },
+    regions: { river: { nodes: [], lastGen: -1 }, forest: { nodes: [], lastGen: -1 }, hill: { nodes: [], lastGen: -1 } },
+    regionsDiscovered: false,
+    fishRecords: {},
     stats: { totalHarvested: 0, totalSold: 0, daysPlayed: 0, animalsBorn: 0 },
   };
 }

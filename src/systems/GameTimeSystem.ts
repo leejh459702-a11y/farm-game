@@ -120,6 +120,8 @@ export class GameTimeSystem {
     w.automation.morning();
     // 상인
     w.merchant.morning();
+    // 외곽 지역 자원 (하루 1회 생성)
+    w.regions.morning();
     // 수확 가능 알림 (작물별로 묶음)
     const ready: Record<string, number> = {};
     for (const p of w.crops.allPlots()) if (isReady(p)) ready[p.cropId!] = (ready[p.cropId!] ?? 0) + 1;

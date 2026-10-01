@@ -9,6 +9,7 @@ export function newWorld(seed = 12345): World {
 export function freeWorld(seed = 12345): World {
   const w = newWorld(seed);
   w.tutorial.skip();
+  w.regions.morning();
   return w;
 }
 
@@ -23,4 +24,9 @@ export function buyLandRow(w: World, n: number): void {
 /** 테스트용: 사각형 영역 토지 지급 */
 export function giveLand(w: World, x0: number, y0: number, wd: number, ht: number): void {
   for (let y = y0; y < y0 + ht; y++) for (let x = x0; x < x0 + wd; x++) w.state.land.owned[y * 30 + x] = 1;
+}
+
+/** 테스트용: 건설 재료 지급 */
+export function giveMats(w: World): void {
+  for (const id of ['wood', 'stone', 'clay', 'brick', 'copper_ore', 'iron_ore', 'gold_ore']) w.inventory.add('bag', id, 99);
 }

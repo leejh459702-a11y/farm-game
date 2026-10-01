@@ -2,7 +2,7 @@
 
 export type SeasonId = 'spring' | 'summer' | 'autumn' | 'winter';
 export type WeatherId = 'sunny' | 'cloudy' | 'rain' | 'storm' | 'snow';
-export type ItemCategory = 'crop' | 'animal' | 'processed' | 'cooking' | 'seed' | 'other';
+export type ItemCategory = 'crop' | 'animal' | 'fish' | 'forage' | 'resource' | 'processed' | 'cooking' | 'seed' | 'other';
 export type Grade = 1 | 2 | 3;
 export type Gender = 'F' | 'M';
 export type GrowthStage = 'baby' | 'juvenile' | 'adult';
@@ -14,6 +14,8 @@ export interface ItemStack {
   qty: number;
   /** 0~100. undefined = 신선도 없음 */
   freshness?: number;
+  /** 판매가 보너스 (물고기 크기 등, 0~0.1) */
+  bonus?: number;
 }
 
 export type ContainerKind = 'bag' | 'chest' | 'warehouse' | 'fridge' | 'coldStorage' | 'bigWarehouse' | 'output';
@@ -213,6 +215,35 @@ export interface AnimalCodexEntry {
   produced: number;
 }
 
+export type RegionId = 'river' | 'forest' | 'hill';
+
+/** 외곽 지역 자원 노드 */
+export interface RegionNode {
+  id: string;
+  kind: 'forage' | 'tree' | 'rock' | 'chest';
+  x: number;
+  y: number;
+  /** 채집물 id / 바위 종류 id */
+  itemId?: string;
+  hp: number;
+  maxHp: number;
+  big?: boolean;
+  /** 고갈된 경우 다시 생기는 날 (null = 활성) */
+  respawnDay: number | null;
+}
+
+export interface RegionState {
+  nodes: RegionNode[];
+  /** 마지막으로 아침 생성을 한 날 */
+  lastGen: number;
+}
+
+export interface FishRecord {
+  count: number;
+  maxSize: number;
+  bestPrice: number;
+}
+
 export interface Blueprint {
   id: string;
   name: string;
@@ -268,6 +299,13 @@ export interface GameState {
   favorites: string[];
   /** 마지막 브리딩 부적 사용 여부 */
   breedCharmActive: boolean;
+  /** 생활 숙련도 (선택 콘텐츠) */
+  life: { fishingXp: number; foragingXp: number };
+  /** 도구 단계 (0 기본 ~ 3 고급), 낚싯대 보유 여부 */
+  tools: { axe: number; pickaxe: number; rod: number; rodOwned: boolean };
+  regions: Record<RegionId, RegionState>;
+  regionsDiscovered: boolean;
+  fishRecords: Record<string, FishRecord>;
   stats: {
     totalHarvested: number;
     totalSold: number;

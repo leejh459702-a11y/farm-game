@@ -44,12 +44,12 @@ export function seasonMultiplier(itemId: string, season: SeasonId): number {
 }
 
 /** 단가 (정수 G) */
-export function sellPrice(itemId: string, freshness: number | undefined, ctx: PriceContext): number {
+export function sellPrice(itemId: string, freshness: number | undefined, ctx: PriceContext, bonus = 0): number {
   const d = ITEM_BY_ID[itemId];
   if (!d || !d.sellable) return 0;
   const fm = d.decay > 0 ? freshnessMultiplier(freshness) : 1;
   if (fm <= 0) return 0;
-  const raw = d.basePrice * fm * seasonMultiplier(itemId, ctx.season) * (1 + ctx.merchantBonus + (ctx.beautyBonus ?? 0));
+  const raw = d.basePrice * fm * seasonMultiplier(itemId, ctx.season) * (1 + ctx.merchantBonus + (ctx.beautyBonus ?? 0)) * (1 + bonus);
   return Math.max(1, Math.round(raw));
 }
 
