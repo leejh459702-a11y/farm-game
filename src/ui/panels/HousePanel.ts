@@ -8,6 +8,7 @@ import { landCap } from '../../services/EconomyService';
 import { Session } from '../../core/Session';
 import { cx } from '../dom';
 import { openPanel } from '../openers';
+import { confirmDialog } from '../dialogs';
 
 export class HousePanel extends Panel {
   readonly id = 'house';
@@ -68,8 +69,14 @@ export class HousePanel extends Panel {
   onAction(act: string): void {
     const w = this.w;
     if (act === 'endday') {
-      this.close();
-      w.time.skipToNextDay();
+      const dry = w.crops.allPlots().filter((p) => p.cropId && !p.mature && !p.wateredToday).length;
+      const go = () => {
+        this.close();
+        w.time.skipToNextDay();
+      };
+      if (dry) confirmDialog('오늘 마치기', `물을 주지 않은 작물이 <b class="bad">${dry}개</b> 있어요.<br>물을 준 날에만 하루씩 자라요. 그래도 마칠까요?`, '마치기', go);
+      else go();
+      return;
     } else if (act === 'pay') {
       const r = w.finance.payDebt();
       if (!r.ok) this.toast(r.reason ?? '', 'warn');

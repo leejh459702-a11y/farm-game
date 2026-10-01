@@ -4,6 +4,7 @@
  */
 import { SAVE_VERSION, createNewGame } from '../core/newGame';
 import type { GameState } from '../types/game';
+import { CROP_BY_ID } from '../data/crops';
 
 type Migration = (s: Record<string, unknown>) => Record<string, unknown>;
 
@@ -11,6 +12,25 @@ type Migration = (s: Record<string, unknown>) => Record<string, unknown>;
 export const MIGRATIONS: Record<number, Migration> = {
   // 0 → 1: 버전 필드가 없던 초기 개발 세이브 보정
   0: (s) => ({ ...s, version: 1 }),
+  // 1 → 2: 작물 성장 필드 재구성 (growth/watered → growthProgressDays/wateredToday/mature/currentStage/plantedDay)
+  1: (s) => {
+    const plots = (s.plots ?? {}) as Record<string, Record<string, unknown>>;
+    const crops = CROP_BY_ID;
+    const day = ((s.time as { day?: number })?.day ?? 0) as number;
+    for (const p of Object.values(plots)) {
+      const growth = Math.floor(Number(p.growth ?? 0));
+      const cropId = p.cropId as string | null;
+      const grow = cropId && crops[cropId] ? crops[cropId].growDays : 1;
+      p.growthProgressDays = Math.min(growth, grow);
+      p.wateredToday = !!p.watered;
+      p.mature = !!cropId && growth >= grow;
+      p.plantedDay = day;
+      p.currentStage = !cropId ? 0 : p.mature ? 4 : growth <= 0 ? 1 : growth / grow < 0.5 ? 2 : 3;
+      delete p.growth;
+      delete p.watered;
+    }
+    return { ...s, plots, version: 2 };
+  },
 };
 
 export function migrate(raw: unknown): GameState {

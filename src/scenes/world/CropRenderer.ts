@@ -8,6 +8,8 @@ import { DEPTH, TS } from './constants';
 
 export class CropRenderer {
   private sprites = new Map<string, Phaser.GameObjects.Image>();
+  /** 물이 필요한 작물 표시 */
+  private drops = new Map<string, Phaser.GameObjects.Image>();
   private pool: Phaser.GameObjects.Image[] = [];
 
   constructor(
@@ -39,6 +41,12 @@ export class CropRenderer {
         this.sprites.delete(k);
       }
     }
+    for (const [k, d] of this.drops) {
+      if (!seen.has(k)) {
+        d.destroy();
+        this.drops.delete(k);
+      }
+    }
   }
 
   sync(keys: string[] | 'all'): void {
@@ -50,6 +58,18 @@ export class CropRenderer {
     if (k.startsWith('gh:')) return;
     const p = this.w.state.plots[k];
     let s = this.sprites.get(k);
+    const needWater = !!p && !!p.cropId && !p.mature && !p.wateredToday;
+    let d = this.drops.get(k);
+    if (needWater && !d) {
+      d = this.scene.add.image(0, 0, 'ic_drop').setDepth(DEPTH.ui - 40).setAlpha(0.95);
+      this.drops.set(k, d);
+      this.scene.tweens.add({ targets: d, y: '-=3', duration: 600, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
+    } else if (!needWater && d) {
+      d.destroy();
+      this.drops.delete(k);
+      d = undefined;
+    }
+    if (d && p) d.setPosition(p.x * TS + TS - 7, p.y * TS + 2);
     if (!p || !p.cropId) {
       if (s) {
         this.release(s);
@@ -77,6 +97,7 @@ export class CropRenderer {
   cull(view: Phaser.Geom.Rectangle): void {
     const m = TS * 2;
     for (const s of this.sprites.values()) s.setVisible(s.x > view.x - m && s.x < view.right + m && s.y > view.y - m && s.y < view.bottom + m * 2);
+    for (const d of this.drops.values()) d.setVisible(d.x > view.x - m && d.x < view.right + m && d.y > view.y - m && d.y < view.bottom + m * 2);
   }
 
   refreshTints(): void {

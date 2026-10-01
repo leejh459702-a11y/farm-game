@@ -15,6 +15,8 @@ export interface DaySummary {
   day: number;
   ledger: Ledger;
   goldEnd: number;
+  /** 오늘 성장한 작물 수 / 물을 받지 못해 멈춘 작물 수 */
+  crops: { grew: number; dry: number };
 }
 
 export interface WorldEvents {

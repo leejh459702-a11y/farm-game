@@ -37,9 +37,16 @@ export interface Plot {
   x: number;
   y: number;
   cropId: string | null;
-  /** 누적 성장일 (소수 가능) */
-  growth: number;
-  watered: boolean;
+  /** 심은 날 (게임 날짜) */
+  plantedDay: number;
+  /** 성장 진행일 — 하루 종료 시 물을 준 날만 정확히 +1 */
+  growthProgressDays: number;
+  /** 오늘 물을 받았는가 (비/관개/온실 자동 포함) */
+  wateredToday: boolean;
+  /** 수확 가능 */
+  mature: boolean;
+  /** 표시 단계 1(새싹)~4(수확 가능), 0 = 작물 없음 */
+  currentStage: number;
   /** 재수확 대기 중 */
   regrowing: boolean;
   harvests: number;

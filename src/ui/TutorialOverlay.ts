@@ -167,7 +167,7 @@ function plotPos(needDry: boolean): { x: number; y: number } | null {
   const w = Session.world!;
   const f = Bridge.farm;
   if (!f) return null;
-  const p = Object.values(w.state.plots).find((pp) => !pp.greenhouse && (!needDry || (pp.cropId && !pp.watered)));
+  const p = Object.values(w.state.plots).find((pp) => !pp.greenhouse && (!needDry || (pp.cropId && !pp.wateredToday)));
   if (!p) return null;
   const r = f.tileScreenRect(p.x, p.y);
   return { x: r.x + r.w / 2, y: r.y };

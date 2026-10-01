@@ -29,7 +29,7 @@ export class OverviewPanel extends Panel {
     const outdoor = plots.filter((p) => !p.greenhouse);
     const crops = plots.filter((p) => p.cropId);
     const ready = plots.filter(isReady);
-    const dry = outdoor.filter((p) => p.cropId && !p.watered && !isReady(p));
+    const dry = outdoor.filter((p) => p.cropId && !p.wateredToday && !isReady(p));
     const ghTarget = (uid?: string) => {
       const b = uid ? w.state.buildings[uid] : null;
       return b ? { x: b.x + 1, y: b.y + 1 } : null;

@@ -412,6 +412,9 @@ const UI: Record<string, IconFn> = {
     p.ctx.globalCompositeOperation = 'source-over';
     p.px(5, 9, 0xe8d080);
   },
+  ic_drop: (p) => {
+    p.tri(8, 1, 3, 9, 13, 9, 0x5aa8f0).circle(8, 10, 5, 0x5aa8f0).circle(7, 9, 3, 0x7ac0f8).px(6, 8, 0xffffff).px(6, 9, 0xffffff);
+  },
   ic_coin: (p) => {
     p.circle(8, 8, 6, 0xd9a020).circle(8, 8, 5, 0xf2c83a).rect(7, 5, 2, 6, 0xd9a020).px(6, 5, 0xfff0a0).px(5, 6, 0xfff0a0);
   },

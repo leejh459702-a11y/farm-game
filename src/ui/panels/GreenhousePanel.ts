@@ -26,7 +26,7 @@ export class GreenhousePanel extends Panel {
         return `<button class="${cx('card col center', this.sel.has(i) && 'sel')}" data-act="sel" data-arg="${i}" style="align-items:center;min-height:6.5rem;background:${p.cropId ? '#eef8e4' : '#f6efe0'}">
           ${c ? iconHtml(isReady(p) ? `it_${c.id}` : c.spriteKey, 44) : iconHtml('tool_seed', 32)}
           <span class="small">${c ? esc(c.name) : '빈 칸'}</span>
-          ${c ? `<span class="tiny ${isReady(p) ? 'good' : 'muted'}">${isReady(p) ? '수확 가능' : `${Math.floor(p.growth)}/${c.growDays}일`}</span>` : ''}
+          ${c ? `<span class="tiny ${isReady(p) ? 'good' : 'muted'}">${isReady(p) ? '수확 가능' : `${Math.floor(p.growthProgressDays)}/${c.growDays}일`}</span>` : ''}
           ${c && !c.season.includes(w.cal.season) ? '<span class="chip tiny">비제철 · 보너스 없음</span>' : ''}</button>`;
       })
       .join('');

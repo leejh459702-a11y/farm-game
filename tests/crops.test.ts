@@ -15,7 +15,7 @@ describe('작물', () => {
     const p = w.crops.plotAt(15, 15)!;
     expect(w.crops.plant(p, 'seed_carrot').ok).toBe(true);
     for (let d = 0; d < 3; d++) {
-      if (!p.watered) w.crops.water(p);
+      if (!p.wateredToday) w.crops.water(p);
       w.time.skipToNextDay();
     }
     expect(isReady(p)).toBe(true);
@@ -30,22 +30,22 @@ describe('작물', () => {
     w.state.weather.tomorrow = 'sunny';
     const p = w.crops.plotAt(15, 15)!;
     w.crops.plant(p, 'seed_carrot');
-    p.watered = false;
+    p.wateredToday = false;
     w.crops.dailyGrowth('spring');
-    expect(p.growth).toBe(0);
+    expect(p.growthProgressDays).toBe(0);
     expect(p.cropId).toBe('carrot');
   });
   it('제철이 아니면 성장 일시 정지, 다시 제철이면 재개', () => {
     const w = setupPlot();
     const p = w.crops.plotAt(15, 15)!;
     w.crops.plant(p, 'seed_carrot');
-    p.watered = true;
+    p.wateredToday = true;
     w.crops.dailyGrowth('summer');
-    expect(p.growth).toBe(0);
+    expect(p.growthProgressDays).toBe(0);
     expect(p.cropId).toBe('carrot');
-    p.watered = true;
+    p.wateredToday = true;
     w.crops.dailyGrowth('spring');
-    expect(p.growth).toBe(1);
+    expect(p.growthProgressDays).toBe(1);
   });
   it('재수확 작물은 수확 후 regrowDays 만큼만 다시 자람', () => {
     const w = setupPlot();
@@ -53,10 +53,12 @@ describe('작물', () => {
     w.inventory.add('bag', 'seed_strawberry', 1);
     const p = w.crops.plotAt(15, 15)!;
     expect(w.crops.plant(p, 'seed_strawberry').ok).toBe(true);
-    p.growth = 8;
+    p.growthProgressDays = 5;
+    p.mature = true;
     w.crops.harvest(p);
     expect(p.cropId).toBe('strawberry');
-    expect(p.growth).toBe(5);
+    expect(p.growthProgressDays).toBe(2);
+    expect(p.mature).toBe(false);
   });
   it('관개 Lv.1 은 매일 자동 물주기 (성장 보너스 없음)', () => {
     const w = setupPlot();
@@ -67,8 +69,8 @@ describe('작물', () => {
     w.crops.plant(p, 'seed_carrot');
     w.state.weather.tomorrow = 'sunny';
     w.time.skipToNextDay();
-    expect(p.watered).toBe(true);
-    expect(p.growth).toBe(1);
+    expect(p.wateredToday).toBe(true);
+    expect(p.growthProgressDays).toBe(1);
   });
   it('여러 농지 일괄 업그레이드', () => {
     const w = setupPlot();
@@ -84,6 +86,6 @@ describe('작물', () => {
     const w = setupPlot();
     w.state.weather.tomorrow = 'rain';
     w.time.skipToNextDay();
-    expect(w.crops.plotAt(15, 15)!.watered).toBe(true);
+    expect(w.crops.plotAt(15, 15)!.wateredToday).toBe(true);
   });
 });

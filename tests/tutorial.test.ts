@@ -30,7 +30,7 @@ describe('첫 튜토리얼 전체 흐름 (Vertical Slice)', () => {
     // 시간 보내기
     let guard = 0;
     while (!isReady(p) && guard++ < 10) {
-      if (!p.watered) w.crops.water(p);
+      if (!p.wateredToday) w.crops.water(p);
       w.time.skipToNextDay();
     }
     expect(isReady(p)).toBe(true);

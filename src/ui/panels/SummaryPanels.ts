@@ -59,6 +59,7 @@ export class DaySummaryPanel extends Panel {
       <div class="split" style="height:auto">
         <div><div class="section-title">판매 품목</div>${salesList(l)}</div>
         <div><div class="kv card">
+          <span>작물 성장</span><span>${this.s.crops.grew}개 성장${this.s.crops.dry ? ` · <b class="bad">물 부족 ${this.s.crops.dry}개 정지</b>` : ''}</span>
           <span>농사 경험치</span><b>+${l.farmingXp}</b>
           <span>목축 경험치</span><b>+${l.livestockXp}</b>
           <span>신규 발견</span><span>${l.discoveries.length ? esc(l.discoveries.join(', ')) : '-'}</span>

@@ -40,7 +40,7 @@ describe('1년 자동 플레이 시뮬레이션', () => {
           if (w.inventory.countAll(`seed_${seedCrop}`) <= 0) w.inventory.add('bag', `seed_${seedCrop}`, 20);
           w.crops.plant(p, `seed_${seedCrop}`);
         }
-        if (!p.watered) w.crops.water(p);
+        if (!p.wateredToday) w.crops.water(p);
       }
       const b = w.state.buildings[coop];
       w.animals.feedBarn(b);

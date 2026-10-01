@@ -58,7 +58,7 @@ export function resolveAction(w: World, x: number, y: number): ResolvedAction {
       return { kind: 'till', label: '땅 갈기', icon: 'tool_hoe', enabled: true };
     case 'water':
       if (!p) return { kind: 'none', label: '물주기', icon: 'tool_water', enabled: false, hint: '농지가 아닙니다' };
-      if (p.watered) return { kind: 'none', label: '촉촉함', icon: 'tool_water', enabled: false, hint: '이미 물을 줬어요' };
+      if (p.wateredToday) return { kind: 'none', label: '촉촉함', icon: 'tool_water', enabled: false, hint: '이미 물을 줬어요' };
       return { kind: 'water', label: '물주기', icon: 'tool_water', enabled: true };
     case 'seed': {
       const seed = w.state.hotbar.seedId;

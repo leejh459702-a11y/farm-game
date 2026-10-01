@@ -75,14 +75,14 @@ export class PlotPanel extends Panel {
       const inSeason = c ? c.season.includes(w.cal.season) || !!p.greenhouse : true;
       head = `<div class="kv card">
         <span>현재 작물</span><span>${c ? `${iconHtml(`it_${c.id}`, 20)} <b>${esc(c.name)}</b> ${isReady(p) ? '<span class="chip green">수확 가능</span>' : `<span class="chip">${['씨앗', '새싹', '성장 중', '거의 다 자람', ''][stage]}</span>`}` : '<span class="muted">비어 있음</span>'}</span>
-        ${c ? `<span>성장 단계</span><span>${Math.floor(p.growth)} / ${c.growDays}일 ${c.regrowDays ? `<span class="tiny muted">(재수확 ${c.regrowDays}일)</span>` : ''}</span>` : ''}
-        <span>물 상태</span><span>${p.watered ? '<b class="good">촉촉함</b>' : '<b class="bad">마름</b> <span class="tiny muted">오늘 물을 주면 자라요</span>'}</span>
+        ${c ? `<span>성장 단계</span><span>${Math.floor(p.growthProgressDays)} / ${c.growDays}일 ${c.regrowDays ? `<span class="tiny muted">(재수확 ${c.regrowDays}일)</span>` : ''}</span>` : ''}
+        <span>물 상태</span><span>${p.wateredToday ? '<b class="good">촉촉함</b>' : '<b class="bad">마름</b> <span class="tiny muted">오늘 물을 주면 자라요</span>'}</span>
         <span>비료</span><span>${p.fertilizer ? `${esc(ITEM_BY_ID[p.fertilizer.id].name)} <span class="tiny muted">(${p.fertilizer.daysLeft}일 남음)</span>` : '<span class="muted">없음</span>'}</span>
         ${c && !inSeason ? `<span>계절</span><span class="bad">제철이 아니라 성장 일시 정지 (${c.season.map((s) => SEASON_BY_ID[s].name).join('·')})</span>` : ''}
       </div>`;
     } else {
       const ready = ps.filter(isReady).length;
-      const dry = ps.filter((p) => p.cropId && !p.watered).length;
+      const dry = ps.filter((p) => p.cropId && !p.wateredToday).length;
       const empty = ps.filter((p) => !p.cropId).length;
       head = `<div class="card row wrap"><span class="chip">${ps.length}칸</span><span class="chip green">수확 가능 ${ready}</span><span class="chip red">물 필요 ${dry}</span><span class="chip">빈 농지 ${empty}</span></div>`;
     }
@@ -116,7 +116,7 @@ export class PlotPanel extends Panel {
     const seed = w.state.hotbar.seedId;
     const fert = w.state.hotbar.fertilizerId;
     const anyReady = ps.some(isReady);
-    const anyDry = ps.some((p) => !p.watered);
+    const anyDry = ps.some((p) => !p.wateredToday);
     const anyEmpty = ps.some((p) => !p.cropId);
     const actions = `<div class="row wrap" style="margin:0.5rem 0">
       ${anyReady ? `<button class="btn small green" data-act="harvest">수확</button>` : ''}
@@ -164,7 +164,7 @@ export class PlotPanel extends Panel {
         break;
       }
       case 'water':
-        for (const p of ps) if (!p.watered) w.crops.water(p);
+        for (const p of ps) if (!p.wateredToday) w.crops.water(p);
         break;
       case 'plant': {
         const seed = w.state.hotbar.seedId;

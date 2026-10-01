@@ -1,7 +1,7 @@
 import { BALANCE } from '../data/balance';
 import type { GameState, Ledger } from '../types/game';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export function emptyLedger(): Ledger {
   return { income: 0, expense: 0, sales: {}, births: 0, discoveries: [], builds: [], farmingXp: 0, livestockXp: 0, landBought: 0 };

@@ -22,8 +22,11 @@ export function newPlot(x: number, y: number, greenhouse?: string): Plot {
     x,
     y,
     cropId: null,
-    growth: 0,
-    watered: false,
+    plantedDay: 0,
+    growthProgressDays: 0,
+    wateredToday: false,
+    mature: false,
+    currentStage: 0,
     regrowing: false,
     harvests: 0,
     fertilizer: null,
@@ -32,27 +35,38 @@ export function newPlot(x: number, y: number, greenhouse?: string): Plot {
   };
 }
 
-/** 성장 단계 0(씨앗)~4(수확 가능) */
-export function cropStage(p: Plot): number {
-  if (!p.cropId) return -1;
-  const c = CROP_BY_ID[p.cropId];
-  if (p.growth >= c.growDays) return 4;
-  if (p.regrowing) return 3;
-  const r = p.growth / c.growDays;
-  if (p.growth <= 0) return 0;
-  if (r < 0.34) return 1;
-  if (r < 0.67) return 2;
-  return 3;
+/**
+ * 성장 단계 (최소 4단계 외형)
+ *  1 새싹 → 2 어린 작물 → 3 성장 중 → 4 수확 가능
+ * 당근(3일): 심은 날 새싹 · 1일 후 어린 당근 · 2일 후 성장한 잎 · 3일 후 수확 가능
+ */
+export function stageFor(progress: number, growDays: number, mature: boolean): number {
+  if (mature) return 4;
+  if (progress <= 0) return 1;
+  // 남은 단계(2,3)를 성장일에 고르게 배분
+  return progress / growDays < 0.5 ? 2 : 3;
 }
 
-export const isReady = (p: Plot): boolean => !!p.cropId && p.growth >= CROP_BY_ID[p.cropId].growDays;
+export function cropStage(p: Plot): number {
+  if (!p.cropId) return 0;
+  if (p.mature) return 4;
+  if (p.regrowing) return 3;
+  return stageFor(p.growthProgressDays, CROP_BY_ID[p.cropId].growDays, false);
+}
+
+export const isReady = (p: Plot): boolean => !!p.cropId && p.mature;
+
+/** 표시용 캐시 갱신 */
+export function refreshStage(p: Plot): void {
+  p.currentStage = cropStage(p);
+}
 
 /** 오늘 성장할 수 있는가 */
 export function canGrowToday(p: Plot, season: SeasonId): boolean {
   if (!p.cropId) return false;
   const c = CROP_BY_ID[p.cropId];
   const seasonOk = !!p.greenhouse || c.season.includes(season);
-  return seasonOk && p.watered;
+  return seasonOk && p.wateredToday;
 }
 
 export class CropSystem {
@@ -92,7 +106,7 @@ export class CropSystem {
     if (!c.ok) return c;
     const p = newPlot(x, y);
     // 비 오는 날 갈면 바로 젖음
-    if (WEATHER_INFO[this.w.state.weather.today].waters) p.watered = true;
+    if (WEATHER_INFO[this.w.state.weather.today].waters) p.wateredToday = true;
     this.w.state.plots[tileKey(x, y)] = p;
     this.changed([tileKey(x, y)]);
     this.w.events.emit('sfx', { key: 'till' });
@@ -125,9 +139,12 @@ export class CropSystem {
     if (!c.ok || !p) return c;
     this.w.inventory.consume(seedItemId, 1);
     p.cropId = ITEM_BY_ID[seedItemId].cropId!;
-    p.growth = 0;
+    p.plantedDay = this.w.state.time.day;
+    p.growthProgressDays = 0;
+    p.mature = false;
     p.regrowing = false;
     p.harvests = 0;
+    refreshStage(p);
     this.w.skills.addXp('farming', BALANCE.xp.plant);
     this.changed([this.key(p)]);
     this.w.events.emit('sfx', { key: 'plant' });
@@ -137,8 +154,8 @@ export class CropSystem {
 
   water(p: Plot | undefined): ActionResult {
     if (!p) return { ok: false, reason: '농지가 아닙니다' };
-    if (p.watered) return { ok: false, reason: '이미 촉촉합니다' };
-    p.watered = true;
+    if (p.wateredToday) return { ok: false, reason: '이미 촉촉합니다' };
+    p.wateredToday = true;
     this.changed([this.key(p)]);
     this.w.events.emit('sfx', { key: 'water' });
     this.w.tutorial.signal('watered');
@@ -194,13 +211,15 @@ export class CropSystem {
     const got = qty - left;
     p.harvests++;
     if (c.regrowDays > 0) {
-      p.growth = c.growDays - c.regrowDays;
+      p.growthProgressDays = c.growDays - c.regrowDays;
       p.regrowing = true;
     } else {
       p.cropId = null;
-      p.growth = 0;
+      p.growthProgressDays = 0;
       p.regrowing = false;
     }
+    p.mature = false;
+    refreshStage(p);
     // 기록
     this.w.state.stats.totalHarvested += got;
     this.w.codex.recordHarvest(c.id, got);
@@ -221,15 +240,27 @@ export class CropSystem {
     return Object.values(this.w.state.plots);
   }
 
-  /** 하루 종료 시 성장 처리 */
-  dailyGrowth(season: SeasonId): void {
+  /**
+   * 하루 종료 시 성장 처리 — 하루에 정확히 1회 호출된다.
+   *   if wateredToday (그리고 제철 또는 온실): growthProgressDays += 1
+   *   wateredToday = false
+   *   if growthProgressDays >= growDays: mature = true
+   * 성장 비료는 일정 확률로 하루를 더 앞당긴다(+1일 추가).
+   */
+  dailyGrowth(season: SeasonId): { grew: number; dry: number } {
+    let grew = 0;
+    let dry = 0;
     for (const p of this.allPlots()) {
-      if (p.greenhouse) p.watered = true; // 온실 자동 급수
-      if (p.cropId && !isReady(p) && canGrowToday(p, season)) {
-        const fert = p.fertilizer ? BALANCE.crops.fertilizer[p.fertilizer.id] : null;
-        const c = CROP_BY_ID[p.cropId];
-        p.growth = Math.min(c.growDays, p.growth + 1 + (fert?.growthBonus ?? 0));
-        if (p.growth >= c.growDays) p.regrowing = false;
+      if (p.greenhouse) p.wateredToday = true; // 온실 자동 급수
+      if (p.cropId && !p.mature) {
+        if (canGrowToday(p, season)) {
+          const c = CROP_BY_ID[p.cropId];
+          const fert = p.fertilizer ? BALANCE.crops.fertilizer[p.fertilizer.id] : null;
+          let add = 1;
+          if (fert && fert.growthBonus > 0 && this.w.rand() < fert.growthBonus) add++;
+          p.growthProgressDays = Math.min(c.growDays, p.growthProgressDays + add);
+          grew++;
+        } else if (!p.wateredToday) dry++;
       }
       if (p.fertilizer) {
         // 관개 Lv.2: 비료 지속시간 2배 (격일 소모)
@@ -242,17 +273,23 @@ export class CropSystem {
           if (p.upgrades.irrigation >= 3 && this.w.inventory.consume(id, 1)) p.fertilizer = { id, daysLeft: BALANCE.crops.fertilizer[id].days };
         }
       }
-      p.watered = false;
+      p.wateredToday = false;
+      if (p.cropId && p.growthProgressDays >= CROP_BY_ID[p.cropId].growDays) {
+        p.mature = true;
+        p.regrowing = false;
+      }
+      refreshStage(p);
     }
     this.changed('all');
+    return { grew, dry };
   }
 
   /** 아침 처리: 비/관개 자동 물주기 */
   morningWater(): void {
     const rain = WEATHER_INFO[this.w.state.weather.today].waters;
     for (const p of this.allPlots()) {
-      if (p.greenhouse) p.watered = true;
-      else if (rain || p.upgrades.irrigation >= 1) p.watered = true;
+      if (p.greenhouse) p.wateredToday = true;
+      else if (rain || p.upgrades.irrigation >= 1) p.wateredToday = true;
     }
     this.changed('all');
   }
@@ -286,7 +323,7 @@ export class CropSystem {
     this.w.spend(total, '농지 업그레이드');
     for (const p of targets) {
       p.upgrades[type]++;
-      if (type === 'irrigation' && p.upgrades.irrigation >= 1) p.watered = true;
+      if (type === 'irrigation' && p.upgrades.irrigation >= 1) p.wateredToday = true;
     }
     this.changed(targets.map((p) => this.key(p)));
     this.w.events.emit('sfx', { key: 'upgrade' });
@@ -299,7 +336,7 @@ export class CropSystem {
       const p = newPlot(i, 0, uid);
       p.upgrades.irrigation = 1;
       p.upgrades.pest = 1;
-      p.watered = true;
+      p.wateredToday = true;
       this.w.state.plots[`gh:${uid}:${i}`] = p;
     }
   }

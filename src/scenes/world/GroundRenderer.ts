@@ -97,7 +97,7 @@ export class GroundRenderer {
   refreshSoil(keys?: string[]): void {
     const put = (x: number, y: number) => {
       const p = this.w.crops.plotAt(x, y);
-      if (p && !p.greenhouse) this.soil.putTileAt(p.watered ? TILE.soilWet : TILE.soilDry, x + BORDER, y + BORDER);
+      if (p && !p.greenhouse) this.soil.putTileAt(p.wateredToday ? TILE.soilWet : TILE.soilDry, x + BORDER, y + BORDER);
       else this.soil.removeTileAt(x + BORDER, y + BORDER);
     };
     if (keys) {

@@ -70,7 +70,7 @@ export class GameTimeSystem {
     const season = calendar(endedDay).season;
 
     // 1) 작물 성장 (오늘 물 준 작물만, 제철/온실)
-    w.crops.dailyGrowth(season);
+    const crops = w.crops.dailyGrowth(season);
     // 2) 동물 (급식/생산/성장/출산)
     w.animals.daily();
     // 3) 신선도 감소
@@ -80,7 +80,7 @@ export class GameTimeSystem {
     w.merchant.leave();
     // 5) 하루 장부 마감
     const ledger = w.finance.closeDay();
-    const summary: DaySummary = { day: endedDay, ledger, goldEnd: s.gold };
+    const summary: DaySummary = { day: endedDay, ledger, goldEnd: s.gold, crops };
 
     // ───── 다음 날 ─────
     s.time.day++;

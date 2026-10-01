@@ -112,7 +112,7 @@ export class TutorialSystem {
         met = plots.some((p) => p.cropId);
         break;
       case 5:
-        met = plots.some((p) => p.cropId && p.watered);
+        met = plots.some((p) => p.cropId && p.wateredToday);
         break;
       case 6:
         met = blds.some((b) => b.type === 'chest');
