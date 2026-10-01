@@ -6,6 +6,16 @@ import { Panels } from '../ui/PanelManager';
 
 export const REGION_SCENE: Record<RegionId, string> = { river: 'River', forest: 'Forest', hill: 'Hill' };
 
+/** 실행 중·일시정지·잠든 지역 Scene 을 모두 정지 */
+function stopRegions(): void {
+  const game = AppRef.game;
+  if (!game) return;
+  for (const key of Object.values(REGION_SCENE)) {
+    const sys = game.scene.getScene(key)?.sys;
+    if (sys && (sys.isActive() || sys.isPaused() || sys.isSleeping() || sys.isVisible())) game.scene.stop(key);
+  }
+}
+
 export function goToRegion(id: RegionId): void {
   const game = AppRef.game;
   const w = Session.world;
@@ -13,7 +23,7 @@ export function goToRegion(id: RegionId): void {
   Panels.closeAll();
   w.state.regionsDiscovered = true;
   w.regions.ensureDay(id);
-  for (const key of Object.values(REGION_SCENE)) if (game.scene.isActive(key) || game.scene.isSleeping(key)) game.scene.stop(key);
+  stopRegions();
   if (game.scene.isActive('Farm')) game.scene.sleep('Farm');
   game.scene.start(REGION_SCENE[id]);
   Session.location = id;
@@ -24,7 +34,7 @@ export function goToFarm(): void {
   const game = AppRef.game;
   if (!game || !Session.world) return;
   Panels.closeAll();
-  for (const key of Object.values(REGION_SCENE)) if (game.scene.isActive(key)) game.scene.stop(key);
+  stopRegions();
   // 농장 출구 앞에 도착
   const w = Session.world;
   w.state.player.x = 15 * 32 + 16;

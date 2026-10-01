@@ -47,6 +47,7 @@ export class RegionScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.leaving = false;
     this.w = Session.world!;
     const w = this.w;
     w.regions.ensureDay(this.regionId);
@@ -356,14 +357,20 @@ export class RegionScene extends Phaser.Scene {
     return { x: rect.left + ((wx - cam.worldView.x) * cam.zoom * rect.width) / this.scale.width, y: rect.top + ((wy - cam.worldView.y) * cam.zoom * rect.height) / this.scale.height };
   }
 
+  private leaving = false;
+
   private leave(): void {
+    if (this.leaving || !this.sys.isActive()) return;
+    this.leaving = true;
+    this.player.enabled = false;
+    this.player.cancelPath();
     this.cameras.main.fadeOut(200, 20, 14, 10);
     this.time.delayedCall(210, () => goToFarm());
   }
 
   update(_t: number, deltaMs: number): void {
     const w = Session.world;
-    if (!w || w !== this.w) return;
+    if (!w || w !== this.w || this.leaving || !this.sys.isActive()) return;
     const dt = Math.min(deltaMs / 1000, 0.1);
     w.time.tick(dt);
     this.player.update(dt);
