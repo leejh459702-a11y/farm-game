@@ -49,6 +49,8 @@ export const BalanceConfig = {
   gestation: 3,
   breedingCost: 200,
   plotCosts: { irrigation: 300, soil: 200, fertilizer: 50, pest: 150, autoHarvest: 700 },
+  pestChance: 0.04,
+  pestMaxLevel: 3,
   barnUpgrade: 800,
   storageCapacity: 24,
   animalCapacity: 4,

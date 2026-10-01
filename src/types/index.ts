@@ -23,6 +23,7 @@ export interface Plot {
   soil: number;
   fertilizer: number;
   pest: number;
+  pestActive?: boolean;
   autoHarvest: boolean;
   greenhouse?: boolean;
 }

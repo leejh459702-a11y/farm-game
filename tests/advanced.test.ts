@@ -14,6 +14,19 @@ const farm = () => {
   return new GameEngine(s);
 };
 describe('advanced production and movement regressions', () => {
+  it('pest prevention removes pests and protects the harvest bonus without killing crops', () => {
+    const e = farm();
+    e.till(15, 15);
+    const p = e.state.tiles[key(15, 15)].plot!;
+    p.crop = 'carrot';
+    p.growth = 1;
+    p.soil = 2;
+    p.pestActive = true;
+    expect(e.upgradePlot([key(15, 15)], 'pest')).toBe(true);
+    expect(p.pestActive).toBe(false);
+    expect(e.harvest(15, 15)).toBe(true);
+    expect(itemCount(e.state, 'carrot')).toBe(2);
+  });
   it('moves an occupied greenhouse with its crops and preserves growth', () => {
     const e = farm();
     e.place('greenhouse', 10, 10);

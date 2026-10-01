@@ -406,7 +406,7 @@ export class UIManager {
     } else if (p) {
       title = p.crop ? cropById[p.crop].name : '빈 농지';
       desc = p.crop
-        ? `${p.growth}/${cropById[p.crop].growDays}일 성장 · ${p.watered ? '물주기 완료' : '물이 필요해요'}`
+        ? `${p.growth}/${cropById[p.crop].growDays}일 성장 · ${p.watered ? '물주기 완료' : '물이 필요해요'}${p.pestActive ? ' · 작은 해충 발견' : ''}`
         : '한 칸에 작물 하나를 심을 수 있어요.';
       action =
         this.tool === 'inspect'
@@ -852,7 +852,7 @@ export class UIManager {
             pest: '해충 방지',
             autoHarvest: '자동 수확',
           }[id];
-          return `<div class="card"><strong>${name} ${id === 'autoHarvest' ? (p.autoHarvest ? 'ON' : 'OFF') : `Lv.${p[id]}`}</strong><small>${id === 'irrigation' ? '매일 자동 물주기' : id === 'soil' ? 'Lv.2 이상부터 수확량 +1' : id === 'fertilizer' ? '다음 성장일에 성장 +1일' : id === 'pest' ? '작물을 안전하게 관리해요' : '완성된 작물을 창고로 자동 보관'}<br>한 칸당 ${money(B.plotCosts[id])}</small>${btn(`upgrade-plot:${id}`, '선택 밭 업그레이드', 'primary')}</div>`;
+          return `<div class="card"><strong>${name} ${id === 'autoHarvest' ? (p.autoHarvest ? 'ON' : 'OFF') : `Lv.${p[id]}`}</strong><small>${id === 'irrigation' ? '매일 자동 물주기' : id === 'soil' ? 'Lv.2 이상부터 수확량 +1' : id === 'fertilizer' ? '다음 성장일에 성장 +1일' : id === 'pest' ? '발생률 감소 · 기존 해충 제거 · Lv.3 완전 방지' : '완성된 작물을 창고로 자동 보관'}<br>한 칸당 ${money(B.plotCosts[id])}</small>${btn(`upgrade-plot:${id}`, '선택 밭 업그레이드', 'primary')}</div>`;
         })
         .join('')}</div>`;
     return `<div class="detail"><div class="portrait">${c ? this.pixel(`${c.spriteKey}-3`) : icon('seed')}</div><div><h3>${c ? c.name : '씨앗을 기다리는 밭'}</h3><div class="stats">${stat('성장', c ? `${p.growth}/${c.growDays}일` : '—')}${stat('물주기', p.watered ? '완료' : '필요')}${stat('관개', `Lv.${p.irrigation}`)}</div>${c ? `<p class="small">${seasonNames[c.season]} 작물 · 판매 기본가 ${money(c.baseSellPrice)} · ${p.greenhouse ? '온실 재배' : c.season !== calendar(s.day).season ? '비제철 · 성장 쉬는 중' : '제철 · 판매 +10%'}</p>` : ''}<div class="row">${btn('seed', '씨앗 선택', 'primary')}${btn('water-selected', '물주기')}${btn('harvest-selected', '수확')}${btn('multi-plots', this.multi ? '다중 선택 끝내기' : '여러 밭 선택')}${btn('clear-plot', '빈 밭 정리')}</div></div></div>`;

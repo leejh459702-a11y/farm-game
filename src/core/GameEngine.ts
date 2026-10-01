@@ -255,7 +255,7 @@ export class GameEngine {
       p = s.tiles[key(x, y)]?.plot;
     if (!p || !p.crop || !this.ready(p)) return false;
     const c = cropById[p.crop],
-      quantity = c.yield + Math.floor(p.soil / 2);
+      quantity = Math.max(1, c.yield + Math.floor(p.soil / 2) - (p.pestActive ? 1 : 0));
     if (!(automatic ? storedAdd(s, c.id, 'crop', quantity) : addItem(s, c.id, 'crop', quantity))) {
       if (!automatic) this.notice('가방이 가득 찼어요. 창고에 옮겨 주세요.');
       return false;
@@ -305,6 +305,7 @@ export class GameEngine {
     eligible.forEach((p) => {
       if (upgrade === 'autoHarvest') p.autoHarvest = true;
       else p[upgrade]++;
+      if (upgrade === 'pest') p.pestActive = false;
     });
     this.changed();
     return true;
@@ -724,6 +725,8 @@ export class GameEngine {
         if ((p.greenhouse || c.season === oldSeason) && (p.watered || p.irrigation > 0))
           p.growth = Math.min(c.growDays, p.growth + 1 + p.fertilizer);
         p.fertilizer = 0;
+        // Pests only reduce a soil yield bonus, never kill a crop or block progression.
+        p.pestActive = s.tutorial >= 9 && this.rng() < B.pestChance * (1 - p.pest / B.pestMaxLevel);
       }
     }
     decayInventory(s);

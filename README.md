@@ -14,7 +14,7 @@ npm run dev
 브라우저에서 `http://127.0.0.1:5173`을 엽니다. 스마트폰에서 같은 Wi-Fi로 시험하려면 `npm run dev -- --host 0.0.0.0`으로 실행하고 PC의 LAN IP와 5173 포트를 사용합니다. 방화벽 접근 권한은 환경에 맞게 설정하세요. LAN HTTP는 게임 실행은 가능하지만 PWA 설치와 서비스 워커는 HTTPS 배포 또는 localhost에서 검증해야 합니다.
 
 ```sh
-npm test          # TypeScript 확인 + 프로덕션 빌드 + Vitest 55개
+npm test          # TypeScript 확인 + 프로덕션 빌드 + Vitest 56개
 npm run build    # dist/ 생성
 npm run preview  # http://127.0.0.1:4173
 npm run format:check
@@ -65,3 +65,4 @@ IndexedDB의 `my-little-farm` 데이터베이스에 슬롯 3개를 저장합니�
 이 구현은 `codex/playable-farm` 브랜치에 저장되어 있습니다. 업로드 시점에 `main`의 별도 구현을 확인해 그대로 보존했습니다.
 
 GitHub 저장소: https://github.com/leejh459702-a11y/farm-game/tree/codex/playable-farm
+
