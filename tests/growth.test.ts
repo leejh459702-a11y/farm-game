@@ -171,3 +171,45 @@ describe('Date Skip Test', () => {
     expect(w.state.containers.bag.slots.find((s) => s?.itemId === 'lettuce')!.freshness).toBe(76);
   });
 });
+
+describe('Season Growth Rule — 겨울만 제한', () => {
+  const growOnce = (w: World, season: 'spring' | 'summer' | 'autumn' | 'winter') => {
+    const p = plantCarrot(w);
+    w.crops.water(p);
+    w.crops.dailyGrowth(season);
+    return p;
+  };
+
+  it('봄 작물(당근)도 여름·가을에 자란다', () => {
+    for (const s of ['summer', 'autumn'] as const) {
+      const w = freeWorld(10);
+      expect(growOnce(w, s).growthProgressDays).toBe(1);
+    }
+  });
+
+  it('겨울 야외 밭: 당근은 멈추고(죽지 않음) 겨울 작물은 자란다', () => {
+    const w = freeWorld(11);
+    const p = growOnce(w, 'winter');
+    expect(p.growthProgressDays).toBe(0);
+    expect(p.cropId).toBe('carrot');
+
+    const w2 = freeWorld(12);
+    w2.crops.till(15, 15);
+    const q = w2.crops.plotAt(15, 15)!;
+    w2.state.skills.farmingXp = 99999;
+    w2.inventory.add('bag', 'seed_spinach', 1);
+    expect(w2.crops.plant(q, 'seed_spinach').ok).toBe(true);
+    w2.crops.water(q);
+    w2.crops.dailyGrowth('winter');
+    expect(q.growthProgressDays).toBe(1);
+  });
+
+  it('겨울 온실: 모든 작물이 자란다', () => {
+    const w = freeWorld(13);
+    const p = plantCarrot(w);
+    p.greenhouse = 'gh-test';
+    w.crops.water(p);
+    w.crops.dailyGrowth('winter');
+    expect(p.growthProgressDays).toBe(1);
+  });
+});

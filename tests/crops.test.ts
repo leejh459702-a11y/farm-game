@@ -35,12 +35,12 @@ describe('작물', () => {
     expect(p.growthProgressDays).toBe(0);
     expect(p.cropId).toBe('carrot');
   });
-  it('제철이 아니면 성장 일시 정지, 다시 제철이면 재개', () => {
+  it('겨울 야외에서는 비겨울 작물 성장 일시 정지, 봄이 되면 재개', () => {
     const w = setupPlot();
     const p = w.crops.plotAt(15, 15)!;
     w.crops.plant(p, 'seed_carrot');
     p.wateredToday = true;
-    w.crops.dailyGrowth('summer');
+    w.crops.dailyGrowth('winter');
     expect(p.growthProgressDays).toBe(0);
     expect(p.cropId).toBe('carrot');
     p.wateredToday = true;

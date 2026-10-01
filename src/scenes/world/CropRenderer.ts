@@ -1,7 +1,7 @@
 /** 작물 스프라이트 — 오브젝트 풀 + 화면 밖 컬링 + dirty 갱신 */
 import Phaser from 'phaser';
 import { CROP_BY_ID } from '../../data/crops';
-import { cropStage } from '../../systems/CropSystem';
+import { cropStage, seasonAllowsGrowth } from '../../systems/CropSystem';
 import type { World } from '../../core/World';
 import { CROP_FH } from '../../assets/art/crops';
 import { DEPTH, TS } from './constants';
@@ -88,8 +88,8 @@ export class CropRenderer {
     s.setOrigin(0.5, (CROP_FH - 10) / CROP_FH);
     s.setPosition(p.x * TS + TS / 2, p.y * TS + TS / 2 + 6);
     s.setDepth(DEPTH.objects + p.y * TS + TS / 2);
-    // 제철이 아니면 살짝 탁하게 (성장 정지 표시)
-    const inSeason = c.season.includes(this.w.cal.season);
+    // 겨울 야외의 비겨울 작물은 살짝 탁하게 (성장 정지 표시)
+    const inSeason = seasonAllowsGrowth(c.id, this.w.cal.season, !!p.greenhouse);
     s.setTint(inSeason || stage === 4 ? 0xffffff : 0xc8c0b0);
   }
 

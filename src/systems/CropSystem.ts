@@ -61,12 +61,20 @@ export function refreshStage(p: Plot): void {
   p.currentStage = cropStage(p);
 }
 
+/**
+ * 계절 성장 규칙: 봄·여름·가을에는 모든 작물이 자란다.
+ * 겨울 야외 밭에서는 겨울 작물만 자라고, 나머지는 온실에서만 자란다.
+ * (제철 계절은 판매 보너스 +10% 에만 쓰인다)
+ */
+export function seasonAllowsGrowth(cropId: string, season: SeasonId, greenhouse: boolean): boolean {
+  if (greenhouse || season !== 'winter') return true;
+  return CROP_BY_ID[cropId]?.season.includes('winter') ?? false;
+}
+
 /** 오늘 성장할 수 있는가 */
 export function canGrowToday(p: Plot, season: SeasonId): boolean {
   if (!p.cropId) return false;
-  const c = CROP_BY_ID[p.cropId];
-  const seasonOk = !!p.greenhouse || c.season.includes(season);
-  return seasonOk && p.wateredToday;
+  return seasonAllowsGrowth(p.cropId, season, !!p.greenhouse) && p.wateredToday;
 }
 
 export class CropSystem {

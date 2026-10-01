@@ -1,4 +1,4 @@
-/** 온실 — 내부 9칸, 계절 제한 없음 (제철 보너스는 제철에만), 자동 급수 */
+/** 온실 — 내부 9칸, 겨울에도 모든 작물 성장 (제철 보너스는 제철에만), 자동 급수 */
 import { Panel, type Watch } from '../Panel';
 import { iconHtml } from '../../assets/AssetRegistry';
 import { CROP_BY_ID } from '../../data/crops';
@@ -30,7 +30,7 @@ export class GreenhousePanel extends Panel {
           ${c && !c.season.includes(w.cal.season) ? '<span class="chip tiny">비제철 · 보너스 없음</span>' : ''}</button>`;
       })
       .join('');
-    return `<div class="card small muted" style="margin-bottom:0.5rem">온실 안에서는 모든 계절 작물이 자라요. 자동으로 물이 공급되고 해충도 없어요. (제철이 아닌 작물은 판매 보너스 +10%가 없어요)</div>
+    return `<div class="card small muted" style="margin-bottom:0.5rem">온실 안에서는 겨울에도 모든 작물이 자라요. 자동으로 물이 공급되고 해충도 없어요. (제철이 아닌 작물은 판매 보너스 +10%가 없어요)</div>
       <div class="grid cols-3">${cells}</div>`;
   }
 

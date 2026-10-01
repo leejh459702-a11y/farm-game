@@ -69,7 +69,7 @@ export class GameTimeSystem {
     const endedDay = s.time.day;
     const season = calendar(endedDay).season;
 
-    // 1) 작물 성장 (오늘 물 준 작물만, 제철/온실)
+    // 1) 작물 성장 (오늘 물 준 작물만, 겨울 야외는 겨울 작물만)
     const crops = w.crops.dailyGrowth(season);
     // 2) 동물 (급식/생산/성장/출산)
     w.animals.daily();
@@ -112,7 +112,7 @@ export class GameTimeSystem {
     w.events.emit('weather', { today: s.weather.today });
     if (cal.dayOfSeason === 1 && s.time.day > 0) {
       const names = { spring: '봄', summer: '여름', autumn: '가을', winter: '겨울' };
-      w.notify({ key: 'season', text: `${names[cal.season]}이 시작되었습니다! 제철 작물은 판매가 +10%`, icon: `ic_${cal.season}`, tone: 'good' });
+      w.notify({ key: 'season', text: cal.season === 'winter' ? '겨울이 시작되었습니다! 밭에서는 겨울 작물만 자라요. 다른 작물은 온실에서 키워요.' : `${names[cal.season]}이 시작되었습니다! 제철 작물은 판매가 +10%`, icon: `ic_${cal.season}`, tone: cal.season === 'winter' ? 'info' : 'good' });
     }
     // 비/관개 자동 물주기
     w.crops.morningWater();
