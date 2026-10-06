@@ -14,7 +14,7 @@ import { ControlsScene } from './scenes/ControlsScene';
 import { RegionScene } from './scenes/RegionScene';
 import { AppRef } from './core/AppRef';
 import { Session } from './core/Session';
-import { installOpeners } from './ui/openers';
+import { installOpeners, openPanel } from './ui/openers';
 import { applyUiScale } from './ui/panels/SettingsPanel';
 import { SettingsStore } from './services/SettingsStore';
 import { AudioManager } from './audio/AudioManager';
@@ -75,7 +75,7 @@ async function boot(): Promise<void> {
   });
   registerServiceWorker();
   // QA 용 디버그 훅 (?debug)
-  if (location.search.includes('debug')) (window as unknown as Record<string, unknown>).__farm = { Session, Bridge, Panels, AppRef };
+  if (location.search.includes('debug')) (window as unknown as Record<string, unknown>).__farm = { Session, Bridge, Panels, AppRef, openPanel };
 }
 
 void boot();
