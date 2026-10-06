@@ -68,6 +68,22 @@ const animalProducts: [string, string, number, number][] = [
   ['ostrich_meat', '타조고기', 1400, 10],
 ];
 for (const [id, name, price, decay] of animalProducts) add({ id, name, category: 'animal', basePrice: price, decay, desc: '축산물' });
+// 희귀 축산물 (친밀도가 높은 동물이 가끔 생산)
+const rareAnimalProducts: [string, string, number, number][] = [
+  ['golden_egg', '황금 달걀', 320, 2],
+  ['jade_duck_egg', '비취 오리알', 520, 2],
+  ['angora_wool', '최고급 토끼털', 900, 0],
+  ['golden_wool', '황금 양털', 1300, 0],
+  ['rich_goat_milk', '진한 염소젖', 820, 6],
+  ['premium_milk', '고급 우유', 600, 6],
+  ['white_truffle', '흰 송로버섯', 2200, 4],
+  ['royal_alpaca_wool', '왕실 알파카털', 3200, 0],
+  ['golden_goose_egg', '황금 거위알', 820, 2],
+  ['spotted_turkey_egg', '점박이 칠면조알', 760, 2],
+  ['cream_buffalo_milk', '크림 물소젖', 1900, 6],
+  ['giant_ostrich_egg', '거대 타조알', 4200, 2],
+];
+for (const [id, name, price, decay] of rareAnimalProducts) add({ id, name, category: 'animal', basePrice: price, decay, tags: ['rare_animal'], desc: '희귀 축산물 — 친밀도가 높은 동물이 가끔 생산' });
 
 // 물고기 / 채집물 / 자원 (생활 콘텐츠)
 for (const fsh of FISH) add({ id: fsh.id, name: fsh.name, category: fsh.id === 'old_boot' ? 'other' : 'fish', basePrice: fsh.baseSellPrice, decay: fsh.freshnessDecay, tags: fsh.id === 'old_boot' ? [] : ['fish'], desc: '물고기' });
@@ -77,7 +93,7 @@ add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, 
 
 // 기타
 add({ id: 'hay', name: '건초 사료', category: 'other', basePrice: 10, decay: 0, desc: '동물 기본 사료' });
-add({ id: 'treat', name: '동물 간식', category: 'other', basePrice: 40, decay: 0, desc: '쓰다듬기 대신 주면 애정 크게 상승' });
+add({ id: 'treat', name: '동물 간식', category: 'other', basePrice: 40, decay: 0, desc: '쓰다듬기 대신 주면 친밀도 크게 상승' });
 add({ id: 'basic_fertilizer', name: '기본 비료', category: 'other', basePrice: 30, decay: 0, desc: '수확량 증가 확률 +20%' });
 add({ id: 'growth_fertilizer', name: '성장 비료', category: 'other', basePrice: 60, decay: 0, desc: '성장 속도 +25%' });
 add({ id: 'premium_fertilizer', name: '고급 비료', category: 'other', basePrice: 120, decay: 0, desc: '성장 +25%, 수확량 +35%' });
@@ -85,7 +101,7 @@ add({ id: 'special_fertilizer', name: '특별 비료', category: 'other', basePr
 add({ id: 'compost', name: '퇴비', category: 'other', basePrice: 15, decay: 0, desc: '천연 비료. 수확량 +12%' });
 add({ id: 'rotten', name: '부패물', category: 'other', basePrice: 0, decay: 0, sellable: false, desc: '판매 불가. 퇴비 기술로 재활용 가능' });
 add({ id: 'breed_charm', name: '번식 부적', category: 'other', basePrice: 1500, decay: 0, desc: '특급상인 전용. 다음 브리딩 상위 등급 확률 증가' });
-add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 300, decay: 0, desc: '특급상인 전용. 축사 전체 하루 급식 + 애정 상승' });
+add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 300, decay: 0, desc: '특급상인 전용. 축사 전체 하루 급식 + 친밀도 상승' });
 
 // 가공품 / 요리 — 가격은 재료 기본가 × 배율로 산출
 const byId: Record<string, ItemDef> = Object.fromEntries(items.map((i) => [i.id, i]));

@@ -108,7 +108,10 @@ export interface Animal {
   childIds: string[];
   births: number;
   produced: number;
+  /** 친밀도 0~100 — 희귀 생산물·특성 유전·브리딩 보너스 */
   affection: number;
+  /** 행복도 0~100 — 생산 주기·생산량·브리딩 성공률 */
+  happiness: number;
   fedToday: boolean;
   pettedToday: boolean;
   /** 생산 카운트다운 (일) */

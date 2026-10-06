@@ -38,6 +38,12 @@ export const MIGRATIONS: Record<number, Migration> = {
     const tools = { axe: 0, pickaxe: 0, rod: 0, rodOwned: !!tut?.done };
     return { ...s, tools: s.tools ?? tools, version: 3 };
   },
+  // 3 → 4: 동물 행복도 추가 (기존 동물은 기본값 60)
+  3: (s) => {
+    const animals = (s.animals ?? {}) as Record<string, Record<string, unknown>>;
+    for (const a of Object.values(animals)) if (typeof a.happiness !== 'number') a.happiness = 60;
+    return { ...s, version: 4 };
+  },
 };
 
 export function migrate(raw: unknown): GameState {

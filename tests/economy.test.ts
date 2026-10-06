@@ -50,7 +50,7 @@ describe('운영비', () => {
 
 describe('동물 판매가', () => {
   it('등급이 높을수록 비싸다', () => {
-    const base = { id: 'X', species: 'cow', name: '', gender: 'F' as const, age: 20, stage: 'adult' as const, stats: { productivity: 50, growth: 50, health: 50, fertility: 50, physique: 50 }, traits: [], motherId: null, fatherId: null, childIds: [], births: 0, produced: 0, affection: 0, fedToday: false, pettedToday: false, productTimer: 1, pregnant: null, breedCooldown: 0, buildingUid: null, lineage: null, bornDay: 0 };
+    const base = { id: 'X', species: 'cow', name: '', gender: 'F' as const, age: 20, stage: 'adult' as const, stats: { productivity: 50, growth: 50, health: 50, fertility: 50, physique: 50 }, traits: [], motherId: null, fatherId: null, childIds: [], births: 0, produced: 0, affection: 0, happiness: 60, fedToday: false, pettedToday: false, productTimer: 1, pregnant: null, breedCooldown: 0, buildingUid: null, lineage: null, bornDay: 0 };
     const ctx = { season: 'spring' as const, merchantBonus: 0 };
     const g3 = animalSellPrice({ ...base, grade: 3 }, ctx);
     const g2 = animalSellPrice({ ...base, grade: 2 }, ctx);

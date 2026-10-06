@@ -41,18 +41,36 @@ export function rollGrade(r: () => number, dist: GradeDist): Grade {
 }
 
 /** 특성 유전: 부모 특성 각 40%, 최대 3개, 낮은 확률로 새 특성 */
-export function inheritTraits(r: () => number, mother: string[], father: string[], randomTrait: (exclude: string[]) => string | null): string[] {
+export function inheritTraits(r: () => number, mother: string[], father: string[], randomTrait: (exclude: string[]) => string | null, inheritBonus = 0): string[] {
   const out: string[] = [];
   const pool = [...new Set([...mother, ...father])];
   for (const t of pool) {
     if (out.length >= BALANCE.animals.traitsMax) break;
-    if (r() < BALANCE.breeding.traitInheritChance) out.push(t);
+    if (r() < BALANCE.breeding.traitInheritChance + inheritBonus) out.push(t);
   }
   if (out.length < BALANCE.animals.traitsMax && r() < BALANCE.breeding.mutationChance) {
     const t = randomTrait(out);
     if (t) out.push(t);
   }
   return out;
+}
+
+/** 부모 평균 행복도 → 브리딩 성공률 (50 → 80%, 100 → 100%, 최저 60%) */
+export function breedSuccessChance(m: Pick<Animal, 'happiness'>, f: Pick<Animal, 'happiness'>): number {
+  const h = ((m.happiness ?? 60) + (f.happiness ?? 60)) / 2;
+  return Math.max(0.6, Math.min(1, 0.6 + h * 0.004));
+}
+
+/** 부모 평균 친밀도 → 특성 유전 확률 보너스 (최대 +15%) */
+export function intimacyInheritBonus(m: Pick<Animal, 'affection'>, f: Pick<Animal, 'affection'> | null): number {
+  const v = f ? (m.affection + f.affection) / 2 : m.affection;
+  return Math.max(0, (v - 50) / 50) * 0.15;
+}
+
+/** 부모 평균 친밀도 → 등급 보너스 (최대 +5%p) */
+export function intimacyGradeBonus(m: Pick<Animal, 'affection'>, f: Pick<Animal, 'affection'> | null): number {
+  const v = f ? (m.affection + f.affection) / 2 : m.affection;
+  return Math.max(0, (v - 60) / 40) * 0.05;
 }
 
 export class BreedingSystem {
@@ -80,6 +98,7 @@ export class BreedingSystem {
     if (this.hasLab()) b += BALANCE.breeding.labGradeBonus;
     for (const t of [...mother.traits, ...father.traits]) b += TRAIT_BY_ID[t]?.fx.gradeBonus ?? 0;
     if (this.w.state.breedCharmActive) b += 0.1;
+    b += intimacyGradeBonus(mother, father);
     return b;
   }
 
@@ -103,11 +122,17 @@ export class BreedingSystem {
     return { ok: true };
   }
 
-  breed(motherId: string, fatherId: string): { ok: boolean; reason?: string; days?: number } {
+  breed(motherId: string, fatherId: string): { ok: boolean; reason?: string; days?: number; missed?: boolean } {
     const c = this.check(motherId, fatherId);
     if (!c.ok) return c;
     const m = this.w.animals.get(motherId)!;
+    const f = this.w.animals.get(fatherId)!;
     const d = ANIMAL_BY_ID[m.species];
+    // 행복도가 낮으면 이번엔 인연이 닿지 않을 수 있다 (비용 없음·휴식 없음 → 다시 시도 가능)
+    if (this.w.rand() >= breedSuccessChance(m, f)) {
+      this.w.events.emit('animals', undefined);
+      return { ok: true, missed: true };
+    }
     this.w.spend(BALANCE.breeding.breedCost, '브리딩');
     const days = Math.max(1, Math.round(d.pregnancyDays * traitMul(m.traits, 'pregnancyMul')));
     m.pregnant = { fatherId, daysLeft: days };
@@ -135,7 +160,7 @@ export class BreedingSystem {
     for (let i = 0; i < count; i++) {
       const grade = rollGrade(r, dist);
       const stats = this.inheritStats(mother, father as Animal | null, grade);
-      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex));
+      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex), intimacyInheritBonus(mother, (father as Animal | null) ?? null));
       const home = this.w.animals.findHome(mother.species, mother.buildingUid);
       const baby = this.w.animals.create(mother.species, {
         grade,

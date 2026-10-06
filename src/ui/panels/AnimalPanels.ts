@@ -8,7 +8,7 @@ import { BALANCE } from '../../data/balance';
 import { SKILL_BY_ID } from '../../data/skills';
 import type { Animal, PedigreeRecord } from '../../types/game';
 import { animalScore } from '../../systems/CodexSystem';
-import { productAmount } from '../../systems/AnimalSystem';
+import { happinessFactors, productAmount, rareProductChance } from '../../systems/AnimalSystem';
 import { cx, esc } from '../dom';
 import { confirmDialog, promptDialog } from '../dialogs';
 
@@ -20,12 +20,19 @@ export function gradeChip(g: 1 | 2 | 3): string {
   return `<span class="chip ${g === 1 ? 'gold' : g === 2 ? 'blue' : ''}">${g}등급</span>`;
 }
 
+/** 친밀도(하트) + 행복도(웃는 얼굴) 막대 */
+export function moodBars(a: Animal, width = '4.5rem'): string {
+  const h = a.happiness ?? 60;
+  return `<span class="row" style="gap:0.2rem" title="친밀도 ${Math.round(a.affection)}">${iconHtml('ic_heart', 14)}<span class="bar" style="width:${width};display:inline-block"><i style="width:${a.affection}%;background:linear-gradient(#ffb0bc,#e8586a)"></i></span></span>
+    <span class="row" style="gap:0.2rem" title="행복도 ${Math.round(h)}">${iconHtml('ic_happy', 14)}<span class="bar" style="width:${width};display:inline-block"><i style="width:${h}%;background:linear-gradient(#fbe08a,#e0a830)"></i></span></span>`;
+}
+
 function animalRow(a: Animal, extra = ''): string {
   const d = ANIMAL_BY_ID[a.species];
   return `<div class="list-row click" data-act="detail" data-arg="${a.id}">${iconHtml(`portrait_${a.species}`, 40)}
     <div class="grow" style="min-width:0"><div class="row" style="gap:0.3rem"><b class="ellipsis">${esc(a.name)}</b>${genderIcon(a.gender)}${gradeChip(a.grade)}${a.pregnant ? `<span class="chip purple">임신 ${a.pregnant.daysLeft}일</span>` : ''}${a.favorite ? '<span class="tiny" style="color:#d9a020">★</span>' : ''}</div>
     <div class="tiny muted">${a.id} · ${d.name} · ${GROWTH_STAGE_NAME[a.stage]}${a.lineage ? ` · ${esc(a.lineage)} 혈통` : ''} · ${a.fedToday ? '<span class="good">먹음</span>' : '<span class="bad">배고픔</span>'} · ${a.pettedToday ? '쓰다듬음' : '<span>쓰다듬기 전</span>'}</div>
-    <div class="row" style="gap:0.3rem">${iconHtml('ic_heart', 14)}<div class="bar" style="width:5rem"><i style="width:${a.affection}%;background:linear-gradient(#ffb0bc,#e8586a)"></i></div></div></div>${extra}</div>`;
+    <div class="row" style="gap:0.3rem">${moodBars(a, '5rem')}</div></div>${extra}</div>`;
 }
 
 const UPG: Record<string, { name: string; icon: string; desc: string[] }> = {
@@ -198,7 +205,7 @@ export class AnimalDetailPanel extends Panel {
     return `<div class="row" style="align-items:flex-start;gap:0.8rem">
       <div class="card center" style="min-width:7.5rem">${iconHtml(`portrait_${a.species}`, 72)}<div class="row center" style="gap:0.3rem">${genderIcon(a.gender)}${gradeChip(a.grade)}</div>
         <div class="tiny muted">${GROWTH_STAGE_NAME[a.stage]} · ${a.age}일</div>
-        <div class="row center" style="gap:0.2rem">${iconHtml('ic_heart', 14)}<div class="bar" style="width:4.5rem"><i style="width:${a.affection}%;background:linear-gradient(#ffb0bc,#e8586a)"></i></div></div></div>
+        <div class="col" style="gap:0.2rem;align-items:center">${moodBars(a)}</div></div>
       <div class="col grow">${stats}<div class="row wrap">${traits}</div></div></div>
       <div class="kv card" style="margin-top:0.5rem">
         <span>종</span><span>${d.name} · 생산품 ${d.product ? `${ITEM_BY_ID[d.product].name} (${d.productInterval}일마다, 예상 ${productAmount(a).toFixed(1)}개)` : '-'}</span>
@@ -208,6 +215,9 @@ export class AnimalDetailPanel extends Panel {
         <span>아비</span><span>${parent(a.fatherId)}</span>
         <span>자식</span><span>${a.childIds.length}마리 · 출산 ${a.births}회</span>
         <span>생산 기록</span><span>${a.produced}개</span>
+        <span>친밀도</span><span><b>${Math.round(a.affection)}</b>/100 <span class="tiny muted">쓰다듬기·간식·급식으로 상승 → ${d.rareProduct ? `희귀 생산물(${ITEM_BY_ID[d.rareProduct].name}) ${Math.round(rareProductChance(a) * 100)}%` : '희귀 생산물 없음'} · 특성 유전·브리딩 보너스</span></span>
+        <span>행복도</span><span><b>${Math.round(a.happiness ?? 60)}</b>/100 <span class="tiny muted">생산량 ×${(0.8 + (a.happiness ?? 60) * 0.004).toFixed(2)}${(a.happiness ?? 60) >= 80 ? ' · 생산 주기 빨라짐' : (a.happiness ?? 60) < 30 ? ' · 가끔 생산을 쉼' : ''} · 브리딩 성공률</span>
+          <div class="row wrap tiny" style="gap:3px;margin-top:2px">오늘 밤 변화: ${happinessFactors(a, barn, barn ? w.animals.capacity(barn) : 0).map((f) => `<span class="chip ${f.delta > 0 ? 'green' : 'red'}">${esc(f.label)} ${f.delta > 0 ? '+' : ''}${f.delta}</span>`).join(' ')}</div></span>
         <span>상태</span><span>${a.pregnant ? `<b class="good">임신 중 (${a.pregnant.daysLeft}일 후 출산)</b>` : a.breedCooldown ? `휴식 ${a.breedCooldown}일` : '건강함'} · ${a.fedToday ? '먹음' : '배고픔'}</span>
       </div>`;
   }

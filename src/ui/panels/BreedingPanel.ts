@@ -6,6 +6,7 @@ import { BALANCE } from '../../data/balance';
 import type { Animal } from '../../types/game';
 import { cx, esc } from '../dom';
 import { genderIcon, gradeChip, AnimalDetailPanel } from './AnimalPanels';
+import { breedSuccessChance, intimacyInheritBonus } from '../../systems/BreedingSystem';
 
 export class BreedingPanel extends Panel {
   readonly id = 'breeding';
@@ -49,8 +50,9 @@ export class BreedingPanel extends Panel {
       const bar = (g: 1 | 2 | 3) => `<div class="stat-bar"><span>${g}등급</span><div class="bar ${g === 1 ? 'gold' : g === 2 ? 'blue' : ''}"><i style="width:${dist[g] * 100}%"></i></div><b>${Math.round(dist[g] * 100)}%</b></div>`;
       const days = Math.round(ANIMAL_BY_ID[m.species].pregnancyDays);
       predict = `<div class="col">${bar(1)}${bar(2)}${bar(3)}
-        <div class="small">특성 유전: ${pool.length ? pool.map((t) => `<span class="chip purple">${esc(TRAIT_BY_ID[t].name)} ${Math.round(BALANCE.breeding.traitInheritChance * 100)}%</span>`).join(' ') : '<span class="muted">부모 특성 없음</span>'} <span class="tiny muted">· 새 특성 ${Math.round(BALANCE.breeding.mutationChance * 100)}%</span></div>
-        <div class="small muted">임신 약 ${days}일 · 비용 ${BALANCE.breeding.breedCost}G${w.state.breedCharmActive ? ' · <b class="good">번식 부적 적용 중</b>' : ''}</div>
+        <div class="small">특성 유전: ${pool.length ? pool.map((t) => `<span class="chip purple">${esc(TRAIT_BY_ID[t].name)} ${Math.round((BALANCE.breeding.traitInheritChance + intimacyInheritBonus(m, f)) * 100)}%</span>`).join(' ') : '<span class="muted">부모 특성 없음</span>'} <span class="tiny muted">· 새 특성 ${Math.round(BALANCE.breeding.mutationChance * 100)}%</span></div>
+        <div class="small">성공률 <b class="${breedSuccessChance(m, f) >= 0.9 ? 'good' : ''}">${Math.round(breedSuccessChance(m, f) * 100)}%</b> <span class="tiny muted">(부모 행복도) · 친밀도가 높을수록 특성 유전·등급 보너스</span></div>
+        <div class="small muted">임신 약 ${days}일 · 비용 ${BALANCE.breeding.breedCost}G (실패 시 비용 없음)${w.state.breedCharmActive ? ' · <b class="good">번식 부적 적용 중</b>' : ''}</div>
         <div class="row">${w.inventory.countAll('breed_charm') && !w.state.breedCharmActive ? `<button class="btn small purple" data-act="charm">번식 부적 사용</button>` : ''}
         <button class="btn green grow" data-act="breed" ${check.ok ? '' : 'disabled'}>${check.ok ? '브리딩 시작' : esc(check.reason ?? '')}</button></div></div>`;
     }
@@ -79,6 +81,7 @@ export class BreedingPanel extends Panel {
       const dist = w.breeding.predict(m, f);
       const r = w.breeding.breed(this.mother, this.father);
       if (!r.ok) this.toast(r.reason ?? '', 'warn');
+      else if (r.missed) this.toast('이번엔 인연이 닿지 않았어요. 동물들을 더 행복하게 해 주고 다시 시도해 보세요. (비용 없음)', 'info');
       else this.manager.open(new BreedResultPanel(m, f, r.days!, dist));
       this.mother = null;
     }

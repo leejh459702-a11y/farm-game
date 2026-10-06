@@ -334,13 +334,30 @@ const bag = (c: Color, band: Color): IconFn => (p) => {
   p.px(4, 5, shade(c, 0.3));
 };
 
+/** 희귀 생산물: 기본 아이콘 + 반짝임 */
+const sparkle = (fn: IconFn): IconFn => (p) => {
+  fn(p);
+  p.px(13, 2, 0xfff6a0).px(12, 3, 0xfff6a0).px(14, 3, 0xfff6a0).px(13, 4, 0xfff6a0).px(13, 3, 0xffffff).px(3, 12, 0xfff6a0);
+};
+
 const OTHER: Record<string, IconFn> = {
   egg: egg(0xf6efe0),
+  giant_ostrich_egg: sparkle(egg(0xf6ead0, true, true)),
+  spotted_turkey_egg: sparkle(egg(0xd8b890, false, true)),
+  golden_goose_egg: sparkle(egg(0xf2c83a, true)),
+  jade_duck_egg: sparkle(egg(0x7ac8a0)),
+  golden_egg: sparkle(egg(0xf2c83a)),
   duck_egg: egg(0xd6ecdf),
   goose_egg: egg(0xfbfbf6, true),
   turkey_egg: egg(0xead7bd, false, true),
   ostrich_egg: egg(0xf0e6cc, true, true),
   milk: bottle(0xfdfdfb, 0x5a8ad8),
+  premium_milk: sparkle(bottle(0xfff8e0, 0xd9a03a)),
+  rich_goat_milk: sparkle(bottle(0xf0e2c0, 0x6a4a2a)),
+  cream_buffalo_milk: sparkle(bottle(0xfff2d0, 0x2a2a2a)),
+  angora_wool: sparkle(woolBall(0xfff0f4)),
+  golden_wool: sparkle(woolBall(0xf6d870)),
+  royal_alpaca_wool: sparkle(woolBall(0xd8b0f0)),
   goat_milk: bottle(0xf6f0e2, 0x8a6a4a),
   buffalo_milk: bottle(0xfaf7ef, 0x4a4a4a),
   rabbit_wool: woolBall(0xf6dde0),
@@ -350,6 +367,10 @@ const OTHER: Record<string, IconFn> = {
     p.ellipse(8, 9, 6, 5, 0x5a3e2e).ellipse(7, 8, 4, 3, 0x6e4c38);
     for (const [x, y] of [[5, 8], [9, 7], [10, 11], [6, 11]]) p.px(x, y, 0x3a2820);
   },
+  white_truffle: sparkle((p) => {
+    p.ellipse(8, 9, 6, 5, 0xe8dcc4).ellipse(7, 8, 4, 3, 0xf6eedc);
+    for (const [x, y] of [[5, 8], [9, 7], [10, 11], [6, 11]]) p.px(x, y, 0xb8a888);
+  }),
   chicken_meat: meat(0xe8a888, true),
   duck_meat: meat(0xd88870, true),
   goose_meat: meat(0xdc9478, true),
@@ -601,6 +622,9 @@ const UI: Record<string, IconFn> = {
   ic_winter: (p) => UI.ic_snow(p),
   ic_heart: (p) => {
     p.circle(5, 6, 3, 0xe8586a).circle(11, 6, 3, 0xe8586a).tri(2, 7, 14, 7, 8, 14, 0xe8586a).px(4, 5, 0xffb0bc);
+  },
+  ic_happy: (p) => {
+    p.circle(8, 8, 6, 0xf6c84a).px(6, 6, 0x3b2a22).px(10, 6, 0x3b2a22).px(5, 9, 0x3b2a22).line(6, 10, 10, 10, 0x3b2a22).px(11, 9, 0x3b2a22).px(4, 5, 0xfff0a0);
   },
   ic_male: (p) => {
     p.circle(6, 10, 4, 0x4a8ad8).circle(6, 10, 2, 0x000000, 0);

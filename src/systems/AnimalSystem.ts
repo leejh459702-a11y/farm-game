@@ -1,5 +1,5 @@
 /**
- * AnimalSystem — 동물 개체 관리, 급식, 애정, 생산, 성장, 출하.
+ * AnimalSystem — 동물 개체 관리, 급식, 친밀도, 생산, 성장, 출하.
  * 동물은 노화/질병으로 죽지 않는다.
  */
 import { BALANCE } from '../data/balance';
@@ -27,10 +27,42 @@ export interface CreateAnimalOpts {
 
 export const GRADE_PRODUCT_MUL: Record<Grade, number> = { 3: 1, 2: 1.2, 1: 1.5 };
 
+/** 행복도 → 생산량 배율 (0 → ×0.8, 50 → ×1.0, 100 → ×1.2) */
+export function happinessMul(a: Pick<Animal, 'happiness'>): number {
+  return 0.8 + (a.happiness ?? 60) * 0.004;
+}
+
+/** 친밀도 → 희귀 생산물 확률 (50 이하 0%, 100 → 최대) */
+export function rareProductChance(a: Pick<Animal, 'affection'>): number {
+  return Math.max(0, (a.affection - 50) / 50) * BALANCE.animals.rareProductMaxChance;
+}
+
 /** 생산 수량 기대값 */
 export function productAmount(a: Animal): number {
   const base = GRADE_PRODUCT_MUL[a.grade] * (1 + (a.stats.productivity - 50) / 200) * traitMul(a.traits, 'productMul');
-  return base * (a.affection >= 80 ? 1.1 : 1);
+  return base * (a.affection >= 80 ? 1.1 : 1) * happinessMul(a);
+}
+
+export interface HappinessFactor {
+  label: string;
+  delta: number;
+}
+
+/** 오늘 하루가 끝나면 바뀔 행복도 요인 (UI 표시 + daily 계산 공용) */
+export function happinessFactors(a: Animal, barn: BuildingInstance | null, capacity: number): HappinessFactor[] {
+  const H = BALANCE.animals.happiness;
+  const out: HappinessFactor[] = [];
+  out.push(a.fedToday ? { label: '사료 충분', delta: H.fed } : { label: '사료 부족', delta: H.hungry });
+  const dirt = barn?.dirt ?? 0;
+  if (dirt < 40) out.push({ label: '깨끗한 축사', delta: H.clean });
+  else if (dirt >= 60) out.push({ label: '지저분한 축사', delta: H.dirty });
+  if (a.pettedToday) out.push({ label: '쓰다듬기', delta: H.petted });
+  if (barn && capacity > 0) {
+    const n = barn.animalIds?.length ?? 0;
+    if (n >= capacity && capacity > 2) out.push({ label: '축사가 꽉 참', delta: H.crowded });
+    else if (n <= capacity * 0.6) out.push({ label: '넉넉한 공간', delta: H.spacious });
+  }
+  return out;
 }
 
 export class AnimalSystem {
@@ -104,6 +136,7 @@ export class AnimalSystem {
       births: 0,
       produced: 0,
       affection: 30,
+      happiness: BALANCE.animals.happiness.start,
       fedToday: false,
       pettedToday: false,
       productTimer: d.productInterval,
@@ -199,7 +232,7 @@ export class AnimalSystem {
     return { fed, hungry };
   }
 
-  /** 특제 사료: 축사 전체 급식 + 애정 */
+  /** 특제 사료: 축사 전체 급식 + 친밀도 */
   goldenFeed(b: BuildingInstance): boolean {
     if (!this.w.inventory.consume('golden_feed', 1)) return false;
     for (const a of this.animalsIn(b)) {
@@ -287,10 +320,17 @@ export class AnimalSystem {
       const prevStage = a.stage;
       a.stage = a.age >= adult ? 'adult' : a.age >= juv ? 'juvenile' : 'baby';
       if (prevStage !== a.stage && a.stage === 'adult') this.w.notify({ key: 'grown', text: `${a.name}이(가) 다 자랐습니다`, icon: `an_${a.species}`, tone: 'good' });
-      // 생산
+      // 행복도 (죽거나 영구 패널티 없음 — 생산·브리딩에만 영향)
       const barn = a.buildingUid ? this.w.state.buildings[a.buildingUid] : null;
+      if (a.happiness === undefined) a.happiness = BALANCE.animals.happiness.start;
+      const dh = happinessFactors(a, barn, barn ? this.capacity(barn) : 0).reduce((s, f) => s + f.delta, 0);
+      a.happiness = Math.max(0, Math.min(100, a.happiness + dh));
+      // 생산 — 행복할수록 주기가 빨라지고, 우울하면 가끔 하루 쉰다
       if (a.fedToday && a.stage === 'adult' && d.product && barn) {
-        a.productTimer--;
+        let tick = 1;
+        if (a.happiness >= 80 && this.w.rand() < 0.3) tick = 2;
+        else if (a.happiness < 30 && this.w.rand() < 0.3) tick = 0;
+        a.productTimer -= tick;
         if (a.productTimer <= 0) {
           const interval = Math.max(1, d.productInterval + this.intervalDelta(a));
           a.productTimer = interval;
@@ -301,11 +341,22 @@ export class AnimalSystem {
             let qty = Math.floor(amt);
             if (this.w.rand() < amt - qty) qty++;
             qty = Math.max(1, qty);
-            const left = this.w.inventory.add(barn.outputId!, d.product, qty, 100, false);
+            // 친밀도가 높으면 하나가 희귀 생산물로 바뀔 수 있다
+            let rare = 0;
+            if (d.rareProduct && this.w.rand() < rareProductChance(a)) {
+              rare = 1;
+              qty = Math.max(0, qty - 1);
+            }
+            const left = qty ? this.w.inventory.add(barn.outputId!, d.product, qty, 100, false) : 0;
             const got = qty - left;
             a.produced += got;
             this.w.codex.recordProduced(d.product, got);
             this.w.codex.animalEntry(a.species).produced += got;
+            if (rare && d.rareProduct && this.w.inventory.add(barn.outputId!, d.rareProduct, 1, 100, false) === 0) {
+              a.produced++;
+              this.w.codex.recordProduced(d.rareProduct, 1);
+              this.w.notify({ key: `rare_${d.rareProduct}`, text: `${a.name}이(가) ${ITEM_BY_ID[d.rareProduct].name}을(를) 만들었어요!`, icon: ITEM_BY_ID[d.rareProduct].icon, tone: 'good' });
+            }
           }
         }
       } else if (!a.fedToday) {

@@ -76,7 +76,9 @@ describe('유전', () => {
     const coop = w.animals.barns()[0];
     const mom = w.animals.create('chicken', { gender: 'F', grade: 2, traits: ['fertile'], buildingUid: coop.uid });
     const dad = w.animals.create('chicken', { gender: 'M', grade: 2, buildingUid: coop.uid });
+    mom.happiness = dad.happiness = 100; // 성공률 100%
     expect(w.breeding.breed(mom.id, dad.id).ok).toBe(true);
+    expect(mom.pregnant).not.toBeNull();
     expect(w.breeding.breed(mom.id, dad.id).ok).toBe(false); // 이미 임신
     for (let i = 0; i < 5; i++) w.time.skipToNextDay();
     expect(mom.childIds.length).toBeGreaterThan(0);

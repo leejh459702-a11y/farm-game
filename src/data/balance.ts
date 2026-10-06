@@ -173,7 +173,7 @@ export const BALANCE = {
   autoFeedLv2CostPerAnimal: 6,
 
   animals: {
-    /** 하루 먹이 미급여 시 애정 감소 */
+    /** 하루 먹이 미급여 시 친밀도 감소 */
     hungryAffectionLoss: 8,
     petAffection: 6,
     feedAffection: 2,
@@ -183,6 +183,10 @@ export const BALANCE = {
     dirtPerDay: 20,
     traitsMax: 3,
     idDigits: 6,
+    /** 행복도 (하루 변화량) — 죽거나 영구 패널티 없음 */
+    happiness: { start: 60, fed: 5, hungry: -10, clean: 3, dirty: -6, petted: 2, spacious: 1, crowded: -2 },
+    /** 친밀도 → 희귀 생산물: (친밀도-50)/50 × 최대 확률 */
+    rareProductMaxChance: 0.15,
   },
 
   breeding: {
