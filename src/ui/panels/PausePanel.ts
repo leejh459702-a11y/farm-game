@@ -1,5 +1,5 @@
 /** 일시정지 메뉴 — 계속하기 / 저장 / 도감 / 동물 / 재정 / 알림 / 설정 / 메인 메뉴 */
-import { Panel } from '../Panel';
+import { Panel, type Watch } from '../Panel';
 import { iconHtml } from '../../assets/AssetRegistry';
 import { Session } from '../../core/Session';
 import { esc } from '../dom';
@@ -12,6 +12,8 @@ export class PausePanel extends Panel {
   readonly id = 'pause';
   size = 'medium' as const;
   title = '일시정지';
+  // 일지·컬렉션·교환권 배지가 보상 수령/제출 후 바로 갱신되도록
+  watch: Watch = ['journal', 'collections', 'tickets', 'inventory', 'counter'];
   tabs = [
     { id: 'menu', label: '메뉴', icon: 'ic_pause' },
     { id: 'log', label: '알림 기록', icon: 'ic_warn' },
