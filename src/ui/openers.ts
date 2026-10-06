@@ -21,7 +21,9 @@ import { PausePanel } from './panels/PausePanel';
 import { PondPanel } from './panels/PondPanel';
 import { JournalPanel } from './panels/JournalPanel';
 import { CollectionPanel } from './panels/CollectionPanel';
+import { ExchangePanel } from './panels/ExchangePanel';
 import { CellarPanel } from './panels/CellarPanel';
+import { ShrinePanel } from './panels/ShrinePanel';
 import { GreenhousePanel } from './panels/GreenhousePanel';
 import { SettingsPanel } from './panels/SettingsPanel';
 import { SaveSlotsPanel } from './MainMenu';
@@ -43,7 +45,8 @@ export type PanelName =
   | 'save'
   | 'house'
   | 'journal'
-  | 'collections';
+  | 'collections'
+  | 'exchange';
 
 export function openPanel(name: PanelName, arg?: string): void {
   const w = Session.world;
@@ -84,6 +87,9 @@ export function openPanel(name: PanelName, arg?: string): void {
     case 'blueprints':
       Panels.open(new BlueprintPanel());
       break;
+    case 'exchange':
+      Panels.open(new ExchangePanel());
+      break;
     case 'collections':
       Panels.open(new CollectionPanel());
       break;
@@ -121,6 +127,7 @@ export function openBuilding(uid: string): void {
   if (b.type === 'greenhouse') return void Panels.open(new GreenhousePanel(uid));
   if (b.type === 'fishpond') return void Panels.open(new PondPanel(uid));
   if (b.type === 'cellar') return void Panels.open(new CellarPanel(uid));
+  if (b.type === 'spirit_shrine') return void Panels.open(new ShrinePanel(uid));
   infoDialog(d.name, `${esc(d.desc)}${d.beauty ? `<br><span class="muted small">농장 아름다움 +${d.beauty} (상인 판매가 소폭 상승)</span>` : ''}`, d.spriteKey);
 }
 

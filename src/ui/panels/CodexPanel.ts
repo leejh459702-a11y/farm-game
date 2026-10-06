@@ -9,6 +9,8 @@ import { BUILDINGS, BUILDING_BY_ID } from '../../data/buildings';
 import { FISH, FISH_BY_ID, RARITY_NAME } from '../../data/fish';
 import { SEASON_BY_ID, WEATHER_INFO } from '../../data/seasons';
 import { ARTIFACTS, ARTIFACT_BY_ID, ARTIFACT_SETS } from '../../data/artifacts';
+import { INSECTS, INSECT_BY_ID } from '../../data/insects';
+import { SPIRITS, SPIRIT_BY_ID } from '../../data/spirits';
 import { cx, esc } from '../dom';
 
 export class CodexPanel extends Panel {
@@ -19,9 +21,11 @@ export class CodexPanel extends Panel {
     { id: 'tree', label: '과수', icon: 'it_apple' },
     { id: 'animal', label: '동물', icon: 'ic_livestock' },
     { id: 'fish', label: '물고기', icon: 'ic_fish' },
+    { id: 'insect', label: '곤충', icon: 'bug_swallowtail' },
     { id: 'forage', label: '채집물', icon: 'ic_forage' },
     { id: 'resource', label: '광물·자원', icon: 'it_amethyst' },
     { id: 'artifact', label: '유물', icon: 'it_art_gear' },
+    { id: 'spirit', label: '희귀 생물', icon: 'spirit_moon_spirit' },
     { id: 'processed', label: '가공품', icon: 'it_cheese' },
     { id: 'cooking', label: '요리', icon: 'it_bibimbap' },
     { id: 'building', label: '시설', icon: 'ic_house' },
@@ -58,6 +62,17 @@ export class CodexPanel extends Panel {
         const list = FISH.filter((f) => f.id !== 'old_boot');
         const found = list.filter((f) => items[f.id]?.discovered).length;
         return this.progress(found, list.length) + `<div class="grid auto-sm">${list.map((f) => this.tile(f.id, f.spriteKey, f.name, !!items[f.id]?.discovered)).join('')}</div>`;
+      }
+      case 'insect': {
+        const caught = w.state.insects?.caught ?? {};
+        const found = INSECTS.filter((i) => caught[i.id]).length;
+        return this.progress(found, INSECTS.length) + `<div class="grid auto-sm">${INSECTS.map((i) => this.tile(i.id, `bug_${i.id}`, i.name, !!caught[i.id])).join('')}</div>
+          <div class="tiny muted" style="margin-top:0.4rem">꽃밭·화분·꽃 작물·꽃 핀 과수를 심으면 곤충이 찾아와요. 날아다니는 곤충을 탭해 관찰하세요. 수분 곤충 근처 작물은 수확량 +5%.</div>`;
+      }
+      case 'spirit': {
+        const seen = w.state.spiritsSeen ?? [];
+        return this.progress(SPIRITS.filter((s) => seen.includes(s.id)).length, SPIRITS.length) + `<div class="grid auto-sm">${SPIRITS.map((s) => this.tile(s.id, `spirit_${s.id}`, s.name, seen.includes(s.id))).join('')}</div>
+          <div class="tiny muted" style="margin-top:0.4rem">엔드게임 선택 콘텐츠 — 마스터리 연구 후 '정령의 사당'을 지으면 만날 수 있어요.</div>`;
       }
       case 'artifact': {
         const found = ARTIFACTS.filter((a) => w.mine.arts.found.includes(a.id)).length;
@@ -117,6 +132,18 @@ export class CodexPanel extends Panel {
       if (!e?.discovered) return `<span class="muted">아직 낚지 못했어요. 힌트: ${esc(when)} · ${RARITY_NAME[f.rarity]}</span>`;
       return `${iconHtml(f.spriteKey, 40)}<div class="grow small"><b>${esc(f.name)}</b> <span class="chip">${RARITY_NAME[f.rarity]}</span> · ${esc(when)}
         <div class="tiny muted">포획 ${rec?.count ?? 0}회 · 최대 크기 ${(rec?.maxSize ?? 0).toFixed(1)}cm · 최고 판매가 ${e.bestPrice.toLocaleString()}G · 기본가 ${f.baseSellPrice}G</div></div>`;
+    }
+    if (this.tab === 'spirit') {
+      const s = SPIRIT_BY_ID[id];
+      if (!(w.state.spiritsSeen ?? []).includes(id)) return `<span class="muted">아직 만나지 못했어요.${s.parents ? ` 힌트: ${SPIRIT_BY_ID[s.parents[0]].name} + ${SPIRIT_BY_ID[s.parents[1]].name}` : ''}</span>`;
+      return `${iconHtml(`spirit_${id}`, 40)}<div class="grow small"><b>${esc(s.name)}</b> · ${esc(s.desc)}<div class="tiny muted">먹이 ${s.foods.map((f) => ITEM_BY_ID[f]?.name ?? f).join(', ')} · ${s.interval}일마다 ${ITEM_BY_ID[s.product].name}</div></div>`;
+    }
+    if (this.tab === 'insect') {
+      const i = INSECT_BY_ID[id];
+      const n = w.state.insects?.caught[id] ?? 0;
+      const when = `${i.season.map((x) => SEASON_BY_ID[x].name).join('·')} · ${i.time === 'day' ? '낮' : '밤'}${i.flower ? ` · 꽃 근처${i.minFlowers ? ` (꽃 ${i.minFlowers}개 이상)` : ''}` : ''}`;
+      if (!n) return `<span class="muted">아직 관찰하지 못했어요. 힌트: ${esc(when)}</span>`;
+      return `${iconHtml(`bug_${id}`, 40)}<div class="grow small"><b>${esc(i.name)}</b> · ${esc(when)}<div class="tiny muted">관찰 ${n}번${i.pollinator ? ' · 수분 곤충 (주변 작물 수확량 +5%)' : ''}</div></div>`;
     }
     if (this.tab === 'artifact') {
       const a = ARTIFACT_BY_ID[id];

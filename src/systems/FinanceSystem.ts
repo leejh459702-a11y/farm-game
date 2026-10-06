@@ -97,6 +97,7 @@ export class FinanceSystem {
       if (e.qty > bq) (bq = e.qty), (topQty = id);
       if (e.gold > bg) (bg = e.gold), (topGold = id);
     }
+    this.w.tickets.onMonthEnd(m.income);
     const valueEnd = this.farmValue();
     const summary: MonthSummary = {
       year: cal.year,

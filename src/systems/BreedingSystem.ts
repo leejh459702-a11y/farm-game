@@ -180,6 +180,8 @@ export class BreedingSystem {
       babies.push(baby);
     }
     mother.births++;
+    const top = babies.filter((b) => b.grade === 1).length;
+    if (top) this.w.tickets.give(top, '1등급 출산');
     this.w.state.stats.animalsBorn += babies.length;
     this.w.finance.today().births += babies.length;
     this.w.finance.month().births += babies.length;

@@ -122,6 +122,7 @@ export class MineSystem {
     const relicMul = this.w.skills.has('ga_relic') ? 2 : 1;
     if ((relic && r() < 0.35 * relicMul) || (!relic && st.floor >= 11 && r() < 0.015 * relicMul)) this.giveArtifact(this.randomArtifact('mine'));
     this.w.count('mine:rock');
+    if (n.itemId === 'rock_moon' || n.itemId === 'rock_star') this.w.tickets.give(1, '희귀 광물');
   }
 
   descend(): Result {

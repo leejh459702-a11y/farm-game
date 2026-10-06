@@ -5,6 +5,7 @@ import { FISH, FISH_BY_ID } from './fish';
 import { POND_FISH, roeId } from './aquaculture';
 import { ARTIFACTS } from './artifacts';
 import { BOOKS } from './books';
+import { SPIRIT_PRODUCTS } from './spirits';
 import { FORAGE, RESOURCES } from './gathering';
 
 export interface ItemDef {
@@ -104,6 +105,7 @@ add({ id: 'geode', name: '지오드', category: 'other', basePrice: 90, decay: 0
 add({ id: 'magma_geode', name: '용암 지오드', category: 'other', basePrice: 220, decay: 0, desc: '깊은 광산의 뜨거운 지오드. 귀한 것이 잘 나온다 (가방에서 열기)' });
 for (const ar of ARTIFACTS) add({ id: ar.id, name: ar.name, category: 'artifact', basePrice: ar.price, decay: 0, desc: `유물 — ${ar.desc}` });
 for (const bk of BOOKS) add({ id: bk.id, name: bk.name, category: 'other', basePrice: bk.price, decay: 0, tags: ['book'], desc: `스킬북 — ${bk.desc} (가방에서 읽기, 영구 효과)` });
+for (const [sid, sname, sprice] of SPIRIT_PRODUCTS) add({ id: sid, name: sname, category: 'resource', basePrice: sprice, decay: 0, tags: ['spirit'], desc: '정령이 만든 희귀 제작 재료' });
 add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
 
 // 기타
@@ -116,7 +118,7 @@ add({ id: 'special_fertilizer', name: '특별 비료', category: 'other', basePr
 add({ id: 'compost', name: '퇴비', category: 'other', basePrice: 15, decay: 0, desc: '천연 비료. 수확량 +12%' });
 add({ id: 'rotten', name: '부패물', category: 'other', basePrice: 0, decay: 0, sellable: false, desc: '판매 불가. 퇴비 기술로 재활용 가능' });
 add({ id: 'breed_charm', name: '번식 부적', category: 'other', basePrice: 1500, decay: 0, desc: '특급상인 전용. 다음 브리딩 상위 등급 확률 증가' });
-add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 300, decay: 0, desc: '특급상인 전용. 축사 전체 하루 급식 + 친밀도 상승' });
+add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 300, decay: 0, desc: '귀한 사료. 축사 전체 하루 급식 + 친밀도 상승' });
 
 // 가공품 / 요리 — 가격은 재료 기본가 × 배율로 산출
 const byId: Record<string, ItemDef> = Object.fromEntries(items.map((i) => [i.id, i]));

@@ -7,7 +7,8 @@ import { ANIMALS, ANIMAL_BY_ID } from '../data/animals';
 import { BUILDING_BY_ID } from '../data/buildings';
 import { CROPS, CROP_BY_ID } from '../data/crops';
 import { BOOKS } from '../data/books';
-import { MERCHANT_BASICS, MERCHANT_DECOS, RARE_SEEDS, SPECIAL_DECOS, SPECIAL_ITEMS } from '../data/economy';
+import { MERCHANT_BASICS, MERCHANT_DECOS, MERCHANT_KINDS, RARE_SEEDS, SEASONAL_DECOS, SPECIAL_DECOS, SPECIAL_ITEMS, type MerchantKind } from '../data/economy';
+import { FISH } from '../data/fish';
 import { ITEM_BY_ID } from '../data/items';
 import { buyPrice, sellPrice, animalSellPrice, beautyBonus, type PriceContext } from '../services/EconomyService';
 import type { Grade, ShopEntry } from '../types/game';
@@ -43,10 +44,36 @@ export class MerchantSystem {
     }
   }
 
+  /** 오늘 올 상인 종류 (해금 상황에 맞는 것만) */
+  rollKind(): MerchantKind {
+    const w = this.w;
+    const cal = calendar(w.state.time.day);
+    const ok: Record<MerchantKind, boolean> = {
+      general: true,
+      livestock: w.skills.has('l_chicken'),
+      fishing: w.state.tools.rodOwned,
+      mineral: true,
+      artisan: w.skills.has('f_processing'),
+      seasonal: cal.dayOfSeason <= 10,
+      collector: (w.state.artifacts?.found.length ?? 0) > 0,
+      special: false,
+    };
+    const weights: Record<string, number> = {};
+    for (const [k, v] of Object.entries(MERCHANT_KINDS)) if (ok[k as MerchantKind] && v.weight > 0) weights[k] = v.weight;
+    let x = w.rand() * Object.values(weights).reduce((a, b) => a + b, 0);
+    for (const [k, v] of Object.entries(weights)) if ((x -= v) < 0) return k as MerchantKind;
+    return 'general';
+  }
+
+  kindName(): string {
+    return MERCHANT_KINDS[this.m.kind ?? (this.m.special ? 'special' : 'general')].name;
+  }
+
   arrive(special: boolean, tutorial = false): void {
     const m = this.m;
     m.present = true;
     m.special = special;
+    m.kind = special ? 'special' : tutorial ? 'general' : this.rollKind();
     m.visits++;
     if (special) {
       m.missStreak = 0;
@@ -62,7 +89,7 @@ export class MerchantSystem {
     m.stock = this.generateStock(special);
     this.w.notify({
       key: 'merchant',
-      text: special ? '특급상인이 도착했습니다! 오늘만 특별한 거래를!' : '방문상인이 도착했습니다.',
+      text: special ? '특급상인이 도착했습니다! 오늘만 특별한 거래를!' : `${MERCHANT_KINDS[m.kind].name}이(가) 찾아왔어요 — ${MERCHANT_KINDS[m.kind].desc}`,
       icon: 'ic_merchant',
       tone: special ? 'good' : 'info',
     });
@@ -93,6 +120,78 @@ export class MerchantSystem {
   }
 
   generateStock(special: boolean): ShopEntry[] {
+    const kind: MerchantKind = special ? 'special' : this.m.kind ?? 'general';
+    if (kind === 'general' || kind === 'special') return this.generalStock(special);
+    const r = () => this.w.rand();
+    const disc = this.m.discount;
+    const out: ShopEntry[] = [];
+    const item = (id: string, price: number, stock: number) => out.push({ kind: 'item', id, price: buyPrice(price, disc), stock });
+    const cal = calendar(this.w.state.time.day);
+    // 어떤 상인이든 기본 씨앗 2종과 건초는 챙겨 온다 (농사가 막히지 않게)
+    const basics = CROPS.filter((c) => !c.rare && !c.fruitTree && c.season.includes(cal.season) && c.unlockLevel <= 1);
+    for (const c of shuffle(r, basics).slice(0, 2)) item(`seed_${c.id}`, c.seedPrice, 20);
+    item('hay', 15, 30);
+    switch (kind) {
+      case 'livestock': {
+        const species = ANIMALS.filter((a) => this.w.skills.has(a.unlockSkill) && !a.rare);
+        for (const a of shuffle(r, species).slice(0, BALANCE.merchant.animalOffers + 2)) {
+          const grade = this.rollGrade(false);
+          const traits = this.w.animals.randomTraits(grade === 2 ? 1 : this.w.rand() < 0.4 ? 1 : 0);
+          out.push({ kind: 'animal', id: a.id, price: buyPrice(Math.round(a.buyPrice * BALANCE.economy.animalGradeSellMul[grade]), disc), stock: 1, animal: { gender: r() < 0.5 ? 'F' : 'M', grade, traits } });
+        }
+        item('treat', 55, 15);
+        item('golden_feed', 340, 2);
+        break;
+      }
+      case 'fishing': {
+        item('rare_bait', 55, 15);
+        item('fish_feed', 8, 80);
+        item('pondweed', 14, 15);
+        item('clam', 20, 10);
+        for (const f of shuffle(r, FISH.filter((f) => f.rarity === 'common' || f.rarity === 'rare')).slice(0, 2)) item(f.id, Math.round(f.baseSellPrice * 1.6), 3);
+        break;
+      }
+      case 'mineral': {
+        item('stone', 6, 99);
+        item('coal', 18, 30);
+        item('copper_ore', 30, 30);
+        item('iron_ore', 60, 20);
+        if (r() < 0.4) item('silver_ore', 110, 8);
+        item('brick', 34, 30);
+        item('ore_bag', 60, 3);
+        break;
+      }
+      case 'artisan': {
+        for (const id of ['processor', 'kitchen', 'cellar', 'loom']) {
+          const d = BUILDING_BY_ID[id];
+          if (d && (!d.unlockSkill || this.w.skills.has(d.unlockSkill))) out.push({ kind: 'deco', id, price: buyPrice(Math.round(d.price * 0.8), disc), stock: 1 });
+        }
+        item('sugar', 60, 10);
+        item('flour', 50, 10);
+        item('fish_feed', 8, 30);
+        break;
+      }
+      case 'seasonal': {
+        for (const c of CROPS.filter((c) => !c.rare && c.season.includes(cal.season) && (!c.unlockSkill || this.w.skills.has(c.unlockSkill)))) item(`seed_${c.id}`, Math.round(c.seedPrice * 0.9), 15);
+        for (const d of SEASONAL_DECOS[cal.season] ?? []) out.push({ kind: 'deco', id: d.id, price: buyPrice(d.price, disc), stock: 1 });
+        break;
+      }
+      case 'collector': {
+        const unread = BOOKS.filter((b) => !this.w.collections.hasBook(b.id));
+        if (unread.length) {
+          const bk = pick(r, unread);
+          item(bk.id, Math.round(bk.price * 2.2), 1);
+        }
+        const rs = pick(r, RARE_SEEDS);
+        item(`seed_${rs}`, Math.round(CROP_BY_ID[rs].seedPrice * 1.3), 2);
+        item('geode', 160, 3);
+        break;
+      }
+    }
+    return out;
+  }
+
+  private generalStock(special: boolean): ShopEntry[] {
     const r = () => this.w.rand();
     const disc = this.m.discount;
     const day = this.w.state.time.day;
@@ -194,7 +293,9 @@ export class MerchantSystem {
     const skillMul = 1 + (this.w.skills.has('b_trader') ? 0.05 : 0) + (this.w.skills.has('b_brand') && (cat === 'processed' || cat === 'cooking') ? 0.1 : 0);
     if (base > 0 && skillMul > 1) base = Math.round(base * skillMul);
     // 유물은 수집가 기질의 특급상인이 훨씬 비싸게 사 준다
-    if (ITEM_BY_ID[itemId]?.category === 'artifact') return Math.round(base * (this.m.special ? 1.6 : 0.5));
+    const collector = this.m.present && this.m.kind === 'collector';
+    if (ITEM_BY_ID[itemId]?.category === 'artifact') return Math.round(base * (this.m.special ? 1.6 : collector ? 1.8 : 0.5));
+    if (collector && (ITEM_BY_ID[itemId]?.tags?.includes('rare_animal') || ['pearl', 'shimmer_scale', 'ruby', 'emerald', 'moonstone', 'star_crystal'].includes(itemId))) return Math.round(base * 1.25);
     return base;
   }
 

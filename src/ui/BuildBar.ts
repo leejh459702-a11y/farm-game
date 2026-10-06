@@ -10,8 +10,9 @@ import { SKILL_BY_ID } from '../data/skills';
 import { openPanel } from './openers';
 
 /** 생활 숙련도 조건 미달 시 안내 문구 */
-function lifeLock(d: { unlockLife?: { skill: 'fishing' | 'foraging'; level: number } }): string | null {
+function lifeLock(d: { unlockLife?: { skill: 'fishing' | 'foraging'; level: number }; unlockMastery?: boolean }): string | null {
   const w = Session.world;
+  if (d.unlockMastery && w && !w.spirits.unlocked()) return '마스터리 연구 1개 필요';
   if (!d.unlockLife || !w) return null;
   return w.life.progress(d.unlockLife.skill).level >= d.unlockLife.level ? null : `${d.unlockLife.skill === 'fishing' ? '낚시' : '채집'} Lv.${d.unlockLife.level} 필요`;
 }

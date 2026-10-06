@@ -219,6 +219,8 @@ export class CropSystem {
     if (this.w.rand() < soilChance) n++;
     if (!p.greenhouse && p.upgrades.pest === 0 && this.w.rand() < BALANCE.crops.pestChance) n = Math.max(1, n - 1);
     if (c.rare && this.w.skills.has('f_m_special')) n++;
+    // 수분 곤충이 근처에 있으면 수확량 +5%
+    if (!p.greenhouse && this.w.insects.pollinatorNear(p.x, p.y) && this.w.rand() < 0.05 * n) n++;
     return n;
   }
 

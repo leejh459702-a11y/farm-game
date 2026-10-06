@@ -6,6 +6,8 @@ import { ITEMS } from '../../data/items';
 import { POND_FISH } from '../../data/aquaculture';
 import { ARTIFACTS } from '../../data/artifacts';
 import { BOOKS } from '../../data/books';
+import { INSECTS, type InsectData } from '../../data/insects';
+import { SPIRITS } from '../../data/spirits';
 import { FISH, type FishData } from '../../data/fish';
 import { FORAGE, RESOURCES, type ForageData, type ResourceData } from '../../data/gathering';
 import { Painter, shade, type Color } from '../painter';
@@ -364,7 +366,50 @@ const artifactIcon = (shape: string, c: Color): IconFn => (p) => {
   p.px(13, 2, 0xfff6a0).px(14, 3, 0xfff6a0);
 };
 
+function bugIcon(i: InsectData): IconFn {
+  const { color: c, color2: c2 } = i;
+  return (p) => {
+    switch (i.shape) {
+      case 'butterfly':
+        p.ellipse(5, 6, 4, 3, c).ellipse(11, 6, 4, 3, c).ellipse(5, 11, 3, 2, c).ellipse(11, 11, 3, 2, c).px(4, 5, c2).px(12, 5, c2).px(5, 11, c2).px(11, 11, c2);
+        p.line(8, 4, 8, 13, 0x2a2a2a).px(7, 3, 0x2a2a2a).px(9, 3, 0x2a2a2a);
+        break;
+      case 'bee':
+        p.ellipse(8, 9, 5, 4, c).line(6, 6, 6, 12, c2).line(9, 6, 9, 12, c2).ellipse(7, 4, 3, 2, 0xe8f4fb).ellipse(11, 4, 3, 2, 0xe8f4fb).px(13, 9, c2);
+        break;
+      case 'beetle':
+        p.ellipse(8, 9, 5, 5, c).line(8, 4, 8, 14, c2).px(6, 8, c2).px(10, 10, c2).px(6, 11, c2).px(10, 7, c2).rect(7, 3, 3, 2, 0x1a1a1a);
+        if (i.id === 'stag_beetle') p.line(6, 3, 5, 1, c2).line(10, 3, 11, 1, c2);
+        break;
+      case 'dragonfly':
+        p.line(8, 3, 8, 14, c).ellipse(4, 6, 4, 2, c2).ellipse(12, 6, 4, 2, c2).ellipse(4, 9, 3, 1, c2).ellipse(12, 9, 3, 1, c2).circle(8, 3, 1, c);
+        break;
+      case 'moth':
+        p.tri(1, 4, 8, 7, 3, 12, c).tri(15, 4, 8, 7, 13, 12, c).ellipse(8, 8, 1, 4, c2).px(4, 7, c2).px(12, 7, c2);
+        break;
+      case 'firefly':
+        p.ellipse(8, 7, 3, 3, c).circle(8, 11, 3, c2).circle(8, 11, 5, c2, 0.35).px(7, 4, 0x1a1a1a);
+        break;
+      case 'cicada':
+        p.ellipse(8, 8, 3, 5, c).tri(3, 5, 8, 6, 5, 14, c2).tri(13, 5, 8, 6, 11, 14, c2).px(7, 4, 0x1a1a1a).px(9, 4, 0x1a1a1a);
+        break;
+      case 'cricket':
+        p.ellipse(8, 9, 5, 3, c).line(3, 7, 1, 3, c2).line(12, 10, 15, 13, c2).line(11, 10, 14, 14, c2).px(4, 8, 0x1a1a1a);
+        break;
+    }
+  };
+}
+
 const OTHER: Record<string, IconFn> = {
+  spirit_leaf: sparkle((p) => p.ellipse(8, 8, 5, 3, 0x7ac85a).line(4, 11, 12, 5, 0x3f8a3c)),
+  spirit_dew: sparkle((p) => p.ellipse(8, 10, 4, 4, 0x7ac8f0).tri(5, 9, 11, 9, 8, 3, 0x7ac8f0).px(7, 8, 0xffffff)),
+  spirit_crystal: sparkle((p) => p.tri(8, 2, 3, 9, 13, 9, 0xd8d0f0).tri(3, 9, 13, 9, 8, 15, 0xb8b0d8)),
+  ember_core: sparkle((p) => p.circle(8, 9, 5, 0xe0603a).circle(8, 9, 3, 0xf6c870).px(8, 9, 0xffffff)),
+  moon_dust: sparkle((p) => p.ellipse(8, 11, 6, 3, 0xd8dcf8).circle(6, 6, 3, 0xf6f6ff).circle(7, 5, 3, 0xd8dcf8)),
+  dew_pearl: sparkle((p) => p.circle(8, 9, 5, 0xc8f6ec).px(6, 7, 0xffffff).px(7, 6, 0xffffff)),
+  lava_gem: sparkle((p) => p.tri(8, 2, 3, 9, 13, 9, 0xff8a3a).tri(3, 9, 13, 9, 8, 15, 0xd8482a)),
+  starlight_drop: sparkle((p) => p.ellipse(8, 10, 4, 4, 0xf6e070).tri(5, 9, 11, 9, 8, 3, 0xf6e070).px(8, 9, 0xffffff)),
+  bloom_petal: sparkle((p) => p.ellipse(6, 8, 3, 4, 0xf2a0c8).ellipse(10, 8, 3, 4, 0xf7c0dc).circle(8, 9, 1, 0xf6e070)),
   ore_bag: sack(0x8a7a6a, 0xd8803a),
   geode: geodeIcon(0x8a857c, 0xd8d0e0, 0xa86ad8),
   magma_geode: geodeIcon(0x5a3a30, 0xf09040, 0xe0303c),
@@ -726,6 +771,9 @@ const UI: Record<string, IconFn> = {
     p.rect(12, 1, 3, 3, 0xf7d84a);
   },
   ic_breed: (p) => UI.ic_heart(p),
+  ic_ticket: (p) => {
+    p.rect(1, 4, 14, 8, 0xf2c83a).rect(1, 4, 14, 1, 0xfff0a0).circle(1, 8, 1, 0xf6efe0).circle(15, 8, 1, 0xf6efe0).line(5, 5, 5, 11, 0xd9a020).rect(8, 6, 5, 1, 0x8a5a20).rect(8, 9, 4, 1, 0x8a5a20).px(3, 7, 0x5aa83c).px(3, 8, 0x5aa83c);
+  },
   ic_mine: (p) => {
     p.rect(2, 4, 12, 11, 0x2a2428).rect(1, 3, 2, 12, 0x8a5a34).rect(13, 3, 2, 12, 0x8a5a34).rect(1, 2, 14, 2, 0xa0703a).rect(5, 11, 6, 1, 0x8a8a90).circle(8, 8, 1, 0xf2c83a);
   },
@@ -820,6 +868,14 @@ export function buildIcons(): IconEntry[] {
     out.push(render(`it_seed_${c.id}`, seedIcon(c)));
   }
   for (const f of FISH) out.push(render(`it_${f.id}`, fishIcon(f)));
+  for (const b of INSECTS) out.push(render(`bug_${b.id}`, bugIcon(b)));
+  for (const sp of SPIRITS)
+    out.push(
+      render(`spirit_${sp.id}`, (p) => {
+        p.circle(8, 9, 6, sp.glow, 0.45).ellipse(8, 9, 4, 5, sp.color).circle(8, 6, 3, sp.color).px(7, 6, 0x2a2a3a).px(9, 6, 0x2a2a3a).px(6, 4, 0xffffff).px(12, 3, sp.glow).px(3, 12, sp.glow).px(13, 12, sp.glow);
+        if (sp.parents) p.px(8, 2, 0xfff6a0).px(7, 1, 0xfff6a0).px(9, 1, 0xfff6a0);
+      }),
+    );
   for (const f of POND_FISH)
     out.push(
       render(`it_roe_${f.id}`, (p) => {

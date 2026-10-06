@@ -12,6 +12,7 @@ import { areaTiles, performAction, resolveAction, type ResolvedAction } from '..
 import { GroundRenderer } from './world/GroundRenderer';
 import { CropRenderer } from './world/CropRenderer';
 import { BuildingRenderer } from './world/BuildingRenderer';
+import { InsectRenderer } from './world/InsectRenderer';
 import { AnimalRenderer } from './world/AnimalRenderer';
 import { PlayerController } from './world/PlayerController';
 import { BuildController } from './world/BuildController';
@@ -43,6 +44,8 @@ export class FarmScene extends Phaser.Scene {
   crops!: CropRenderer;
   buildings!: BuildingRenderer;
   animals!: AnimalRenderer;
+  private insects!: InsectRenderer;
+  private insectTimer = 0;
   player!: PlayerController;
   build!: BuildController;
   private cursor!: Phaser.GameObjects.Graphics;
@@ -73,6 +76,9 @@ export class FarmScene extends Phaser.Scene {
     this.buildings.syncAll();
     this.animals = new AnimalRenderer(this, w, this.buildings);
     this.animals.syncAll();
+    this.insects = new InsectRenderer(this, w);
+    w.insects.morning();
+    this.insects.sync();
     this.player = new PlayerController(this, w);
     this.player.create();
     this.build = new BuildController(this, w, this.buildings);
@@ -120,6 +126,7 @@ export class FarmScene extends Phaser.Scene {
       }),
       ev.on('processing', () => this.buildings.syncBubbles()),
       ev.on('ponds', () => this.buildings.syncBubbles()),
+      ev.on('insects', () => this.insects.sync()),
       ev.on('inventory', () => this.buildings.syncBubbles()),
       ev.on('merchant', () => this.buildings.syncMerchant()),
       ev.on('house', () => this.buildings.syncAll()),
@@ -346,6 +353,16 @@ export class FarmScene extends Phaser.Scene {
       }
       return;
     }
+    // 곤충 관찰
+    const bug = this.insects.hit(t.wx, t.wy);
+    if (bug) {
+      const r = this.w.insects.catch(bug);
+      if (r.ok) {
+        this.insects.catchAnim(bug);
+        this.floatText(t.wx, t.wy - 10, r.first ? `NEW! ${r.name}` : r.name ?? '', r.first ? '#fff6a0' : '#ffffff');
+      }
+      return;
+    }
     // 동물
     const animalId = this.animals.hit(t.wx, t.wy);
     if (animalId) {
@@ -507,6 +524,12 @@ export class FarmScene extends Phaser.Scene {
     const dt = Math.min(deltaMs / 1000, 0.1);
     w.time.tick(dt);
     this.player.update(dt);
+    // 낮/밤에 따라 보이는 곤충이 달라진다 (1초마다 확인)
+    this.insectTimer += dt;
+    if (this.insectTimer > 1) {
+      this.insectTimer = 0;
+      this.insects.sync();
+    }
     const cam = this.cameras.main;
     // 일정 시간 후 플레이어 추적 복귀
     if (!this.following && !this.build.active) {

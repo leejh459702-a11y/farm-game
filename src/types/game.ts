@@ -65,6 +65,17 @@ export interface ProcessJob {
   total: number;
 }
 
+export interface SpiritInst {
+  id: string;
+  kind: string;
+  name: string;
+  fedToday: boolean;
+  /** 다음 생산까지 (먹이 준 날만 줄어듦) */
+  timer: number;
+  /** 유대감 0~100 — 조합 조건 */
+  bond: number;
+}
+
 export interface CellarSlot {
   itemId: string;
   qty: number;
@@ -100,6 +111,8 @@ export interface BuildingInstance {
   skin?: string;
   /** 숙성고 */
   cellar?: { slots: (CellarSlot | null)[] };
+  /** 정령의 사당 */
+  shrine?: { spirits: SpiritInst[]; fusing: { a: string; b: string; kind: string; daysLeft: number } | null };
   /** 양식장 */
   pond?: { fishId: string | null; count: number; tier: number; fedToday: boolean; born: number };
 }
@@ -176,6 +189,8 @@ export interface MerchantState {
   discount: number;
   stock: ShopEntry[];
   visits: number;
+  /** 이번에 찾아온 상인 종류 */
+  kind?: 'general' | 'livestock' | 'fishing' | 'mineral' | 'artisan' | 'seasonal' | 'collector' | 'special';
 }
 
 export interface Ledger {
@@ -343,6 +358,12 @@ export interface GameState {
   collections: { progress: Record<string, Record<string, number>>; done: string[] };
   /** 읽은 스킬북 (영구 효과) */
   books: string[];
+  /** 농업 교환권 */
+  tickets: { have: number; codexAwarded: number; total: number };
+  /** 곤충 정원: 오늘 찾아온 곤충 / 종별 관찰 수 */
+  insects: { day: number; today: { id: string; insect: string; x: number; y: number; caught: boolean }[]; caught: Record<string, number> };
+  /** 만난 정령 종류 (도감) */
+  spiritsSeen: string[];
 }
 
 export interface Settings {

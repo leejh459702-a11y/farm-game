@@ -171,7 +171,10 @@ export class FishingSystem {
         this.w.notify({ key: 'fish_book', text: `물속에서 스킬북 '${bk.name}'을(를) 건졌어요!`, icon: `it_${bk.id}`, tone: 'good' });
       }
     }
-    if (fish.rarity === 'legend') this.w.count('fish:legend');
+    if (fish.rarity === 'legend') {
+      this.w.count('fish:legend');
+      this.w.tickets.give(2, '전설 물고기');
+    }
     const [a, b] = fish.size;
     // 큰 개체는 드물게 (제곱 분포)
     const t = Math.pow(this.w.rand(), 1.8);

@@ -96,6 +96,7 @@ export class FarmGridSystem {
     const fromStock = (this.w.state.buildStock[type] ?? 0) > 0;
     if (!opts.free && !fromStock) {
       if (d.unlockSkill && !this.w.skills.has(d.unlockSkill)) return { ok: false, reason: '연구가 필요합니다' };
+      if (d.unlockMastery && !this.w.spirits.unlocked()) return { ok: false, reason: '마스터리 연구가 필요합니다' };
       if (d.unlockLife && this.w.life.progress(d.unlockLife.skill).level < d.unlockLife.level) return { ok: false, reason: `${d.unlockLife.skill === 'fishing' ? '낚시' : '채집'} Lv.${d.unlockLife.level} 필요` };
       if (this.w.state.gold < d.price) return { ok: false, reason: '골드가 부족합니다' };
       if (!this.w.inventory.hasMats(d.materials)) return { ok: false, reason: '건설 재료가 부족합니다' };
@@ -125,6 +126,10 @@ export class FarmGridSystem {
       inst.autoRecipe = null;
     }
     if (type === 'greenhouse') this.w.crops.createGreenhousePlots(uid, 9);
+    if (type === 'spirit_shrine') {
+      inst.shrine = { spirits: [], fusing: null };
+      inst.outputId = this.w.inventory.create('output', 12, 1);
+    }
     if (type === 'cellar') {
       inst.upgrades = { capacity: 0, notify: 0 };
       inst.cellar = { slots: [null, null, null, null, null, null] };
@@ -196,6 +201,7 @@ export class FarmGridSystem {
     if (b.type === 'greenhouse' && this.w.crops.greenhousePlots(uid).some((p) => p.cropId)) return { ok: false, reason: '온실 안에 작물이 있습니다' };
     if (b.pond && b.pond.count > 0) return { ok: false, reason: '양식장의 물고기를 먼저 건져 주세요' };
     if (b.cellar && b.cellar.slots.some(Boolean)) return { ok: false, reason: '숙성 중인 물건을 먼저 꺼내 주세요' };
+    if (b.shrine && b.shrine.spirits.length) return { ok: false, reason: '정령이 머무는 사당은 철거할 수 없어요' };
     // 보관품 이전
     for (const cid of [b.containerId, b.outputId]) {
       if (!cid) continue;

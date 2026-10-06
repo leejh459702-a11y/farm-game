@@ -30,6 +30,9 @@ import { AgingSystem } from '../systems/AgingSystem';
 import { JournalSystem } from '../systems/JournalSystem';
 import { MineSystem } from '../systems/MineSystem';
 import { CollectionSystem } from '../systems/CollectionSystem';
+import { TicketSystem } from '../systems/TicketSystem';
+import { InsectSystem } from '../systems/InsectSystem';
+import { SpiritSystem } from '../systems/SpiritSystem';
 import { FishingSystem } from '../systems/FishingSystem';
 import { calendar, type CalendarInfo } from '../systems/SeasonSystem';
 import { footprint } from '../data/buildings';
@@ -61,6 +64,9 @@ export class World {
   readonly journal: JournalSystem;
   readonly mine: MineSystem;
   readonly collections: CollectionSystem;
+  readonly tickets: TicketSystem;
+  readonly insects: InsectSystem;
+  readonly spirits: SpiritSystem;
   /** 최근 알림 기록 (세이브 안 함) */
   readonly notifyLog: (GameNotification & { day: number })[] = [];
 
@@ -89,6 +95,9 @@ export class World {
     this.journal = new JournalSystem(this);
     this.mine = new MineSystem(this);
     this.collections = new CollectionSystem(this);
+    this.tickets = new TicketSystem(this);
+    this.insects = new InsectSystem(this);
+    this.spirits = new SpiritSystem(this);
   }
 
   /** 누적 활동 카운터 증가 */

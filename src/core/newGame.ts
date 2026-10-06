@@ -57,5 +57,8 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     artifacts: { found: [], setsClaimed: [] },
     collections: { progress: {}, done: [] },
     books: [],
+    tickets: { have: 0, codexAwarded: 0, total: 0 },
+    insects: { day: -1, today: [], caught: {} },
+    spiritsSeen: [],
   };
 }

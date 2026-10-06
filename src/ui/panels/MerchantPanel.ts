@@ -5,7 +5,7 @@ import { ITEM_BY_ID } from '../../data/items';
 import { ANIMAL_BY_ID, TRAIT_BY_ID } from '../../data/animals';
 import { BUILDING_BY_ID } from '../../data/buildings';
 import { CROP_BY_ID } from '../../data/crops';
-import { MERCHANT_LINES } from '../../data/economy';
+import { MERCHANT_KINDS, MERCHANT_LINES } from '../../data/economy';
 import { freshnessLabel } from '../../services/EconomyService';
 import type { ItemStack, ShopEntry } from '../../types/game';
 import { cx, esc } from '../dom';
@@ -21,14 +21,15 @@ export class MerchantPanel extends Panel {
   constructor() {
     super();
     const sp = this.w.state.merchant.special;
-    this.title = sp ? '특급상인' : '방문상인';
+    this.title = this.w.merchant.kindName();
     this.tabs = [
       { id: 'buy', label: '구매', icon: 'ic_coin' },
       { id: 'sell', label: '판매', icon: 'ic_bag' },
       ...(sp ? [{ id: 'special', label: '특급 상품', icon: 'ic_star', special: true }] : []),
     ];
     const lines = sp ? MERCHANT_LINES.special : MERCHANT_LINES.normal;
-    this.line = lines[Math.floor(Math.random() * lines.length)];
+    const kind = this.w.state.merchant.kind;
+    this.line = kind && kind !== 'general' && kind !== 'special' ? MERCHANT_KINDS[kind].line : lines[Math.floor(Math.random() * lines.length)];
     if (this.w.tutorial.active && this.w.tutorial.step === 10) this.tab = 'sell';
   }
 
