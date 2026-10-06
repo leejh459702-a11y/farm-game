@@ -310,6 +310,7 @@ const STYLE: Record<string, Style> = {
   butcher: { wall: 0xf2e8dc, roof: 0x8a3a3a, awning: 0xc8342c, sign: (p, x, y) => signBoard(p, x, y, SIGN_DRAW.meat) },
   breeding: { wall: 0xf6e0e4, roof: 0xd86a8a, sign: (p, x, y) => signBoard(p, x, y, SIGN_DRAW.heart) },
   greenhouse: { wall: 0xdcecf2, roof: 0xbfe4f0, roofKind: 'glass', door: 0x8ab8c8 },
+  cellar: { wall: 0xb8b0a4, roof: 0x5a4a3a, planks: false, window: false, door: 0x6a4a2e, sign: (p, x, y) => signBoard(p, x, y, SIGN_DRAW.jar) },
   breedlab: { wall: 0xf0f2f6, roof: 0x4a5a8a, roofKind: 'flat', chimney: false, sign: (p, x, y) => signBoard(p, x, y, SIGN_DRAW.dna) },
 };
 

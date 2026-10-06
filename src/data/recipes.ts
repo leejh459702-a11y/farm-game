@@ -121,6 +121,17 @@ export const RECIPES: RecipeData[] = [
   r('shell_fertilizer', 'processor', '조개 비료', [['#shell', 3]], 240, 1.2, 0, { output: 'basic_fertilizer', outQty: 2, category: 'other' }),
   r('herb_feed', 'processor', '약초 사료 (특제 사료)', [['herb', 2], ['hay', 3]], 240, 1.2, 0, { output: 'golden_feed', category: 'other' }),
   r('smoked_fish', 'butcher', '훈제 생선', [['#fish', 2], ['wood', 2]], 300, 1.7, 1),
+  // ───── 가공 확장 (가공할수록 가치 상승) ─────
+  r('wine', 'processor', '와인', [['grape_juice', 2]], 720, 1.7, 0),
+  r('fruit_wine', 'processor', '과일주', [['#fruit', 4]], 720, 1.65, 0),
+  r('premium_cheese', 'processor', '고급 치즈', [['buffalo_milk', 2]], 480, 1.7, 0.5),
+  r('peanut_oil', 'processor', '땅콩기름', [['peanut', 4]], 300, 1.5, 0),
+  r('sugar', 'processor', '설탕', [['sugarbeet', 2]], 240, 1.45, 0),
+  r('caviar', 'processor', '캐비아', [['#roe', 3]], 360, 1.8, 2),
+  r('honey_cake', 'kitchen', '설탕 쿠키', [['flour', 1], ['sugar', 1], ['butter', 1]], 180, 2.0, 6),
+  r('fruit_jam_tart', 'kitchen', '잼 타르트', [['flour', 1], ['sugar', 1], ['strawberry_jam', 1]], 240, 2.0, 8),
+  r('roe_rice', 'kitchen', '알밥', [['#roe', 2], ['rice', 1], ['egg', 1]], 180, 2.0, 12),
+  r('fish_feed', 'processor', '양식 사료', [['wheat', 2]], 120, 1.0, 0, { outQty: 5, category: 'other' }),
   // ───── 퇴비통 ─────
   r('compost', 'compost', '퇴비', [['rotten', 3]], 1440, 0, 0, { unlockSkill: 'f_compost' }),
 ];

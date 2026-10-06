@@ -125,6 +125,10 @@ export class FarmGridSystem {
       inst.autoRecipe = null;
     }
     if (type === 'greenhouse') this.w.crops.createGreenhousePlots(uid, 9);
+    if (type === 'cellar') {
+      inst.upgrades = { capacity: 0, notify: 0 };
+      inst.cellar = { slots: [null, null, null, null, null, null] };
+    }
     if (type === 'fishpond') {
       inst.pond = { fishId: null, count: 0, tier: 0, fedToday: false, born: 0 };
       inst.upgrades = { breedSpeed: 0, roeYield: 0, autoCollect: 0, autoFeed: 0 };
@@ -191,6 +195,7 @@ export class FarmGridSystem {
     if (b.queue && b.queue.length) return { ok: false, reason: '진행 중인 가공이 있습니다' };
     if (b.type === 'greenhouse' && this.w.crops.greenhousePlots(uid).some((p) => p.cropId)) return { ok: false, reason: '온실 안에 작물이 있습니다' };
     if (b.pond && b.pond.count > 0) return { ok: false, reason: '양식장의 물고기를 먼저 건져 주세요' };
+    if (b.cellar && b.cellar.slots.some(Boolean)) return { ok: false, reason: '숙성 중인 물건을 먼저 꺼내 주세요' };
     // 보관품 이전
     for (const cid of [b.containerId, b.outputId]) {
       if (!cid) continue;

@@ -89,6 +89,7 @@ export const CROPS: CropData[] = [
   c('sweetpotato', '고구마', ['autumn'], 35, 36, 4, 0, 2, 2, 1, { kind: 'root', color: 0xa8436a, leaf: G }),
   c('rice', '쌀', ['autumn'], 25, 32, 5, 0, 2, 0.5, 2, { kind: 'grain', color: 0xf0e6b0, leaf: 0x9bc45a }),
   c('grape', '포도', ['autumn'], 110, 58, 7, 3, 2, 9, 4, { kind: 'vine', color: 0x7a3f9a, leaf: G }, { tags: ['fruit'] }),
+  c('sugarbeet', '사탕무', ['autumn'], 30, 42, 5, 0, 1, 1, 3, { kind: 'root', color: 0xf0e6dc, leaf: G2 }),
   c('peanut', '땅콩', ['autumn'], 40, 20, 4, 0, 3, 1, 2, { kind: 'leafy', color: 0xc9a36a, leaf: G2 }),
   c('apple', '사과', ['autumn'], 280, 75, 8, 3, 3, 3, 5, { kind: 'tree', color: 0xd63a32, leaf: G2 }, { unlockSkill: 'f_orchard', tags: ['fruit'] }),
   c('pear', '배', ['autumn'], 300, 82, 8, 3, 3, 3, 6, { kind: 'tree', color: 0xe8d36a, leaf: G2 }, { unlockSkill: 'f_orchard', tags: ['fruit'] }),

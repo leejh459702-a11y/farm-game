@@ -65,6 +65,18 @@ export interface ProcessJob {
   total: number;
 }
 
+export interface CellarSlot {
+  itemId: string;
+  qty: number;
+  /** 넣은 날 */
+  startDay: number;
+  /** 넣기 전 보너스 (숙성 보너스는 이보다 낮아지지 않음) */
+  baseBonus: number;
+  freshness?: number;
+  /** 마지막으로 알린 단계 보너스 */
+  notified?: number;
+}
+
 export interface BuildingInstance {
   uid: string;
   type: string;
@@ -86,6 +98,8 @@ export interface BuildingInstance {
   autoRecipe?: string | null;
   /** 장식 스킨 */
   skin?: string;
+  /** 숙성고 */
+  cellar?: { slots: (CellarSlot | null)[] };
   /** 양식장 */
   pond?: { fishId: string | null; count: number; tier: number; fedToday: boolean; born: number };
 }

@@ -55,6 +55,7 @@ export const SKILLS: SkillNode[] = [
   n('f_processing', 'farming', '농산물 가공', '가공소 건설.', 4000, 4, 2, ['f_storage1'], 3, 2),
   n('f_kitchen', 'farming', '요리', '주방 건설. 고부가가치 요리.', 7000, 5, 3, ['f_processing'], 3, 3),
   n('f_greenhouse', 'farming', '온실', '온실 건설. 계절 제한 없이 재배.', 12000, 5, 3, ['f_cold'], 3, 4),
+  n('f_aging', 'farming', '숙성', '숙성고 건설 — 치즈·와인 등을 오래 둘수록 비싸진다.', 6000, 5, 2, ['f_processing'], 3, 3),
   n('f_autoProcess', 'farming', '자동 가공', '가공 시설 자동 투입 (창고 재료 사용).', 18000, 7, 5, ['f_kitchen'], 3, 5),
   // ───── 목축 ─────  (col: 0 가금, 1 가축, 2 브리딩, 3 자동/가공)
   n('l_chicken', 'livestock', '닭', '닭장 건설, 닭 사육.', 500, 1, 0, [], 0, 0),

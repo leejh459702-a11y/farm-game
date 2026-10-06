@@ -19,6 +19,7 @@ import { FinancePanel, CalendarPanel } from './panels/SummaryPanels';
 import { BlueprintPanel } from './panels/BlueprintPanel';
 import { PausePanel } from './panels/PausePanel';
 import { PondPanel } from './panels/PondPanel';
+import { CellarPanel } from './panels/CellarPanel';
 import { GreenhousePanel } from './panels/GreenhousePanel';
 import { SettingsPanel } from './panels/SettingsPanel';
 import { SaveSlotsPanel } from './MainMenu';
@@ -109,6 +110,7 @@ export function openBuilding(uid: string): void {
   if (b.type === 'breeding' || b.type === 'breedlab') return void Panels.open(new BreedingPanel());
   if (b.type === 'greenhouse') return void Panels.open(new GreenhousePanel(uid));
   if (b.type === 'fishpond') return void Panels.open(new PondPanel(uid));
+  if (b.type === 'cellar') return void Panels.open(new CellarPanel(uid));
   infoDialog(d.name, `${esc(d.desc)}${d.beauty ? `<br><span class="muted small">농장 아름다움 +${d.beauty} (상인 판매가 소폭 상승)</span>` : ''}`, d.spriteKey);
 }
 

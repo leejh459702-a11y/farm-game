@@ -94,7 +94,7 @@ export class InventoryPanel extends Panel {
     const s = this.w.state.containers[this.sel.cid]?.slots[this.sel.slot];
     if (!s) return '';
     const d = ITEM_BY_ID[s.itemId];
-    const price = this.w.merchant.unitPrice(s.itemId, s.freshness);
+    const price = this.w.merchant.unitPrice(s.itemId, s.freshness, s.bonus ?? 0);
     const fav = this.w.state.favorites.includes(s.itemId);
     const crop = CROP_BY_ID[s.itemId];
     const uses = RECIPES.filter((r) => r.inputs.some((i) => i.id === s.itemId)).slice(0, 4).map((r) => r.outputName);
@@ -102,6 +102,7 @@ export class InventoryPanel extends Panel {
     return `<div class="row grow" style="min-width:0">${iconHtml(d.icon, 40)}<div class="grow" style="min-width:0">
         <b>${esc(d.name)}</b> <span class="muted small">×${s.qty}</span> ${s.freshness !== undefined ? `<span class="chip ${s.freshness >= 70 ? 'green' : s.freshness >= 50 ? 'gold' : 'red'}">신선도 ${Math.ceil(s.freshness)} · ${freshnessLabel(s.freshness)}</span>` : ''}
         ${crop && crop.season.includes(this.w.cal.season) ? '<span class="chip green">제철 +10%</span>' : ''}
+        ${s.bonus && s.bonus > 0.12 ? `<span class="chip gold">숙성 +${Math.round(s.bonus * 100)}%</span>` : ''}
         <div class="small muted ellipsis">${d.sellable ? `예상 판매가 ${price.toLocaleString()}G/개` : esc(d.desc)}${uses.length ? ` · 가공: ${esc(uses.join(', '))}` : ''}</div></div></div>
       <button class="btn small" data-act="fav">${fav ? '★ 해제' : '☆ 즐겨찾기'}</button>
       ${other ? `<button class="btn small blue" data-act="move">${other === 'bag' ? '가방으로' : '넣기'}</button>` : ''}

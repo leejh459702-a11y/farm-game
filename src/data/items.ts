@@ -114,7 +114,7 @@ add({ id: 'golden_feed', name: '특제 사료', category: 'other', basePrice: 30
 const byId: Record<string, ItemDef> = Object.fromEntries(items.map((i) => [i.id, i]));
 
 /** 태그 재료(#fish 등)의 기준가 — 가공품 가격 산출용 */
-export const TAG_PRICE: Record<string, number> = { fish: 25, mushroom: 22, berry: 13, seafood: 16, shell: 16, herb: 16 };
+export const TAG_PRICE: Record<string, number> = { fish: 25, mushroom: 22, berry: 13, seafood: 16, shell: 16, herb: 16, roe: 60, fruit: 60 };
 const inputPrice = (id: string): number => (id.startsWith('#') ? TAG_PRICE[id.slice(1)] ?? 10 : byId[id]?.basePrice ?? 0);
 const inputKnown = (id: string): boolean => id.startsWith('#') || !!byId[id];
 const pending = [...RECIPES];
@@ -162,12 +162,12 @@ export function matchesInput(itemId: string, input: string): boolean {
 
 export function inputName(input: string): string {
   if (!input.startsWith('#')) return byId[input]?.name ?? input;
-  return ({ fish: '물고기(아무거나)', mushroom: '버섯(아무거나)', berry: '열매(아무거나)', seafood: '조개류(아무거나)', shell: '조개류(아무거나)', herb: '약초' } as Record<string, string>)[input.slice(1)] ?? input;
+  return ({ fish: '물고기(아무거나)', mushroom: '버섯(아무거나)', berry: '열매(아무거나)', seafood: '조개류(아무거나)', shell: '조개류(아무거나)', herb: '약초', roe: '어란(아무거나)', fruit: '과일(아무거나)' } as Record<string, string>)[input.slice(1)] ?? input;
 }
 
 export function inputIcon(input: string): string {
   if (!input.startsWith('#')) return byId[input]?.icon ?? 'ic_star';
-  return ({ fish: 'it_crucian', mushroom: 'it_shiitake', berry: 'it_wild_strawberry', seafood: 'it_clam', shell: 'it_clam', herb: 'it_herb' } as Record<string, string>)[input.slice(1)] ?? 'ic_star';
+  return ({ fish: 'it_crucian', mushroom: 'it_shiitake', berry: 'it_wild_strawberry', seafood: 'it_clam', shell: 'it_clam', herb: 'it_herb', roe: 'it_roe_carp', fruit: 'it_apple' } as Record<string, string>)[input.slice(1)] ?? 'ic_star';
 }
 
 export const ITEMS = items;

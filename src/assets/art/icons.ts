@@ -342,6 +342,17 @@ const sparkle = (fn: IconFn): IconFn => (p) => {
 };
 
 const OTHER: Record<string, IconFn> = {
+  wine: bottle(0x7a1f3a, 0x3b2a22),
+  fruit_wine: bottle(0xd89a3a, 0x8a5a3a),
+  peanut_oil: bottle(0xf0d070, 0xa0784e),
+  premium_cheese: cheese(0xf6ecb8),
+  sugar: sack(0xf6f2ea, 0xe0d8cc),
+  caviar: jar(0x2a2a30, 0xd9a03a),
+  honey_cake: (p) => {
+    for (const [x, y] of [[5, 6], [11, 7], [8, 11]]) p.circle(x, y, 3, 0xd9a050).px(x - 1, y - 1, 0x8a5a3a).px(x + 1, y, 0x8a5a3a);
+  },
+  fruit_jam_tart: plate(0xd9a050, 0xd8343c, 0xf6efe0),
+  roe_rice: bowl(0xf6efe0, 0xf09a2c, 0xe8584a),
   pondweed: (p) => {
     for (const [x, c] of [[5, 0x4a9a4a], [8, 0x5aa83c], [11, 0x3f8a3c]] as const) p.line(x, 14, x - 1, 4, c).line(x - 1, 8, x + 1, 6, c);
     p.ellipse(8, 14, 6, 1, 0x3f7fb8);

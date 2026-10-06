@@ -29,9 +29,11 @@ export class InventorySystem {
     return (ITEM_BY_ID[itemId]?.decay ?? 0) > 0;
   }
 
-  private canMerge(s: ItemStack, itemId: string, fresh: number | undefined): boolean {
+  private canMerge(s: ItemStack, itemId: string, fresh: number | undefined, bonus = 0): boolean {
     if (s.itemId !== itemId) return false;
     if (s.qty >= item(itemId).maxStack) return false;
+    // 숙성 단계처럼 가치 보너스가 크게 다르면 따로 쌓는다 (물고기 크기 보너스 정도는 합침)
+    if (Math.abs((s.bonus ?? 0) - bonus) > 0.12) return false;
     if (!this.perishable(itemId)) return true;
     return Math.abs((s.freshness ?? 100) - (fresh ?? 100)) <= BALANCE.freshness.mergeTolerance;
   }
@@ -58,7 +60,7 @@ export class InventorySystem {
     let left = qty;
     for (const s of c.slots) {
       if (left <= 0) break;
-      if (s && this.canMerge(s, itemId, fresh)) {
+      if (s && this.canMerge(s, itemId, fresh, bonus ?? 0)) {
         const n = Math.min(left, def.maxStack - s.qty);
         if (fresh !== undefined) s.freshness = ((s.freshness ?? 100) * s.qty + fresh * n) / (s.qty + n);
         if (bonus || s.bonus) s.bonus = ((s.bonus ?? 0) * s.qty + (bonus ?? 0) * n) / (s.qty + n);
@@ -111,7 +113,7 @@ export class InventorySystem {
     for (const { s, i } of idx) {
       if (left <= 0) break;
       const n = Math.min(left, s!.qty);
-      out.push({ itemId, qty: n, freshness: s!.freshness });
+      out.push(s!.bonus ? { itemId, qty: n, freshness: s!.freshness, bonus: s!.bonus } : { itemId, qty: n, freshness: s!.freshness });
       s!.qty -= n;
       left -= n;
       if (s!.qty <= 0) c.slots[i] = null;

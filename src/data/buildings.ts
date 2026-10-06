@@ -79,6 +79,7 @@ export const BUILDINGS: BuildingData[] = [
   b({ id: 'butcher', materials: [{ id: 'stone', qty: 40 }, { id: 'iron_ore', qty: 5 }], name: '육가공소', w: 3, h: 2, category: 'production', price: 12000, unlockSkill: 'l_meat', station: 'butcher', queueSize: 3, desc: '동물 출하 및 육가공.' }),
   b({ id: 'breeding', materials: [{ id: 'wood', qty: 40 }, { id: 'stone', qty: 20 }], name: '브리딩 시설', w: 3, h: 2, category: 'production', price: 8000, unlockSkill: 'l_breeding', desc: '암수를 골라 브리딩.' }),
   b({ id: 'greenhouse', materials: [{ id: 'wood', qty: 50 }, { id: 'copper_ore', qty: 20 }, { id: 'clay', qty: 10 }], name: '온실', w: 3, h: 3, category: 'production', price: 25000, unlockSkill: 'f_greenhouse', desc: '내부 9칸. 계절 제한 없이 재배, 자동 급수.' }),
+  b({ id: 'cellar', materials: [{ id: 'stone', qty: 40 }, { id: 'wood', qty: 20 }, { id: 'brick', qty: 10 }], name: '숙성고', w: 2, h: 2, category: 'production', price: 7000, unlockSkill: 'f_aging', desc: '치즈·와인·김치 등을 숙성해 가치를 높인다. 넣어 둔 동안 신선도가 떨어지지 않는다.' }),
   b({ id: 'fishpond', materials: [{ id: 'stone', qty: 40 }, { id: 'wood', qty: 20 }, { id: 'clay', qty: 10 }], name: '양식장', w: 3, h: 3, category: 'production', price: 5000, unlockLife: { skill: 'fishing', level: 3 }, desc: '한 종류의 물고기를 키워 어란·물고기·특수 재료를 얻는다. 낚시 Lv.3 필요.' }),
   b({ id: 'breedlab', materials: [{ id: 'stone', qty: 80 }, { id: 'iron_ore', qty: 30 }, { id: 'gold_ore', qty: 5 }], name: '브리딩 연구소', w: 4, h: 3, category: 'production', price: 60000, unlockSkill: 'l_breedLab', desc: '브리딩 상위 등급 확률 증가, 쌍둥이 확률 증가.' }),
 ];

@@ -26,6 +26,7 @@ import { GameTimeSystem } from '../systems/GameTimeSystem';
 import { LifeSystem } from '../systems/LifeSystem';
 import { RegionSystem } from '../systems/RegionSystem';
 import { AquacultureSystem } from '../systems/AquacultureSystem';
+import { AgingSystem } from '../systems/AgingSystem';
 import { FishingSystem } from '../systems/FishingSystem';
 import { calendar, type CalendarInfo } from '../systems/SeasonSystem';
 import { footprint } from '../data/buildings';
@@ -53,6 +54,7 @@ export class World {
   readonly regions: RegionSystem;
   readonly fishing: FishingSystem;
   readonly ponds: AquacultureSystem;
+  readonly aging: AgingSystem;
   /** 최근 알림 기록 (세이브 안 함) */
   readonly notifyLog: (GameNotification & { day: number })[] = [];
 
@@ -77,6 +79,7 @@ export class World {
     this.regions = new RegionSystem(this);
     this.fishing = new FishingSystem(this);
     this.ponds = new AquacultureSystem(this);
+    this.aging = new AgingSystem(this);
   }
 
   /** 누적 활동 카운터 증가 */
