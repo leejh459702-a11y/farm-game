@@ -29,15 +29,21 @@ export class ProcessingSystem {
     return r.inputs.every((i) => this.w.inventory.countMatching(i.id) >= i.qty * times);
   }
 
+  /** 동시 작업 슬롯 (대량 생산 연구 +1) */
+  queueSize(b: BuildingInstance): number {
+    return (BUILDING_BY_ID[b.type].queueSize ?? 1) + (this.w.skills.has('b_bulk') ? 1 : 0);
+  }
+
   start(b: BuildingInstance, recipeId: string): { ok: boolean; reason?: string } {
     const r = RECIPE_BY_ID[recipeId];
     const d = BUILDING_BY_ID[b.type];
     if (!r || r.station !== d.station) return { ok: false, reason: '이 시설에서 만들 수 없습니다' };
     if (!this.isUnlocked(r)) return { ok: false, reason: '연구가 필요합니다' };
-    if ((b.queue?.length ?? 0) >= (d.queueSize ?? 1)) return { ok: false, reason: '작업 슬롯이 가득 찼습니다' };
+    if ((b.queue?.length ?? 0) >= this.queueSize(b)) return { ok: false, reason: '작업 슬롯이 가득 찼습니다' };
     if (!this.canMake(r)) return { ok: false, reason: '재료가 부족합니다' };
     for (const i of r.inputs) this.w.inventory.consumeMatching(i.id, i.qty);
-    b.queue!.push({ recipeId, remaining: r.minutes, total: r.minutes });
+    const minutes = Math.round(r.minutes * (this.w.skills.has('b_m_auto') ? 0.75 : 1));
+    b.queue!.push({ recipeId, remaining: minutes, total: minutes });
     this.w.events.emit('processing', undefined);
     this.w.events.emit('sfx', { key: 'process' });
     return { ok: true };
@@ -62,7 +68,7 @@ export class ProcessingSystem {
         changed = true;
       }
       if (b.autoInput && b.autoRecipe && this.w.skills.has('f_autoProcess')) {
-        while ((b.queue.length ?? 0) < (BUILDING_BY_ID[b.type].queueSize ?? 1) && this.start(b, b.autoRecipe).ok) changed = true;
+        while ((b.queue.length ?? 0) < this.queueSize(b) && this.start(b, b.autoRecipe).ok) changed = true;
       }
     }
     if (changed) this.w.events.emit('processing', undefined);
@@ -80,11 +86,13 @@ export class ProcessingSystem {
     } else {
       const r = RECIPE_BY_ID[recipeId];
       itemId = r.output;
-      qty = r.outQty;
+      qty = r.outQty + (this.w.skills.has('b_m_mass') && this.w.rand() < 0.25 ? 1 : 0);
       name = r.outputName;
       this.w.count('craft', qty);
       this.w.count(`craft:${recipeId}`, qty);
-      this.w.skills.addXp(r.station === 'kitchen' ? 'farming' : r.station === 'loom' || r.station === 'butcher' ? 'livestock' : 'farming', r.station === 'kitchen' ? BALANCE.xp.cook : BALANCE.xp.process);
+      const xp = r.station === 'kitchen' ? BALANCE.xp.cook : BALANCE.xp.process;
+      this.w.skills.addXp('business', xp);
+      this.w.skills.addXp(r.station === 'loom' || r.station === 'butcher' ? 'livestock' : 'farming', Math.round(xp / 2));
     }
     const left = this.w.inventory.add(b.outputId!, itemId, qty, 100, false);
     if (left >= qty) return false;

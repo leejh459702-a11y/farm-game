@@ -82,6 +82,7 @@ export class AquacultureSystem {
   expand(b: BuildingInstance): Result {
     const t = this.nextTier(b);
     if (!t) return { ok: false, reason: '최대 단계예요' };
+    if (t.skill && !this.w.skills.has(t.skill)) return { ok: false, reason: '낚시 마스터리 [최고의 양식장]이 필요해요' };
     if (this.w.state.gold < t.gold) return { ok: false, reason: '골드가 부족해요' };
     if (!this.w.inventory.hasMats(t.mats)) return { ok: false, reason: '확장 재료가 부족해요' };
     this.w.spend(t.gold, '양식장 확장');
@@ -99,6 +100,7 @@ export class AquacultureSystem {
   upgrade(b: BuildingInstance, key: PondUpgrade): Result {
     const c = this.upgradeCost(b, key);
     if (!c) return { ok: false, reason: '최대 단계예요' };
+    if ((key === 'autoCollect' || key === 'autoFeed') && !this.w.skills.has('fi_pondAuto')) return { ok: false, reason: '낚시 연구 [양식 자동화]가 필요해요' };
     if (this.w.state.gold < c.gold) return { ok: false, reason: '골드가 부족해요' };
     if (!this.w.inventory.hasMats(c.mats)) return { ok: false, reason: '재료가 부족해요' };
     this.w.spend(c.gold, `양식장:${POND_UPGRADES[key].name}`);

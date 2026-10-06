@@ -29,7 +29,8 @@ export class MerchantSystem {
 
   scheduleNext(): void {
     const r = () => this.w.rand();
-    this.m.nextVisitDay = this.w.state.time.day + randInt(r, BALANCE.merchant.minInterval, BALANCE.merchant.maxInterval);
+    const [a, b] = this.w.skills.has('b_regular') ? [1, 2] : [BALANCE.merchant.minInterval, BALANCE.merchant.maxInterval];
+    this.m.nextVisitDay = this.w.state.time.day + randInt(r, a, b);
   }
 
   /** 아침마다 호출 */
@@ -110,6 +111,14 @@ export class MerchantSystem {
     const seedPick = seeds.slice(0, cfg.seedOffers);
     if (tutorialActive && !seedPick.some((c) => c.id === 'carrot')) seedPick.unshift(CROP_BY_ID.carrot);
     for (const c of seedPick) out.push({ kind: 'item', id: `seed_${c.id}`, price: buyPrice(c.seedPrice, disc), stock: 20 });
+    // 마스터리: 희귀 종자 연구 — 일반 상인도 희귀 씨앗 하나
+    if (!special && this.w.skills.has('f_m_seed')) {
+      const rare = CROPS.filter((c) => c.rare && (!c.unlockSkill || this.w.skills.has(c.unlockSkill)));
+      if (rare.length) {
+        const c = rare[Math.floor(r() * rare.length)];
+        out.push({ kind: 'item', id: `seed_${c.id}`, price: buyPrice(Math.round(c.seedPrice * 1.2), disc), stock: 3 });
+      }
+    }
 
     // 기본 상품
     for (const b of MERCHANT_BASICS) if (!b.skill || this.w.skills.has(b.skill)) out.push({ kind: 'item', id: b.id, price: buyPrice(b.price, disc), stock: b.stock });
@@ -174,7 +183,10 @@ export class MerchantSystem {
 
   // ───── 판매 ─────
   unitPrice(itemId: string, freshness?: number, bonus = 0): number {
-    const base = sellPrice(itemId, freshness, this.priceCtx(), bonus);
+    let base = sellPrice(itemId, freshness, this.priceCtx(), bonus);
+    const cat = ITEM_BY_ID[itemId]?.category;
+    const skillMul = 1 + (this.w.skills.has('b_trader') ? 0.05 : 0) + (this.w.skills.has('b_brand') && (cat === 'processed' || cat === 'cooking') ? 0.1 : 0);
+    if (base > 0 && skillMul > 1) base = Math.round(base * skillMul);
     // 유물은 수집가 기질의 특급상인이 훨씬 비싸게 사 준다
     if (ITEM_BY_ID[itemId]?.category === 'artifact') return Math.round(base * (this.m.special ? 1.6 : 0.5));
     return base;
@@ -191,6 +203,7 @@ export class MerchantSystem {
     if (!got) return { ok: false };
     const gold = unit * got.qty;
     this.w.earn(gold, '판매');
+    this.w.skills.addXp('business', Math.max(1, Math.round(gold / 100)));
     this.w.finance.recordSale(got.itemId, got.qty, gold);
     this.w.codex.recordSale(got.itemId, unit);
     this.w.events.emit('sfx', { key: 'coin' });

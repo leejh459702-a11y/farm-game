@@ -10,10 +10,12 @@ export const POND_FISH: FishData[] = FISH.filter((f) => f.rarity !== 'legend' &&
 export const roeId = (fishId: string): string => `roe_${fishId}`;
 
 /** 개체 수 단계 — 0단계는 건설 시 기본 */
-export const POND_TIERS: { cap: number; mats: { id: string; qty: number }[]; gold: number }[] = [
+export const POND_TIERS: { cap: number; mats: { id: string; qty: number }[]; gold: number; skill?: string }[] = [
   { cap: 5, mats: [], gold: 0 },
   { cap: 8, mats: [{ id: 'stone', qty: 30 }, { id: 'reed', qty: 10 }, { id: 'clam', qty: 5 }], gold: 3000 },
   { cap: 10, mats: [{ id: 'stone', qty: 50 }, { id: 'pondweed', qty: 12 }, { id: 'fish_feed', qty: 20 }, { id: 'iron_ore', qty: 5 }], gold: 8000 },
+  // 마스터리 '최고의 양식장'
+  { cap: 14, mats: [{ id: 'pearl', qty: 3 }, { id: 'pondweed', qty: 20 }, { id: 'gold_ore', qty: 5 }], gold: 20000, skill: 'fi_m_pond' },
 ];
 
 export type PondUpgrade = 'breedSpeed' | 'roeYield' | 'autoCollect' | 'autoFeed';

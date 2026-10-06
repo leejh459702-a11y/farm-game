@@ -63,7 +63,7 @@ export class StationPanel extends Panel {
     if (!b) return '';
     const d = BUILDING_BY_ID[b.type];
     const recipes = w.processing.recipesFor(d.station!);
-    const qsize = d.queueSize ?? 1;
+    const qsize = w.processing.queueSize(b);
     const canStart = (b.queue?.length ?? 0) < qsize;
     if (this.tab === 'book') {
       return `<div class="list">${recipes.map((r) => this.recipeRow(r, canStart)).join('')}</div>`;

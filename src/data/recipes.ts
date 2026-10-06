@@ -135,6 +135,7 @@ export const RECIPES: RecipeData[] = [
   r('fruit_jam_tart', 'kitchen', '잼 타르트', [['flour', 1], ['sugar', 1], ['strawberry_jam', 1]], 240, 2.0, 8),
   r('roe_rice', 'kitchen', '알밥', [['#roe', 2], ['rice', 1], ['egg', 1]], 180, 2.0, 12),
   r('fish_feed', 'processor', '양식 사료', [['wheat', 2]], 120, 1.0, 0, { outQty: 5, category: 'other' }),
+  r('bait_craft', 'processor', '희귀 미끼', [['#fish', 1], ['herb', 1]], 120, 1.0, 0, { output: 'rare_bait', outQty: 3, category: 'other', unlockSkill: 'fi_bait' }),
   // ───── 퇴비통 ─────
   r('compost', 'compost', '퇴비', [['rotten', 3]], 1440, 0, 0, { unlockSkill: 'f_compost' }),
 ];

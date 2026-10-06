@@ -29,11 +29,11 @@ export class MineSystem {
   }
 
   unlocked(): boolean {
-    return this.w.life.level('foraging') >= MINE.unlockForaging;
+    return this.w.skills.has('ga_mine');
   }
 
   deepUnlocked(): boolean {
-    return this.w.life.level('foraging') >= MINE.deepForaging && this.w.state.tools.pickaxe >= MINE.deepPickaxe;
+    return this.w.skills.has('ga_deep') && this.w.state.tools.pickaxe >= MINE.deepPickaxe;
   }
 
   /** 승강기로 갈 수 있는 층 (1층 + 도달한 5의 배수 층) */
@@ -48,7 +48,7 @@ export class MineSystem {
   }
 
   enter(floor: number): Result {
-    if (!this.unlocked()) return { ok: false, reason: `채집 Lv.${MINE.unlockForaging} 이 되면 폐광에 들어갈 수 있어요` };
+    if (!this.unlocked()) return { ok: false, reason: `채집·채광 연구 [폐광 탐사] (Lv.${MINE.unlockForaging})가 필요해요` };
     if (!this.elevatorFloors().includes(floor)) return { ok: false, reason: '아직 승강기가 열리지 않은 층이에요' };
     this.st.floor = floor;
     this.generate();
@@ -83,7 +83,9 @@ export class MineSystem {
     for (let i = 0; i < count && cands.length; i++) {
       const c = cands.splice(Math.floor(r() * cands.length), 1)[0];
       if (nodes.some((n) => Math.abs(n.x - c.x) <= 0 && Math.abs(n.y - c.y) <= 0)) continue;
-      const kind = pickWeighted<string>(r, band.rocks);
+      const weights = { ...band.rocks };
+      if (st.floor >= 16 && this.w.skills.has('ga_m_rare')) for (const k of ['rock_ruby', 'rock_emerald', 'rock_moon', 'rock_star', 'rock_relic']) if (weights[k]) weights[k] *= 2;
+      const kind = pickWeighted<string>(r, weights);
       const hp = ROCK_BY_ID[kind].hp + Math.floor(st.floor / 8);
       nodes.push({ id: this.w.uid('m'), kind: 'rock', x: c.x, y: c.y, itemId: kind, hp, maxHp: hp, respawnDay: null });
     }
@@ -108,10 +110,15 @@ export class MineSystem {
       this.w.events.emit('floatText', { x: n.x * 32 + 16, y: n.y * 32, text: '아래로 가는 사다리!', color: '#fff6a0' });
     }
     // 광물주머니 · 지오드
-    for (const g of geodeChances(st.floor)) if (g.chance > 0 && r() < g.chance * (1 + this.w.life.level('foraging') * 0.03)) push(g.id, 1);
+    const geodeMul = (1 + this.w.life.level('foraging') * 0.03) * (this.w.skills.has('ga_geode') ? 1.5 : 1);
+    for (const g of geodeChances(st.floor)) if (g.chance > 0 && r() < g.chance * geodeMul) push(g.id, 1);
+    // 최상급 광물: 보석 +1
+    const gem = ROCK_BY_ID[n.itemId!]?.drops.find((d) => ['amethyst', 'ruby', 'emerald', 'moonstone', 'star_crystal'].includes(d.id));
+    if (gem && this.w.skills.has('ga_m_gem')) push(gem.id, 1);
     // 유물
     const relic = n.itemId === 'rock_relic';
-    if ((relic && r() < 0.35) || (!relic && st.floor >= 11 && r() < 0.015)) this.giveArtifact(this.randomArtifact('mine'));
+    const relicMul = this.w.skills.has('ga_relic') ? 2 : 1;
+    if ((relic && r() < 0.35 * relicMul) || (!relic && st.floor >= 11 && r() < 0.015 * relicMul)) this.giveArtifact(this.randomArtifact('mine'));
     this.w.count('mine:rock');
   }
 
@@ -119,7 +126,7 @@ export class MineSystem {
     const st = this.st;
     if (!st.ladder) return { ok: false, reason: '사다리를 먼저 찾아야 해요' };
     if (st.floor >= MINE.maxFloor) return { ok: false, reason: '여기가 가장 깊은 곳이에요' };
-    if (st.floor + 1 >= MINE.deepFloor && !this.deepUnlocked()) return { ok: false, reason: `깊은 광산은 채집 Lv.${MINE.deepForaging} + 철 곡괭이 이상이 필요해요` };
+    if (st.floor + 1 >= MINE.deepFloor && !this.deepUnlocked()) return { ok: false, reason: '깊은 광산은 연구 [깊은 광산] + 철 곡괭이 이상이 필요해요' };
     st.floor++;
     const newElevator = st.floor % MINE.elevatorEvery === 0 && st.floor > st.deepest;
     this.generate();

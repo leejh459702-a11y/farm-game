@@ -9,6 +9,7 @@ import type { World } from '../src/core/World';
 function withPond(w: World) {
   w.state.gold = 1_000_000;
   w.state.life.fishingXp = 99999;
+  w.state.skills.researched.push('fi_pond', 'fi_pondAuto');
   giveLand(w, 4, 4, 12, 10);
   giveMats(w);
   for (let y = 0; y < 30; y++)
@@ -22,14 +23,14 @@ function withPond(w: World) {
 }
 
 describe('양식장', () => {
-  it('낚시 Lv.3 전에는 지을 수 없다', () => {
+  it('연구 [양식] 전에는 지을 수 없다', () => {
     const w = freeWorld(31);
     w.state.gold = 1_000_000;
     giveLand(w, 4, 4, 12, 10);
     giveMats(w);
     let reason = '';
     for (let y = 0; y < 30 && !reason; y++) for (let x = 0; x < 30 && !reason; x++) if (w.grid.canPlace('fishpond', x, y, 0).ok) reason = w.grid.place('fishpond', x, y, 0).reason ?? 'placed';
-    expect(reason).toContain('낚시 Lv.3');
+    expect(reason).toContain('연구');
   });
 
   it('한 종류만, 용량 5에서 시작, 먹이를 주면 번식하고 어란을 낳는다', () => {

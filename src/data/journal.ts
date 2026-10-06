@@ -50,8 +50,10 @@ export const JOURNAL: JournalEntry[] = [
   { id: 'forage_15', chapter: '생활', title: '숲 산책', hint: '채집을 15번 해 보세요', icon: 'ic_forage', need: 15, progress: (w) => c(w, 'forage'), reward: { lifeXp: { skill: 'foraging', n: 60 } } },
   { id: 'chop_10', chapter: '생활', title: '나무꾼', hint: '나무를 10번 베어 보세요', icon: 'tool_axe', need: 10, progress: (w) => c(w, 'chop'), reward: { items: [{ id: 'wood', qty: 30 }] } },
   { id: 'mine_10', chapter: '생활', title: '돌 깨기', hint: '바위를 10번 캐 보세요', icon: 'tool_pickaxe', need: 10, progress: (w) => c(w, 'mine'), reward: { items: [{ id: 'stone', qty: 30 }, { id: 'coal', qty: 5 }] } },
+  { id: 'mine_5', chapter: '생활', title: '광산 탐험', hint: '광산 5층까지 내려가 보세요 (연구 [폐광 탐사])', icon: 'ic_mine', need: 5, progress: (w) => w.state.mine?.deepest ?? 0, reward: { items: [{ id: 'geode', qty: 2 }], lifeXp: { skill: 'foraging', n: 80 } } },
+  { id: 'artifact_1', chapter: '생활', title: '첫 유물', hint: '광산·낚시·채집 상자에서 유물을 찾아보세요', icon: 'it_art_gear', need: 1, progress: (w) => w.state.artifacts?.found.length ?? 0, reward: { gold: 1000 } },
   // ───── 양식 ─────
-  { id: 'pond', chapter: '양식', title: '양식장 짓기', hint: '낚시 Lv.3 이 되면 양식장을 지을 수 있어요', icon: 'bld_fishpond', need: 1, progress: (w) => (has(w, 'fishpond') ? 1 : 0), reward: { items: [{ id: 'fish_feed', qty: 20 }] } },
+  { id: 'pond', chapter: '양식', title: '양식장 짓기', hint: '낚시 Lv.3 에서 연구 [양식]을 하면 양식장을 지을 수 있어요', icon: 'bld_fishpond', need: 1, progress: (w) => (has(w, 'fishpond') ? 1 : 0), reward: { items: [{ id: 'fish_feed', qty: 20 }] } },
   { id: 'pond_3', chapter: '양식', title: '첫 양식', hint: '양식장에 물고기 3마리를 넣어 보세요', icon: 'ic_fish', need: 3, progress: (w) => c(w, 'pond:stock'), reward: { items: [{ id: 'fish_feed', qty: 30 }], lifeXp: { skill: 'fishing', n: 60 } } },
   { id: 'roe', chapter: '양식', title: '알이 생겼어요', hint: '양식장에서 어란을 5개 얻어 보세요', icon: 'it_roe_carp', need: 5, progress: (w) => Object.entries(w.state.codex.items).reduce((s, [k, v]) => s + (k.startsWith('roe_') ? v.count : 0), 0), reward: { gold: 1500 } },
   // ───── 성장 ─────

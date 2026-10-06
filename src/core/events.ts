@@ -32,7 +32,7 @@ export interface WorldEvents {
   monthEnded: MonthSummary;
   merchant: { present: boolean; special: boolean };
   notify: GameNotification;
-  levelUp: { tree: 'farming' | 'livestock'; level: number };
+  levelUp: { tree: 'farming' | 'livestock' | 'fishing' | 'gathering' | 'business'; level: number };
   weather: { today: WeatherId };
   research: { id: string };
   house: { level: number };

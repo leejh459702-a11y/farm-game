@@ -1,7 +1,7 @@
 import { BALANCE } from '../data/balance';
 import type { GameState, Ledger } from '../types/game';
 
-export const SAVE_VERSION = 4;
+export const SAVE_VERSION = 5;
 
 export function emptyLedger(): Ledger {
   return { income: 0, expense: 0, sales: {}, births: 0, discoveries: [], builds: [], farmingXp: 0, livestockXp: 0, landBought: 0 };
@@ -32,7 +32,7 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     containers: { bag: { id: 'bag', kind: 'bag', slots: bagSlots, decayMul: 1 } },
     player: { x: (originX + size / 2) * ts, y: (originY + size + 0.6) * ts, facing: 'up' },
     hotbar: { selected: 0, seedId: 'seed_carrot', fertilizerId: null, area: 1 },
-    skills: { farmingXp: 0, livestockXp: 0, researched: [] },
+    skills: { farmingXp: 0, livestockXp: 0, businessXp: 0, researched: [] },
     animals: {},
     pedigree: {},
     animalCounters: {},

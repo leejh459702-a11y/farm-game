@@ -298,7 +298,7 @@ export interface GameState {
   containers: Record<string, Container>;
   player: { x: number; y: number; facing: Facing };
   hotbar: HotbarState;
-  skills: { farmingXp: number; livestockXp: number; researched: string[] };
+  skills: { farmingXp: number; livestockXp: number; businessXp: number; researched: string[] };
   animals: Record<string, Animal>;
   pedigree: Record<string, PedigreeRecord>;
   animalCounters: Record<string, number>;

@@ -44,6 +44,20 @@ export const MIGRATIONS: Record<number, Migration> = {
     for (const a of Object.values(animals)) if (typeof a.happiness !== 'number') a.happiness = 60;
     return { ...s, version: 4 };
   },
+  // 4 → 5: 5대 생활 기술 개편 — 이미 쓰던 양식장·광산은 해당 연구를 지급
+  4: (s) => {
+    const skills = (s.skills ?? {}) as { researched?: string[]; businessXp?: number };
+    const r = new Set(skills.researched ?? []);
+    const buildings = Object.values((s.buildings ?? {}) as Record<string, { type: string; upgrades?: Record<string, number> }>);
+    if (buildings.some((b) => b.type === 'fishpond')) r.add('fi_pond');
+    if (buildings.some((b) => b.type === 'fishpond' && ((b.upgrades?.autoCollect ?? 0) > 0 || (b.upgrades?.autoFeed ?? 0) > 0))) r.add('fi_pondAuto');
+    const mine = s.mine as { deepest?: number } | undefined;
+    if ((mine?.deepest ?? 0) > 0) r.add('ga_mine');
+    if ((mine?.deepest ?? 0) >= 11) r.add('ga_deep');
+    const tools = s.tools as { axe?: number; pickaxe?: number; rod?: number } | undefined;
+    if (Math.max(tools?.axe ?? 0, tools?.pickaxe ?? 0, tools?.rod ?? 0) >= 2) r.add('ga_tools');
+    return { ...s, skills: { ...skills, businessXp: skills.businessXp ?? 0, researched: [...r] }, version: 5 };
+  },
 };
 
 export function migrate(raw: unknown): GameState {

@@ -11,6 +11,7 @@ function miner(seed: number): World {
   const w = freeWorld(seed);
   w.state.life.foragingXp = 99999; // 채집 Lv.10
   w.state.tools.pickaxe = 3;
+  w.state.skills.researched.push('ga_mine', 'ga_deep');
   return w;
 }
 
@@ -25,10 +26,12 @@ function clearToLadder(w: World): boolean {
 }
 
 describe('광산', () => {
-  it('채집 Lv.3 전에는 들어갈 수 없다', () => {
+  it('연구 [폐광 탐사] 전에는 들어갈 수 없다', () => {
     const w = freeWorld(61);
     expect(w.mine.enter(1).ok).toBe(false);
     w.state.life.foragingXp = 99999;
+    w.state.gold = 99999;
+    expect(w.skills.research('ga_mine').ok).toBe(true);
     expect(w.mine.enter(1).ok).toBe(true);
   });
 
@@ -54,9 +57,10 @@ describe('광산', () => {
     expect(w.mine.enter(10).ok).toBe(false);
   });
 
-  it('깊은 광산(11층~)은 채집 Lv.6 + 철 곡괭이가 필요하다', () => {
+  it('깊은 광산(11층~)은 연구 [깊은 광산] + 철 곡괭이가 필요하다', () => {
     const w = freeWorld(63);
     w.state.life.foragingXp = 99999;
+    w.state.skills.researched.push('ga_mine', 'ga_deep');
     w.state.tools.pickaxe = 1;
     w.mine.st.deepest = 10;
     w.mine.enter(10);

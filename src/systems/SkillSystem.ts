@@ -3,7 +3,8 @@
  * 고급 기술은 상대 분야 레벨을 요구하여 한쪽만 최고로 올릴 수 없게 한다.
  */
 import { BALANCE } from '../data/balance';
-import { SKILL_BY_ID, SKILLS, type SkillNode, type SkillTree } from '../data/skills';
+import { SKILL_BY_ID, SKILLS, TREE_ICON, TREE_NAME, type SkillNode, type SkillTree } from '../data/skills';
+import { lifeLevelFromXp, lifeXpForLevel } from './LifeSystem';
 import type { World } from '../core/World';
 
 /** 레벨 n 에 도달하기 위한 누적 경험치 */
@@ -23,37 +24,54 @@ export function levelFromXp(xp: number): number {
 export class SkillSystem {
   constructor(private w: World) {}
 
+  /** 낚시·채집채광은 생활 숙련도 경험치를 그대로 쓴다 */
+  private isLife(tree: SkillTree): boolean {
+    return tree === 'fishing' || tree === 'gathering';
+  }
+
   xp(tree: SkillTree): number {
-    return tree === 'farming' ? this.w.state.skills.farmingXp : this.w.state.skills.livestockXp;
+    const s = this.w.state.skills;
+    if (tree === 'farming') return s.farmingXp;
+    if (tree === 'livestock') return s.livestockXp;
+    if (tree === 'business') return s.businessXp ?? 0;
+    return tree === 'fishing' ? this.w.state.life.fishingXp : this.w.state.life.foragingXp;
   }
 
   level(tree: SkillTree): number {
-    return levelFromXp(this.xp(tree));
+    return this.isLife(tree) ? lifeLevelFromXp(this.xp(tree)) : levelFromXp(this.xp(tree));
   }
 
   progress(tree: SkillTree): { level: number; cur: number; need: number; ratio: number } {
     const lv = this.level(tree);
     const xp = this.xp(tree);
     if (lv >= BALANCE.skills.maxLevel) return { level: lv, cur: 1, need: 1, ratio: 1 };
-    const a = xpForLevel(lv);
-    const b = xpForLevel(lv + 1);
+    const f = this.isLife(tree) ? lifeXpForLevel : xpForLevel;
+    const a = f(lv);
+    const b = f(lv + 1);
     return { level: lv, cur: xp - a, need: b - a, ratio: (xp - a) / (b - a) };
+  }
+
+  /** 상대 분야 (고급 기술 조건) */
+  otherOf(s: SkillNode): SkillTree {
+    return s.otherTree ?? (s.tree === 'farming' ? 'livestock' : 'farming');
   }
 
   addXp(tree: SkillTree, amount: number): void {
     if (amount <= 0) return;
+    if (tree === 'fishing') return this.w.life.addXp('fishing', amount);
+    if (tree === 'gathering') return this.w.life.addXp('foraging', amount);
     const before = this.level(tree);
     if (tree === 'farming') {
       this.w.state.skills.farmingXp += amount;
       this.w.finance.today().farmingXp += amount;
-    } else {
+    } else if (tree === 'livestock') {
       this.w.state.skills.livestockXp += amount;
       this.w.finance.today().livestockXp += amount;
-    }
+    } else this.w.state.skills.businessXp = (this.w.state.skills.businessXp ?? 0) + amount;
     const after = this.level(tree);
     if (after > before) {
       this.w.events.emit('levelUp', { tree, level: after });
-      this.w.notify({ key: `lv_${tree}`, text: `${tree === 'farming' ? '농사' : '목축'} 레벨이 ${after}(으)로 올랐습니다!`, icon: tree === 'farming' ? 'ic_farming' : 'ic_livestock', tone: 'good' });
+      this.w.notify({ key: `lv_${tree}`, text: `${TREE_NAME[tree]} 레벨이 ${after}(으)로 올랐습니다!${after === 10 ? ' 마스터리 연구가 열렸어요!' : ''}`, icon: TREE_ICON[tree], tone: 'good' });
       this.w.events.emit('sfx', { key: 'levelup' });
     }
   }
@@ -66,9 +84,9 @@ export class SkillSystem {
     const s = SKILL_BY_ID[id];
     if (!s) return { ok: false, reason: '없는 기술' };
     if (this.has(id)) return { ok: false, reason: '이미 연구했습니다' };
-    const other: SkillTree = s.tree === 'farming' ? 'livestock' : 'farming';
-    if (this.level(s.tree) < s.level) return { ok: false, reason: `${s.tree === 'farming' ? '농사' : '목축'} Lv.${s.level} 필요` };
-    if (this.level(other) < s.otherLevel) return { ok: false, reason: `${other === 'farming' ? '농사' : '목축'} Lv.${s.otherLevel} 필요` };
+    const other = this.otherOf(s);
+    if (this.level(s.tree) < s.level) return { ok: false, reason: `${TREE_NAME[s.tree]} Lv.${s.level} 필요` };
+    if (this.level(other) < s.otherLevel) return { ok: false, reason: `${TREE_NAME[other]} Lv.${s.otherLevel} 필요` };
     const missing = s.requires.filter((r) => !this.has(r));
     if (missing.length) return { ok: false, reason: `선행: ${missing.map((m) => SKILL_BY_ID[m].name).join(', ')}` };
     if (s.advanced && this.w.finance.hasDebt()) return { ok: false, reason: '운영비 미납 중에는 고급 기술을 연구할 수 없습니다' };

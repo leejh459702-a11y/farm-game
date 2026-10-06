@@ -216,6 +216,7 @@ export class CropSystem {
     const soilChance = BALANCE.crops.soilExtraChance[p.upgrades.soil] ?? 0;
     if (this.w.rand() < soilChance) n++;
     if (!p.greenhouse && p.upgrades.pest === 0 && this.w.rand() < BALANCE.crops.pestChance) n = Math.max(1, n - 1);
+    if (c.rare && this.w.skills.has('f_m_special')) n++;
     return n;
   }
 

@@ -41,14 +41,14 @@ export function rollGrade(r: () => number, dist: GradeDist): Grade {
 }
 
 /** 특성 유전: 부모 특성 각 40%, 최대 3개, 낮은 확률로 새 특성 */
-export function inheritTraits(r: () => number, mother: string[], father: string[], randomTrait: (exclude: string[]) => string | null, inheritBonus = 0): string[] {
+export function inheritTraits(r: () => number, mother: string[], father: string[], randomTrait: (exclude: string[]) => string | null, inheritBonus = 0, mutationMul = 1): string[] {
   const out: string[] = [];
   const pool = [...new Set([...mother, ...father])];
   for (const t of pool) {
     if (out.length >= BALANCE.animals.traitsMax) break;
     if (r() < BALANCE.breeding.traitInheritChance + inheritBonus) out.push(t);
   }
-  if (out.length < BALANCE.animals.traitsMax && r() < BALANCE.breeding.mutationChance) {
+  if (out.length < BALANCE.animals.traitsMax && r() < BALANCE.breeding.mutationChance * mutationMul) {
     const t = randomTrait(out);
     if (t) out.push(t);
   }
@@ -99,6 +99,7 @@ export class BreedingSystem {
     for (const t of [...mother.traits, ...father.traits]) b += TRAIT_BY_ID[t]?.fx.gradeBonus ?? 0;
     if (this.w.state.breedCharmActive) b += 0.1;
     b += intimacyGradeBonus(mother, father);
+    if (this.w.skills.has('l_m_pedigree')) b += 0.1;
     return b;
   }
 
@@ -161,7 +162,7 @@ export class BreedingSystem {
     for (let i = 0; i < count; i++) {
       const grade = rollGrade(r, dist);
       const stats = this.inheritStats(mother, father as Animal | null, grade);
-      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex), intimacyInheritBonus(mother, (father as Animal | null) ?? null));
+      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex), intimacyInheritBonus(mother, (father as Animal | null) ?? null), this.w.skills.has('l_m_trait') ? 2 : 1);
       const home = this.w.animals.findHome(mother.species, mother.buildingUid);
       const baby = this.w.animals.create(mother.species, {
         grade,

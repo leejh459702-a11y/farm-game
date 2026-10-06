@@ -102,11 +102,15 @@ export class LifeSystem {
     if (lv >= 4) m += 0.15;
     if (lv >= 7 && isNight) m += 0.3;
     m += this.w.state.tools.rod * 0.08;
+    if (this.w.skills.has('fi_rare')) m *= 1.25;
     return m;
   }
 
   fishLegendMul(): number {
-    return this.level('fishing') >= 8 ? 1.6 : 1;
+    let m = this.level('fishing') >= 8 ? 1.6 : 1;
+    if (this.w.skills.has('fi_legend')) m *= 1.5;
+    if (this.w.skills.has('fi_m_legend')) m *= 2;
+    return m;
   }
 
   // ───── 채집 보정 ─────
@@ -131,6 +135,7 @@ export class LifeSystem {
     const t = tiers[level + 1];
     let reason: string | undefined;
     if (tool === 'rod' && !this.w.state.tools.rodOwned) reason = '튜토리얼을 마치면 낚싯대를 받아요';
+    else if (level + 1 >= 2 && !this.w.skills.has('ga_tools')) reason = '채집·채광 연구 [도구 강화]가 필요해요';
     else if (this.w.state.gold < t.cost) reason = '골드가 부족합니다';
     else if (!this.w.inventory.hasMats(t.mats)) reason = '재료가 부족합니다';
     return { level, next: level + 1, cost: t.cost, mats: t.mats, ok: !reason, reason };
