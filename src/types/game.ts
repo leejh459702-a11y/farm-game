@@ -2,7 +2,7 @@
 
 export type SeasonId = 'spring' | 'summer' | 'autumn' | 'winter';
 export type WeatherId = 'sunny' | 'cloudy' | 'rain' | 'storm' | 'snow';
-export type ItemCategory = 'crop' | 'animal' | 'fish' | 'forage' | 'resource' | 'processed' | 'cooking' | 'seed' | 'other';
+export type ItemCategory = 'crop' | 'animal' | 'fish' | 'forage' | 'resource' | 'processed' | 'cooking' | 'seed' | 'other' | 'artifact';
 export type Grade = 1 | 2 | 3;
 export type Gender = 'F' | 'M';
 export type GrowthStage = 'baby' | 'juvenile' | 'adult';
@@ -234,12 +234,12 @@ export interface AnimalCodexEntry {
   produced: number;
 }
 
-export type RegionId = 'river' | 'forest' | 'hill';
+export type RegionId = 'river' | 'forest' | 'hill' | 'mine';
 
 /** 외곽 지역 자원 노드 */
 export interface RegionNode {
   id: string;
-  kind: 'forage' | 'tree' | 'rock' | 'chest';
+  kind: 'forage' | 'tree' | 'rock' | 'chest' | 'ladder';
   x: number;
   y: number;
   /** 채집물 id / 바위 종류 id */
@@ -335,6 +335,10 @@ export interface GameState {
   counters: Record<string, number>;
   /** 농장일지: 보상 받은 항목 / 달성 알림을 띄운 항목 */
   journal: { claimed: string[]; notified: string[] };
+  /** 광산 진행 */
+  mine: { floor: number; deepest: number; genKey: string; broken: number; ladder: boolean };
+  /** 유물: 발견한 것 / 세트 보상 받은 것 */
+  artifacts: { found: string[]; setsClaimed: string[] };
 }
 
 export interface Settings {

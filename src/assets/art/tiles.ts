@@ -27,7 +27,10 @@ export const TILE = {
   rockA: 57,
   rockB: 58,
   cliff: 59,
-  count: 60,
+  caveA: 60,
+  caveB: 61,
+  caveWall: 62,
+  count: 63,
 } as const;
 
 interface SeasonPal {
@@ -235,6 +238,25 @@ function cliff(p: Painter) {
   p.rect(0, 0, TS, 3, 0x8a9a5a);
 }
 
+function caveFloor(p: Painter, seed: number) {
+  p.rect(0, 0, TS, TS, 0x4a4248);
+  p.speckle(0, 0, TS, TS, 0x3a3238, 0.14, seed);
+  p.speckle(0, 0, TS, TS, 0x5e5560, 0.06, seed + 1);
+  const r = hashRand(seed);
+  for (let i = 0; i < 2; i++) {
+    const x = Math.floor(r() * 28);
+    const y = Math.floor(r() * 28);
+    p.rect(x, y, 3, 2, 0x5a5258).px(x, y, 0x6e6670);
+  }
+}
+
+function caveWall(p: Painter) {
+  p.rect(0, 0, TS, TS, 0x2a2428);
+  for (let y = 5; y < TS; y += 9) p.rect(0, y, TS, 2, 0x1c181c).rect(0, y - 1, TS, 1, 0x3e363c);
+  p.speckle(0, 0, TS, TS, 0x3a3236, 0.12, 71);
+  p.rect(0, TS - 3, TS, 3, 0x1a1418);
+}
+
 /** 1px 익스트루전 포함 타일셋 캔버스 (margin 1, spacing 2) */
 export function buildTileset(): { canvas: HTMLCanvasElement; tileW: number; margin: number; spacing: number } {
   const tiles: Painter[] = [];
@@ -282,6 +304,9 @@ export function buildTileset(): { canvas: HTMLCanvasElement; tileW: number; marg
   mk2((p) => rockGround(p, 61));
   mk2((p) => rockGround(p, 87));
   mk2((p) => cliff(p));
+  mk2((p) => caveFloor(p, 91));
+  mk2((p) => caveFloor(p, 113));
+  mk2((p) => caveWall(p));
 
   const cell = TS + 2;
   const c = document.createElement('canvas');

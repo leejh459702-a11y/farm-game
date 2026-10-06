@@ -28,6 +28,7 @@ import { RegionSystem } from '../systems/RegionSystem';
 import { AquacultureSystem } from '../systems/AquacultureSystem';
 import { AgingSystem } from '../systems/AgingSystem';
 import { JournalSystem } from '../systems/JournalSystem';
+import { MineSystem } from '../systems/MineSystem';
 import { FishingSystem } from '../systems/FishingSystem';
 import { calendar, type CalendarInfo } from '../systems/SeasonSystem';
 import { footprint } from '../data/buildings';
@@ -57,6 +58,7 @@ export class World {
   readonly ponds: AquacultureSystem;
   readonly aging: AgingSystem;
   readonly journal: JournalSystem;
+  readonly mine: MineSystem;
   /** 최근 알림 기록 (세이브 안 함) */
   readonly notifyLog: (GameNotification & { day: number })[] = [];
 
@@ -83,6 +85,7 @@ export class World {
     this.ponds = new AquacultureSystem(this);
     this.aging = new AgingSystem(this);
     this.journal = new JournalSystem(this);
+    this.mine = new MineSystem(this);
   }
 
   /** 누적 활동 카운터 증가 */

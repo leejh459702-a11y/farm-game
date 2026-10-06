@@ -107,6 +107,7 @@ export class InventoryPanel extends Panel {
       <button class="btn small" data-act="fav">${fav ? '★ 해제' : '☆ 즐겨찾기'}</button>
       ${other ? `<button class="btn small blue" data-act="move">${other === 'bag' ? '가방으로' : '넣기'}</button>` : ''}
       ${d.category === 'seed' ? `<button class="btn small green" data-act="useSeed">씨앗 선택</button>` : ''}
+      ${this.w.mine.isOpenable(s.itemId) ? `<button class="btn small purple" data-act="openGeode">열기</button>` : ''}
       <button class="btn small red" data-act="discard">버리기</button>`;
   }
 
@@ -156,6 +157,11 @@ export class InventoryPanel extends Panel {
       const other = this.sel.cid === this.left ? this.right : this.left;
       if (other && !inv.moveSlot(this.sel.cid, this.sel.slot, other)) this.toast('공간이 부족합니다', 'warn');
       this.sel = null;
+    } else if (act === 'openGeode') {
+      const r = this.w.mine.open(s.itemId);
+      if (!r.ok) this.toast(r.reason ?? '', 'warn');
+      else this.toast(`${ITEM_BY_ID[s.itemId].name}에서 ${r.drops.map((d) => `${ITEM_BY_ID[d.itemId].name} ×${d.qty}`).join(', ')}이(가) 나왔어요!`, 'good');
+      if (!this.w.state.containers[this.sel.cid]?.slots[this.sel.slot]) this.sel = null;
     } else if (act === 'useSeed') {
       this.w.state.hotbar.seedId = s.itemId;
       this.w.state.hotbar.selected = 3;

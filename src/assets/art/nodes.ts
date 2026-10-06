@@ -26,6 +26,25 @@ function tree(big: boolean, s: number): Painter {
   return p;
 }
 
+/** 아래층으로 내려가는 구멍 + 사다리 */
+function ladder(): Painter {
+  const p = new Painter(32, 32);
+  p.ellipse(16, 20, 13, 9, 0x1a1418).ellipse(16, 19, 11, 7, 0x0e0a0c);
+  p.rect(10, 6, 2, 20, 0x9a6a3a).rect(20, 6, 2, 20, 0x9a6a3a);
+  for (let y = 8; y < 26; y += 4) p.rect(10, y, 12, 2, 0xc8945a);
+  p.outline(0x1a1418);
+  return p;
+}
+
+/** 광산 입구 (나무 틀) */
+function mineEntry(): Painter {
+  const p = new Painter(32, 40);
+  p.rect(4, 8, 24, 30, 0x1a1418).rect(2, 6, 4, 32, 0x8a5a34).rect(26, 6, 4, 32, 0x8a5a34).rect(2, 4, 28, 5, 0xa0703a);
+  p.rect(8, 30, 16, 2, 0x6a6a70).rect(8, 34, 16, 2, 0x6a6a70);
+  p.outline(0x2a1a10);
+  return p;
+}
+
 function stump(): Painter {
   const p = new Painter(32, 32);
   p.shadow(16, 27, 9, 3, 0.25);
@@ -87,6 +106,8 @@ export function buildNodeTextures(): { key: string; canvas: HTMLCanvasElement }[
     out.push({ key: `node_tree_small_${s}`, canvas: tree(false, s).canvas });
   }
   out.push({ key: 'node_stump', canvas: stump().canvas });
+  out.push({ key: 'node_ladder', canvas: ladder().canvas });
+  out.push({ key: 'node_mine_entry', canvas: mineEntry().canvas });
   for (const r of ROCKS) out.push({ key: `node_${r.id}`, canvas: (r.id === 'rock_clay' ? clayMound() : rock(r.color, r.color2)).canvas });
   out.push({ key: 'node_chest', canvas: chest().canvas });
   out.push({ key: 'node_forage', canvas: forageBase().canvas });

@@ -160,6 +160,8 @@ export class FishingSystem {
   landCatch(fishId: string): CatchResult {
     const fish = FISH_BY_ID[fishId];
     this.w.count('fish');
+    // 낡은 장화 대신 가끔 물속의 보물 (유물)
+    if (fish.id === 'old_boot' && this.w.rand() < 0.3) this.w.mine.giveArtifact(this.w.mine.randomArtifact('fishing'));
     if (fish.rarity === 'legend') this.w.count('fish:legend');
     const [a, b] = fish.size;
     // 큰 개체는 드물게 (제곱 분포)

@@ -4,6 +4,7 @@
 import { CROPS, CROP_BY_ID, type CropData } from '../../data/crops';
 import { ITEMS } from '../../data/items';
 import { POND_FISH } from '../../data/aquaculture';
+import { ARTIFACTS } from '../../data/artifacts';
 import { FISH, type FishData } from '../../data/fish';
 import { FORAGE, RESOURCES, type ForageData, type ResourceData } from '../../data/gathering';
 import { Painter, shade, type Color } from '../painter';
@@ -341,7 +342,32 @@ const sparkle = (fn: IconFn): IconFn => (p) => {
   p.px(13, 2, 0xfff6a0).px(12, 3, 0xfff6a0).px(14, 3, 0xfff6a0).px(13, 4, 0xfff6a0).px(13, 3, 0xffffff).px(3, 12, 0xfff6a0);
 };
 
+const geodeIcon = (shell: Color, inner: Color, gem: Color): IconFn => (p) => {
+  p.circle(8, 9, 6, shell).circle(8, 9, 4, inner).tri(6, 10, 8, 6, 10, 10, gem).px(7, 8, 0xffffff).px(4, 6, shade(shell, 0.3));
+};
+const artifactIcon = (shape: string, c: Color): IconFn => (p) => {
+  switch (shape) {
+    case 'tool': p.line(4, 13, 10, 5, 0x7a5236).line(5, 13, 11, 5, 0x7a5236).ellipse(11, 4, 4, 2, c); break;
+    case 'pouch': p.ellipse(8, 10, 5, 5, c).rect(6, 4, 4, 3, c).line(5, 6, 11, 6, shade(c, -0.3)); break;
+    case 'shard': p.tri(3, 12, 8, 3, 13, 11, c).line(5, 9, 11, 9, shade(c, -0.25)); break;
+    case 'charm': p.rect(5, 3, 6, 10, c).rect(6, 5, 4, 2, 0xd8343c).px(8, 9, 0xd8343c).line(8, 13, 8, 15, 0xd8343c); break;
+    case 'coin': p.circle(8, 8, 5, c).circle(8, 8, 3, shade(c, -0.2)).rect(7, 6, 2, 4, shade(c, 0.3)); break;
+    case 'gear': p.circle(8, 8, 5, c).circle(8, 8, 2, 0x3b2a22); for (const [x, y] of [[8, 2], [8, 14], [2, 8], [14, 8]]) p.rect(x - 1, y - 1, 2, 2, c); break;
+    case 'tablet': p.rect(4, 3, 8, 11, c).line(6, 6, 10, 6, shade(c, -0.3)).line(6, 9, 9, 9, shade(c, -0.3)).line(6, 11, 10, 11, shade(c, -0.3)); break;
+    case 'bottle': p.rect(5, 6, 6, 8, c).rect(7, 3, 2, 3, c).px(6, 8, 0xffffff); break;
+    case 'fossil': p.ellipse(8, 9, 6, 4, c).line(4, 9, 12, 9, shade(c, -0.35)); for (const x of [6, 8, 10]) p.line(x, 7, x, 11, shade(c, -0.35)); break;
+    case 'hook': p.line(9, 2, 9, 10, c).line(9, 10, 7, 12, c).line(7, 12, 5, 10, c).px(5, 9, c); break;
+    case 'lamp': p.rect(5, 6, 6, 7, c).rect(6, 4, 4, 2, shade(c, -0.3)).circle(8, 9, 2, 0xfff0a0); break;
+    case 'map': p.rect(3, 4, 10, 9, c); for (const [x, y] of [[5, 6], [9, 7], [7, 10], [11, 10]]) p.px(x, y, 0xfff6a0); break;
+  }
+  p.px(13, 2, 0xfff6a0).px(14, 3, 0xfff6a0);
+};
+
 const OTHER: Record<string, IconFn> = {
+  ore_bag: sack(0x8a7a6a, 0xd8803a),
+  geode: geodeIcon(0x8a857c, 0xd8d0e0, 0xa86ad8),
+  magma_geode: geodeIcon(0x5a3a30, 0xf09040, 0xe0303c),
+  ...Object.fromEntries(ARTIFACTS.map((a) => [a.id, artifactIcon(a.shape, a.color)])),
   wine: bottle(0x7a1f3a, 0x3b2a22),
   fruit_wine: bottle(0xd89a3a, 0x8a5a3a),
   peanut_oil: bottle(0xf0d070, 0xa0784e),
@@ -688,6 +714,9 @@ const UI: Record<string, IconFn> = {
     p.rect(12, 1, 3, 3, 0xf7d84a);
   },
   ic_breed: (p) => UI.ic_heart(p),
+  ic_mine: (p) => {
+    p.rect(2, 4, 12, 11, 0x2a2428).rect(1, 3, 2, 12, 0x8a5a34).rect(13, 3, 2, 12, 0x8a5a34).rect(1, 2, 14, 2, 0xa0703a).rect(5, 11, 6, 1, 0x8a8a90).circle(8, 8, 1, 0xf2c83a);
+  },
   ic_storage: (p) => {
     p.rect(2, 5, 12, 9, 0xb8844a).rect(2, 5, 12, 3, 0xa0703a).rect(7, 7, 2, 3, 0xf2c83a).frame(2, 5, 12, 9, 0x6a4a2e);
   },

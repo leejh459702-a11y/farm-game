@@ -3,7 +3,7 @@
  */
 import type { SeasonId } from '../types/game';
 
-export type RegionId = 'river' | 'forest' | 'hill';
+export type RegionId = 'river' | 'forest' | 'hill' | 'mine';
 
 /** 채집물 (category: forage) */
 export interface ForageData {
@@ -56,6 +56,10 @@ export const RESOURCES: ResourceData[] = [
   { id: 'iron_ore', name: '철광석', price: 30, art: { shape: 'ore', color: 0x8a857c, color2: 0xc8b8b0 } },
   { id: 'silver_ore', name: '은광석', price: 60, art: { shape: 'ore', color: 0x7a7a80, color2: 0xf0f4f8 } },
   { id: 'gold_ore', name: '금광석', price: 120, art: { shape: 'ore', color: 0x7a7060, color2: 0xf2c83a } },
+  { id: 'ruby', name: '루비', price: 450, art: { shape: 'gem', color: 0xe0303c } },
+  { id: 'emerald', name: '에메랄드', price: 450, art: { shape: 'gem', color: 0x30c070 } },
+  { id: 'moonstone', name: '월장석', price: 800, art: { shape: 'gem', color: 0xc8d8f8 } },
+  { id: 'star_crystal', name: '별빛 결정', price: 1500, art: { shape: 'gem', color: 0xf6e070 } },
   { id: 'amethyst', name: '자수정', price: 300, art: { shape: 'gem', color: 0xa86ad8 } },
 ];
 
@@ -80,6 +84,12 @@ export const ROCKS: RockKind[] = [
   { id: 'rock_iron', name: '철 광맥', drops: [{ id: 'iron_ore', min: 1, max: 2 }], hp: 5, tier: 1, weight: 8, color: 0x8a857c, color2: 0xe0d0c8 },
   { id: 'rock_silver', name: '은 광맥', drops: [{ id: 'silver_ore', min: 1, max: 2 }], hp: 6, tier: 2, weight: 4, color: 0x7a7a80, color2: 0xf6faff },
   { id: 'rock_gold', name: '금 광맥', drops: [{ id: 'gold_ore', min: 1, max: 2 }], hp: 6, tier: 2, weight: 3, color: 0x7a7060, color2: 0xf2c83a },
+  { id: 'rock_ruby', name: '루비 광맥', drops: [{ id: 'ruby', min: 1, max: 1 }, { id: 'stone', min: 1, max: 2 }], hp: 8, tier: 3, weight: 0, color: 0x5a4a50, color2: 0xe0303c },
+  { id: 'rock_emerald', name: '에메랄드 광맥', drops: [{ id: 'emerald', min: 1, max: 1 }, { id: 'stone', min: 1, max: 2 }], hp: 8, tier: 3, weight: 0, color: 0x4a5a50, color2: 0x30c070 },
+  { id: 'rock_moon', name: '월장석 광맥', drops: [{ id: 'moonstone', min: 1, max: 1 }], hp: 9, tier: 3, weight: 0, color: 0x4a4a62, color2: 0xc8d8f8 },
+  { id: 'rock_star', name: '별빛 광맥', drops: [{ id: 'star_crystal', min: 1, max: 1 }], hp: 10, tier: 3, weight: 0, color: 0x3a3450, color2: 0xf6e070 },
+  { id: 'rock_relic', name: '고대 지층', drops: [{ id: 'stone', min: 2, max: 3 }, { id: 'clay', min: 1, max: 2 }], hp: 6, tier: 2, weight: 0, color: 0x8a7a5a, color2: 0xd8c8a0 },
+  { id: 'rock_dark', name: '단단한 암석', drops: [{ id: 'stone', min: 3, max: 5 }, { id: 'coal', min: 0, max: 1 }], hp: 5, tier: 0, weight: 0, color: 0x5a5560 },
   { id: 'rock_gem', name: '자수정 광맥', drops: [{ id: 'amethyst', min: 1, max: 1 }], hp: 7, tier: 2, weight: 1, color: 0x6a5a7a, color2: 0xb87ae8 },
 ];
 
@@ -114,6 +124,7 @@ export const REGIONS: RegionDef[] = [
   { id: 'river', name: '강가', desc: '낚시 · 갈대 · 조개 · 물가 식물', icon: 'ic_fish', forage: [3, 8] },
   { id: 'forest', name: '숲', desc: '벌목 · 버섯 · 야생 열매 · 약초 · 수액', icon: 'tool_axe', forage: [8, 15] },
   { id: 'hill', name: '바위 언덕', desc: '채광 · 돌 · 점토 · 석탄 · 광석', icon: 'tool_pickaxe', forage: [0, 0] },
+  { id: 'mine', name: '광산', desc: '층마다 깊어지는 광산 · 광석 · 보석 · 지오드 · 유물', icon: 'ic_mine', forage: [0, 0] },
 ];
 
 export const REGION_BY_ID: Record<RegionId, RegionDef> = Object.fromEntries(REGIONS.map((r) => [r.id, r])) as Record<RegionId, RegionDef>;

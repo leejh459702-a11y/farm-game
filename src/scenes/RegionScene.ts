@@ -21,7 +21,7 @@ import { SettingsStore, vibrate } from '../services/SettingsStore';
 import { AudioManager } from '../audio/AudioManager';
 
 interface Ctx {
-  kind: 'forage' | 'tree' | 'rock' | 'chest' | 'fish' | 'exit' | 'none';
+  kind: 'forage' | 'tree' | 'rock' | 'chest' | 'fish' | 'exit' | 'ladder' | 'none';
   label: string;
   icon: string;
   enabled: boolean;
@@ -43,7 +43,7 @@ export class RegionScene extends Phaser.Scene {
   private ground!: Phaser.Tilemaps.TilemapLayer;
 
   constructor(private regionId: RegionId) {
-    super(regionId === 'river' ? 'River' : regionId === 'forest' ? 'Forest' : 'Hill');
+    super(regionId === 'river' ? 'River' : regionId === 'forest' ? 'Forest' : regionId === 'mine' ? 'Mine' : 'Hill');
   }
 
   create(): void {
@@ -51,7 +51,7 @@ export class RegionScene extends Phaser.Scene {
     this.w = Session.world!;
     const w = this.w;
     w.regions.ensureDay(this.regionId);
-    this.cameras.main.setBackgroundColor(this.regionId === 'hill' ? '#5a5044' : '#2e4a2a');
+    this.cameras.main.setBackgroundColor(this.regionId === 'mine' ? '#1a1418' : this.regionId === 'hill' ? '#5a5044' : '#2e4a2a');
     this.buildGround();
     // 입구 표지판
     this.add
@@ -121,7 +121,9 @@ export class RegionScene extends Phaser.Scene {
         w.regions.ensureDay(this.regionId);
         this.refreshGround();
         this.syncNodes();
+        this.player.ensureFree();
       }),
+      w.events.on('floatText', (f) => this.regionId === 'mine' && this.scene.isActive() && this.floatText(f.x, f.y, f.text, f.color ?? '#ffffff')),
       Session.app.on('action', () => this.scene.isActive() && this.doAction()),
     );
     InputState.tap = (x, y) => this.onTap(x, y);
@@ -155,6 +157,10 @@ export class RegionScene extends Phaser.Scene {
         return TILE.cliff;
       case 'P':
         return TILE.path;
+      case 'M':
+        return r < 0.5 ? TILE.caveA : TILE.caveB;
+      case 'K':
+        return TILE.caveWall;
     }
   }
 
@@ -205,6 +211,10 @@ export class RegionScene extends Phaser.Scene {
         continue;
       } else if (n.kind === 'rock') {
         objs.push(this.add.image(bx, by + 2, `node_${n.itemId}`).setOrigin(0.5, 1).setDepth(depth));
+      } else if (n.kind === 'ladder') {
+        const l = this.add.image(bx, by, 'node_ladder').setOrigin(0.5, 1).setDepth(DEPTH.soil + 1);
+        this.tweens.add({ targets: l, alpha: 0.75, duration: 600, yoyo: true, repeat: -1 });
+        objs.push(l);
       } else if (n.kind === 'chest') {
         const c = this.add.image(bx, by + 2, 'node_chest').setOrigin(0.5, 1).setDepth(depth);
         this.tweens.add({ targets: c, scaleY: 1.06, duration: 500, yoyo: true, repeat: -1 });
@@ -229,6 +239,7 @@ export class RegionScene extends Phaser.Scene {
     if (n) {
       if (n.kind === 'forage') return { kind: 'forage', label: '채집', icon: `it_${n.itemId}`, enabled: true, node: n };
       if (n.kind === 'chest') return { kind: 'chest', label: '상자 열기', icon: 'node_chest', enabled: true, node: n };
+      if (n.kind === 'ladder') return { kind: 'ladder', label: '내려가기', icon: 'ic_mine', enabled: true, node: n };
       if (n.kind === 'tree') return { kind: 'tree', label: '벌목', icon: 'tool_axe', enabled: true, node: n };
       const rock = ROCK_BY_ID[n.itemId!];
       const ok = w.state.tools.pickaxe >= rock.tier;
@@ -326,6 +337,21 @@ export class RegionScene extends Phaser.Scene {
       startFishing(this.w, () => {
         this.player.enabled = true;
       }, this.worldToScreen((x + 0.5) * TS, (y + 0.5) * TS));
+      return;
+    }
+    if (c.kind === 'ladder') {
+      const d = this.w.mine.descend();
+      if (!d.ok) {
+        Session.app.emit('toast', { text: d.reason ?? '', tone: 'warn' });
+        return;
+      }
+      this.leaving = true;
+      AudioManager.sfx('build');
+      this.cameras.main.fadeOut(220, 10, 8, 10);
+      this.time.delayedCall(230, () => {
+        this.scene.restart();
+        Session.app.emit('location', { id: 'mine' });
+      });
       return;
     }
     if (!c.node) return;

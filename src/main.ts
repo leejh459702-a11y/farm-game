@@ -71,7 +71,7 @@ async function boot(): Promise<void> {
     input: { activePointers: 3 },
     fps: { target: SettingsStore.value.fpsLimit, limit: SettingsStore.value.fpsLimit, smoothStep: true },
     render: { powerPreference: 'high-performance', batchSize: 4096 },
-    scene: [BootScene, MenuScene, FarmScene, new RegionScene('river'), new RegionScene('forest'), new RegionScene('hill'), OverlayScene, ControlsScene],
+    scene: [BootScene, MenuScene, FarmScene, new RegionScene('river'), new RegionScene('forest'), new RegionScene('hill'), new RegionScene('mine'), OverlayScene, ControlsScene],
   });
   registerServiceWorker();
   // QA 용 디버그 훅 (?debug)

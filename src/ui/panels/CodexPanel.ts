@@ -8,6 +8,7 @@ import { RECIPES, RECIPE_BY_ID } from '../../data/recipes';
 import { BUILDINGS, BUILDING_BY_ID } from '../../data/buildings';
 import { FISH, FISH_BY_ID, RARITY_NAME } from '../../data/fish';
 import { SEASON_BY_ID, WEATHER_INFO } from '../../data/seasons';
+import { ARTIFACTS, ARTIFACT_BY_ID, ARTIFACT_SETS } from '../../data/artifacts';
 import { cx, esc } from '../dom';
 
 export class CodexPanel extends Panel {
@@ -18,7 +19,8 @@ export class CodexPanel extends Panel {
     { id: 'animal', label: '동물', icon: 'ic_livestock' },
     { id: 'fish', label: '물고기', icon: 'ic_fish' },
     { id: 'forage', label: '채집물', icon: 'ic_forage' },
-    { id: 'resource', label: '자원', icon: 'it_wood' },
+    { id: 'resource', label: '광물·자원', icon: 'it_amethyst' },
+    { id: 'artifact', label: '유물', icon: 'it_art_gear' },
     { id: 'processed', label: '가공품', icon: 'it_cheese' },
     { id: 'cooking', label: '요리', icon: 'it_bibimbap' },
     { id: 'building', label: '시설', icon: 'ic_house' },
@@ -53,6 +55,21 @@ export class CodexPanel extends Panel {
         const list = FISH.filter((f) => f.id !== 'old_boot');
         const found = list.filter((f) => items[f.id]?.discovered).length;
         return this.progress(found, list.length) + `<div class="grid auto-sm">${list.map((f) => this.tile(f.id, f.spriteKey, f.name, !!items[f.id]?.discovered)).join('')}</div>`;
+      }
+      case 'artifact': {
+        const found = ARTIFACTS.filter((a) => w.mine.arts.found.includes(a.id)).length;
+        const sets = Object.entries(ARTIFACT_SETS)
+          .map(([sid, set]) => {
+            const list = ARTIFACTS.filter((a) => a.set === sid);
+            const n = list.filter((a) => w.mine.arts.found.includes(a.id)).length;
+            const claimed = w.mine.arts.setsClaimed.includes(sid);
+            return `<div class="card" style="margin-bottom:0.4rem"><div class="row"><b class="grow">${esc(set.name)} <span class="tiny muted">${n}/${list.length}</span></b>
+              <span class="tiny muted">세트 보상: ${esc(set.rewardText)}</span>
+              ${claimed ? '<span class="chip green">받음</span>' : n === list.length ? `<button class="btn small green" data-act="claimSet" data-arg="${sid}">보상 받기</button>` : ''}</div>
+              <div class="grid auto-sm" style="margin-top:0.3rem">${list.map((a) => this.tile(a.id, `it_${a.id}`, a.name, w.mine.arts.found.includes(a.id))).join('')}</div></div>`;
+          })
+          .join('');
+        return this.progress(found, ARTIFACTS.length) + sets + `<div class="tiny muted">유물은 광산(고대 지층·지오드), 낚시(물속 보물), 채집 상자에서 드물게 나와요. 중복 유물은 특급상인이 비싸게 사 줘요.</div>`;
       }
       case 'forage':
       case 'resource':
@@ -98,6 +115,11 @@ export class CodexPanel extends Panel {
       return `${iconHtml(f.spriteKey, 40)}<div class="grow small"><b>${esc(f.name)}</b> <span class="chip">${RARITY_NAME[f.rarity]}</span> · ${esc(when)}
         <div class="tiny muted">포획 ${rec?.count ?? 0}회 · 최대 크기 ${(rec?.maxSize ?? 0).toFixed(1)}cm · 최고 판매가 ${e.bestPrice.toLocaleString()}G · 기본가 ${f.baseSellPrice}G</div></div>`;
     }
+    if (this.tab === 'artifact') {
+      const a = ARTIFACT_BY_ID[id];
+      if (!w.mine.arts.found.includes(id)) return `<span class="muted">아직 발견하지 못했어요. 힌트: ${a.source === 'mine' ? '광산' : a.source === 'fishing' ? '낚시' : '채집 상자'}</span>`;
+      return `${iconHtml(`it_${id}`, 40)}<div class="grow small"><b>${esc(a.name)}</b> · ${esc(ARTIFACT_SETS[a.set].name)}<div class="tiny muted">${esc(a.desc)} · 기본가 ${a.price.toLocaleString()}G (특급상인 +60%)</div></div>`;
+    }
     if (this.tab === 'building') {
       const b = BUILDING_BY_ID[id];
       return `${iconHtml(b.spriteKey, 40)}<div class="grow small"><b>${esc(b.name)}</b> · ${b.w}×${b.h} · ${b.price.toLocaleString()}G<div class="tiny muted">${esc(b.desc)}</div></div>`;
@@ -112,6 +134,10 @@ export class CodexPanel extends Panel {
 
   onAction(act: string, arg: string): void {
     if (act === 'sel') this.sel = this.sel === arg ? null : arg;
+    else if (act === 'claimSet') {
+      const r = this.w.mine.claimSet(arg);
+      this.toast(r.ok ? '세트 보상을 받았어요!' : r.reason ?? '', r.ok ? 'good' : 'warn');
+    }
     this.refresh();
   }
 }

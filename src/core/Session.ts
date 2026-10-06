@@ -32,7 +32,7 @@ export interface AppEvents {
   /** 튜토리얼 강조 위치 갱신 */
   layout: void;
   /** 현재 위치 (농장 / 외곽 지역) */
-  location: { id: 'farm' | 'river' | 'forest' | 'hill' };
+  location: { id: 'farm' | 'river' | 'forest' | 'hill' | 'mine' };
 }
 
 class SessionImpl {
@@ -41,7 +41,7 @@ class SessionImpl {
   world: World | null = null;
   slot = 1;
   /** 현재 위치 */
-  location: 'farm' | 'river' | 'forest' | 'hill' = 'farm';
+  location: 'farm' | 'river' | 'forest' | 'hill' | 'mine' = 'farm';
   private saveTimer: number | null = null;
   private saving = false;
   private unsub: (() => void)[] = [];

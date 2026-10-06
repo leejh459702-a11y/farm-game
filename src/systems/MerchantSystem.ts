@@ -174,7 +174,10 @@ export class MerchantSystem {
 
   // ───── 판매 ─────
   unitPrice(itemId: string, freshness?: number, bonus = 0): number {
-    return sellPrice(itemId, freshness, this.priceCtx(), bonus);
+    const base = sellPrice(itemId, freshness, this.priceCtx(), bonus);
+    // 유물은 수집가 기질의 특급상인이 훨씬 비싸게 사 준다
+    if (ITEM_BY_ID[itemId]?.category === 'artifact') return Math.round(base * (this.m.special ? 1.6 : 0.5));
+    return base;
   }
 
   sellSlot(containerId: string, slot: number, qty: number): { ok: boolean; reason?: string; gold?: number } {

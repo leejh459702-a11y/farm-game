@@ -4,7 +4,7 @@ import { Session } from '../core/Session';
 import type { RegionId } from '../types/game';
 import { Panels } from '../ui/PanelManager';
 
-export const REGION_SCENE: Record<RegionId, string> = { river: 'River', forest: 'Forest', hill: 'Hill' };
+export const REGION_SCENE: Record<RegionId, string> = { river: 'River', forest: 'Forest', hill: 'Hill', mine: 'Mine' };
 
 /** 실행 중·일시정지·잠든 지역 Scene 을 모두 정지 */
 function stopRegions(): void {

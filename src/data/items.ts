@@ -3,6 +3,7 @@ import { CROPS, CROP_BY_ID } from './crops';
 import { RECIPES } from './recipes';
 import { FISH, FISH_BY_ID } from './fish';
 import { POND_FISH, roeId } from './aquaculture';
+import { ARTIFACTS } from './artifacts';
 import { FORAGE, RESOURCES } from './gathering';
 
 export interface ItemDef {
@@ -96,6 +97,11 @@ add({ id: 'pondweed', name: '수초', category: 'resource', basePrice: 8, decay:
 add({ id: 'pearl', name: '진주', category: 'resource', basePrice: 600, decay: 0, desc: '희귀 어종 양식장에서 가끔 나오는 보석' });
 add({ id: 'shimmer_scale', name: '무지개 비늘', category: 'resource', basePrice: 900, decay: 0, desc: '매우 희귀한 어종이 남기는 반짝이는 비늘 — 희귀 제작 재료' });
 add({ id: 'fish_feed', name: '양식 사료', category: 'other', basePrice: 6, decay: 0, desc: '양식장 물고기 먹이 (3마리당 1개)' });
+// 광산: 광물주머니 · 지오드 (가방에서 열기) / 유물
+add({ id: 'ore_bag', name: '광물주머니', category: 'other', basePrice: 40, decay: 0, desc: '열어 보면 광석이 들어 있어요 (가방에서 열기)' });
+add({ id: 'geode', name: '지오드', category: 'other', basePrice: 90, decay: 0, desc: '쪼개 보면 보석·유물·희귀 씨앗이 나올지도 (가방에서 열기)' });
+add({ id: 'magma_geode', name: '용암 지오드', category: 'other', basePrice: 220, decay: 0, desc: '깊은 광산의 뜨거운 지오드. 귀한 것이 잘 나온다 (가방에서 열기)' });
+for (const ar of ARTIFACTS) add({ id: ar.id, name: ar.name, category: 'artifact', basePrice: ar.price, decay: 0, desc: `유물 — ${ar.desc}` });
 add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
 
 // 기타
@@ -179,7 +185,7 @@ export function item(id: string): ItemDef {
   return d;
 }
 
-export const CATEGORY_NAME: Record<ItemCategory | 'all', string> = {
+export const CATEGORY_NAME: Record<ItemCategory | 'all', string> = { artifact: '유물',
   all: '전체',
   crop: '작물',
   animal: '축산물',

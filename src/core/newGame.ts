@@ -47,11 +47,13 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     breedCharmActive: false,
     life: { fishingXp: 0, foragingXp: 0 },
     tools: { axe: 0, pickaxe: 0, rod: 0, rodOwned: false },
-    regions: { river: { nodes: [], lastGen: -1 }, forest: { nodes: [], lastGen: -1 }, hill: { nodes: [], lastGen: -1 } },
+    regions: { river: { nodes: [], lastGen: -1 }, forest: { nodes: [], lastGen: -1 }, hill: { nodes: [], lastGen: -1 }, mine: { nodes: [], lastGen: -1 } },
     regionsDiscovered: false,
     fishRecords: {},
     stats: { totalHarvested: 0, totalSold: 0, daysPlayed: 0, animalsBorn: 0 },
     counters: {},
     journal: { claimed: [], notified: [] },
+    mine: { floor: 1, deepest: 0, genKey: '', broken: 0, ladder: false },
+    artifacts: { found: [], setsClaimed: [] },
   };
 }

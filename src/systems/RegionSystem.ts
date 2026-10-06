@@ -17,9 +17,37 @@ export const REGION_H = 15;
 /** 입구 (지역 왼쪽 끝 길) */
 export const REGION_ENTRY = { x: 1, y: 7 };
 
-/** G 풀 · F 숲바닥 · T 나무벽 · W 물 · S 모래 · R 바위땅 · C 절벽 · P 길 */
-export type Terrain = 'G' | 'F' | 'T' | 'W' | 'S' | 'R' | 'C' | 'P';
-const BLOCKED: Record<Terrain, boolean> = { G: false, F: false, T: true, W: true, S: false, R: false, C: true, P: false };
+/** G 풀 · F 숲바닥 · T 나무벽 · W 물 · S 모래 · R 바위땅 · C 절벽 · P 길 · M 동굴 바닥 · K 동굴 벽 */
+export type Terrain = 'G' | 'F' | 'T' | 'W' | 'S' | 'R' | 'C' | 'P' | 'M' | 'K';
+const BLOCKED: Record<Terrain, boolean> = { G: false, F: false, T: true, W: true, S: false, R: false, C: true, P: false, M: false, K: true };
+
+/** 광산은 층·날짜마다 지형이 바뀐다 — MineSystem 이 변형 번호를 정한다 */
+let mineVariant = 0;
+const mineCache = new Map<number, Terrain[][]>();
+export function setMineVariant(v: number): void {
+  mineVariant = v;
+}
+
+function mineLayout(v: number): Terrain[][] {
+  const cached = mineCache.get(v);
+  if (cached) return cached;
+  const g: Terrain[][] = [];
+  for (let y = 0; y < REGION_H; y++) {
+    const row: Terrain[] = [];
+    for (let x = 0; x < REGION_W; x++) {
+      const edge = x === 0 || y === 0 || x === REGION_W - 1 || y === REGION_H - 1;
+      let t: Terrain = edge ? 'K' : 'M';
+      if (!edge && (y === 1 || y === REGION_H - 2) && h(x, y, 50 + v) < 0.55) t = 'K';
+      if (!edge && h(x, y, 90 + v * 13) < 0.07 && Math.abs(y - REGION_ENTRY.y) > 1) t = 'K';
+      row.push(t);
+    }
+    g.push(row);
+  }
+  for (let x = 0; x <= 3; x++) g[REGION_ENTRY.y][x] = 'P';
+  g[REGION_ENTRY.y - 1][1] = 'M';
+  mineCache.set(v, g);
+  return g;
+}
 
 function h(x: number, y: number, s: number): number {
   let v = (x * 374761393 + y * 668265263 + s * 2246822519) ^ 0x5bd1e995;
@@ -69,7 +97,8 @@ export function regionLayout(id: RegionId): Terrain[][] {
 }
 
 export function terrainAt(id: RegionId, x: number, y: number): Terrain {
-  if (x < 0 || y < 0 || x >= REGION_W || y >= REGION_H) return id === 'hill' ? 'C' : 'T';
+  if (x < 0 || y < 0 || x >= REGION_W || y >= REGION_H) return id === 'mine' ? 'K' : id === 'hill' ? 'C' : 'T';
+  if (id === 'mine') return mineLayout(mineVariant)[y][x];
   return regionLayout(id)[y][x];
 }
 
@@ -105,7 +134,7 @@ export class RegionSystem {
   constructor(private w: World) {}
 
   state(id: RegionId): RegionState {
-    const r = (this.w.state.regions ??= { river: { nodes: [], lastGen: -1 }, forest: { nodes: [], lastGen: -1 }, hill: { nodes: [], lastGen: -1 } });
+    const r = (this.w.state.regions ??= { river: { nodes: [], lastGen: -1 }, forest: { nodes: [], lastGen: -1 }, hill: { nodes: [], lastGen: -1 }, mine: { nodes: [], lastGen: -1 } });
     return (r[id] ??= { nodes: [], lastGen: -1 });
   }
 
@@ -115,6 +144,7 @@ export class RegionSystem {
   }
 
   ensureDay(id: RegionId): void {
+    if (id === 'mine') return this.w.mine.ensureFloor();
     const st = this.state(id);
     const day = this.w.state.time.day;
     if (st.lastGen >= day) return;
@@ -132,7 +162,7 @@ export class RegionSystem {
   isBlocked(id: RegionId, x: number, y: number): boolean {
     if (BLOCKED[terrainAt(id, x, y)]) return true;
     const n = this.nodeAt(id, x, y);
-    return !!n && n.kind !== 'forage';
+    return !!n && n.kind !== 'forage' && n.kind !== 'ladder';
   }
 
   forageCount(id: RegionId): number {
@@ -263,6 +293,7 @@ export class RegionSystem {
       this.w.events.emit('regions', { id });
       return { ok: true, drops, depleted: true, hpLeft: 0 };
     }
+    if (n.kind === 'ladder') return fail('사다리로 내려가세요');
     if (n.kind === 'chest') {
       const weights: Record<string, number> = {};
       CHEST_LOOT.forEach((l, i) => (weights[String(i)] = l.weight));
@@ -275,6 +306,8 @@ export class RegionSystem {
         this.w.notify({ key: 'chest_deco', text: `상자에서 장식 [${BUILDING_BY_ID[loot.id].name}]을(를) 찾았어요! (건설 보관함)`, icon: BUILDING_BY_ID[loot.id].spriteKey, tone: 'good' });
       } else push(loot.id, qty);
       st.nodes = st.nodes.filter((x) => x !== n);
+      // 오래된 상자에는 가끔 옛 농부의 유품이
+      if (r() < 0.12) this.w.mine.giveArtifact(this.w.mine.randomArtifact('forage'));
       this.w.life.addXp('foraging', BALANCE.life.xp.chest);
       this.w.count('chest');
       this.w.events.emit('sfx', { key: 'special' });
@@ -305,7 +338,8 @@ export class RegionSystem {
       const rock = ROCK_BY_ID[n.itemId!];
       for (const d of rock.drops) push(d.id, randInt(r, d.min, d.max) + (tools.pickaxe >= 3 && d.id.endsWith('_ore') ? 1 : 0));
       const [a, b] = BALANCE.regions.rockRegrow;
-      n.respawnDay = day + randInt(r, a, b);
+      n.respawnDay = id === 'mine' ? day + 999 : day + randInt(r, a, b);
+      if (id === 'mine') this.w.mine.onRockBroken(n, push);
       this.w.life.addXp('foraging', BALANCE.life.xp.mine + rock.tier * 2);
       this.w.count('mine');
     }
@@ -319,6 +353,7 @@ export class RegionSystem {
     const nodes = this.activeNodes(id);
     if (id === 'river') return `채집 ${nodes.filter((n) => n.kind === 'forage').length}곳 · 낚시`;
     if (id === 'forest') return `나무 ${nodes.filter((n) => n.kind === 'tree').length}그루 · 채집 ${nodes.filter((n) => n.kind === 'forage').length}곳`;
+    if (id === 'mine') return `${this.w.mine.floorName()} · 바위 ${nodes.filter((n) => n.kind === 'rock').length}개${this.w.mine.st.ladder ? ' · 사다리 발견' : ''}`;
     return `바위 ${nodes.filter((n) => n.kind === 'rock').length}개`;
   }
 }
