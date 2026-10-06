@@ -83,3 +83,19 @@ scripts/       make-icons.mjs (PWA 아이콘 생성)
 - 낚시 UI 는 DOM 오버레이(`ui/FishingOverlay.ts`) — 한 손 누르기 조작, requestAnimationFrame 루프.
 - 입력: `ControlsScene`(가상 조이스틱)이 화면 왼쪽 포인터를 점유하지만, 거의 움직이지 않은 짧은 터치는 `InputState.tap` 으로 현재 월드 Scene 에 탭으로 전달.
 - 저장: `SAVE_VERSION` 3. 마이그레이션 1→2(작물 성장 필드 변환), 2→3(도구/지역 기본값, 튜토리얼 완료 저장은 낚싯대 지급).
+
+## 확장 시스템 (모두 Phaser 비의존 · World 에 등록)
+| 시스템 | 역할 |
+| --- | --- |
+| `AquacultureSystem` | 양식장 (건물 인스턴스의 `pond` 필드) |
+| `AgingSystem` | 숙성고 (`cellar` 선반, 꺼낼 때 스택 `bonus` 로 가치 반영) |
+| `JournalSystem` | 농장일지 — 진행도는 상태/`state.counters` 에서 계산, 수령 여부만 저장 |
+| `MineSystem` | 광산 층·사다리·승강기·지오드·유물 (지형은 `RegionSystem.setMineVariant`) |
+| `CollectionSystem` | 연구 컬렉션 + 스킬북 |
+| `TicketSystem` | 농업 교환권 (인벤토리 아이템 아님) |
+| `InsectSystem` | 곤충 스폰·관찰·수분 보너스 (렌더: `world/InsectRenderer`) |
+| `SpiritSystem` | 정령의 사당 |
+
+- `w.count(key)` 활동 카운터 → `counter` 이벤트 → 농장일지 확인.
+- 기술 연구 5분야 (`SkillTree`): 낚시·채집채광은 생활 숙련도 경험치를 그대로 쓰고, 가공·경영은 `skills.businessXp`.
+- 세이브 v5: v3→4 동물 행복도, v4→5 기존 양식장·광산·도구 사용자에게 해당 연구 지급. 새 최상위 필드는 `migrate()` 의 기본값 보정으로 채워진다.
