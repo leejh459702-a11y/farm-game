@@ -4,6 +4,7 @@ import { RECIPES } from './recipes';
 import { FISH, FISH_BY_ID } from './fish';
 import { POND_FISH, roeId } from './aquaculture';
 import { ARTIFACTS } from './artifacts';
+import { BOOKS } from './books';
 import { FORAGE, RESOURCES } from './gathering';
 
 export interface ItemDef {
@@ -102,6 +103,7 @@ add({ id: 'ore_bag', name: '광물주머니', category: 'other', basePrice: 40, 
 add({ id: 'geode', name: '지오드', category: 'other', basePrice: 90, decay: 0, desc: '쪼개 보면 보석·유물·희귀 씨앗이 나올지도 (가방에서 열기)' });
 add({ id: 'magma_geode', name: '용암 지오드', category: 'other', basePrice: 220, decay: 0, desc: '깊은 광산의 뜨거운 지오드. 귀한 것이 잘 나온다 (가방에서 열기)' });
 for (const ar of ARTIFACTS) add({ id: ar.id, name: ar.name, category: 'artifact', basePrice: ar.price, decay: 0, desc: `유물 — ${ar.desc}` });
+for (const bk of BOOKS) add({ id: bk.id, name: bk.name, category: 'other', basePrice: bk.price, decay: 0, tags: ['book'], desc: `스킬북 — ${bk.desc} (가방에서 읽기, 영구 효과)` });
 add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
 
 // 기타

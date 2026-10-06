@@ -16,6 +16,7 @@ export class CodexPanel extends Panel {
   title = '도감';
   tabs = [
     { id: 'crop', label: '작물', icon: 'it_carrot' },
+    { id: 'tree', label: '과수', icon: 'it_apple' },
     { id: 'animal', label: '동물', icon: 'ic_livestock' },
     { id: 'fish', label: '물고기', icon: 'ic_fish' },
     { id: 'forage', label: '채집물', icon: 'ic_forage' },
@@ -43,9 +44,11 @@ export class CodexPanel extends Panel {
     const w = this.w;
     const items = w.state.codex.items;
     switch (this.tab) {
-      case 'crop': {
-        const found = CROPS.filter((c) => items[c.id]?.discovered).length;
-        return this.progress(found, CROPS.length) + `<div class="grid auto-sm">${CROPS.map((c) => this.tile(c.id, `it_${c.id}`, c.name, !!items[c.id]?.discovered)).join('')}</div>`;
+      case 'crop':
+      case 'tree': {
+        const list = CROPS.filter((c) => !!c.fruitTree === (this.tab === 'tree'));
+        const found = list.filter((c) => items[c.id]?.discovered).length;
+        return this.progress(found, list.length) + `<div class="grid auto-sm">${list.map((c) => this.tile(c.id, `it_${c.id}`, c.name, !!items[c.id]?.discovered)).join('')}</div>`;
       }
       case 'animal': {
         const found = ANIMALS.filter((a) => w.state.codex.animals[a.id]?.discovered).length;
@@ -91,7 +94,7 @@ export class CodexPanel extends Panel {
     if (!this.sel) return `<span class="muted small">항목을 탭하면 기록을 볼 수 있어요.</span>`;
     const w = this.w;
     const id = this.sel;
-    if (this.tab === 'crop') {
+    if (this.tab === 'crop' || this.tab === 'tree') {
       const c = CROP_BY_ID[id];
       const e = w.state.codex.items[id];
       if (!e?.discovered) return `<span class="muted">아직 발견하지 못했어요. 힌트: ${c.season.map((s) => SEASON_BY_ID[s].name).join('·')} 작물${c.rare ? ' (특급상인)' : ''}</span>`;

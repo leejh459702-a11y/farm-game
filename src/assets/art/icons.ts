@@ -5,6 +5,7 @@ import { CROPS, CROP_BY_ID, type CropData } from '../../data/crops';
 import { ITEMS } from '../../data/items';
 import { POND_FISH } from '../../data/aquaculture';
 import { ARTIFACTS } from '../../data/artifacts';
+import { BOOKS } from '../../data/books';
 import { FISH, type FishData } from '../../data/fish';
 import { FORAGE, RESOURCES, type ForageData, type ResourceData } from '../../data/gathering';
 import { Painter, shade, type Color } from '../painter';
@@ -368,6 +369,14 @@ const OTHER: Record<string, IconFn> = {
   geode: geodeIcon(0x8a857c, 0xd8d0e0, 0xa86ad8),
   magma_geode: geodeIcon(0x5a3a30, 0xf09040, 0xe0303c),
   ...Object.fromEntries(ARTIFACTS.map((a) => [a.id, artifactIcon(a.shape, a.color)])),
+  ...Object.fromEntries(
+    BOOKS.map((b) => [
+      b.id,
+      ((p: Painter) => {
+        p.rect(3, 3, 10, 11, b.color).rect(3, 3, 2, 11, shade(b.color, -0.3)).rect(6, 5, 5, 2, 0xf6efe0).rect(12, 4, 1, 9, 0xf6efe0).px(13, 2, 0xfff6a0).px(14, 3, 0xfff6a0);
+      }) as IconFn,
+    ]),
+  ),
   wine: bottle(0x7a1f3a, 0x3b2a22),
   peach_jam: jar(0xf6a8a0),
   lemonade: bottle(0xf6f0a0, 0xf6e04a),

@@ -20,6 +20,7 @@ import { BlueprintPanel } from './panels/BlueprintPanel';
 import { PausePanel } from './panels/PausePanel';
 import { PondPanel } from './panels/PondPanel';
 import { JournalPanel } from './panels/JournalPanel';
+import { CollectionPanel } from './panels/CollectionPanel';
 import { CellarPanel } from './panels/CellarPanel';
 import { GreenhousePanel } from './panels/GreenhousePanel';
 import { SettingsPanel } from './panels/SettingsPanel';
@@ -41,7 +42,8 @@ export type PanelName =
   | 'settings'
   | 'save'
   | 'house'
-  | 'journal';
+  | 'journal'
+  | 'collections';
 
 export function openPanel(name: PanelName, arg?: string): void {
   const w = Session.world;
@@ -81,6 +83,9 @@ export function openPanel(name: PanelName, arg?: string): void {
       break;
     case 'blueprints':
       Panels.open(new BlueprintPanel());
+      break;
+    case 'collections':
+      Panels.open(new CollectionPanel());
       break;
     case 'journal':
       Panels.open(new JournalPanel());

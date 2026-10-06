@@ -31,6 +31,7 @@ export class PausePanel extends Panel {
         ${b('resume', 'ic_farming', '계속하기', 'green')}
         ${b('save', 'ic_save', '저장')}
         ${b('journal', 'ic_tutorial', `농장일지${w.journal.claimable() ? ` <span class="chip red">${w.journal.claimable()}</span>` : ''}`)}
+        ${b('collections', 'ic_research', `연구 컬렉션${w.collections.ready() ? ` <span class="chip gold">${w.collections.ready()}</span>` : ''}`)}
         ${b('codex', 'ic_codex', '도감')}
         ${b('animals', 'ic_livestock', '동물 목록')}
         ${b('skills', 'ic_research', '기술 연구')}

@@ -55,5 +55,7 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     journal: { claimed: [], notified: [] },
     mine: { floor: 1, deepest: 0, genKey: '', broken: 0, ladder: false },
     artifacts: { found: [], setsClaimed: [] },
+    collections: { progress: {}, done: [] },
+    books: [],
   };
 }

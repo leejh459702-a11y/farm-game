@@ -339,6 +339,10 @@ export interface GameState {
   mine: { floor: number; deepest: number; genKey: string; broken: number; ladder: boolean };
   /** 유물: 발견한 것 / 세트 보상 받은 것 */
   artifacts: { found: string[]; setsClaimed: string[] };
+  /** 연구 컬렉션 제출 현황 / 완료 */
+  collections: { progress: Record<string, Record<string, number>>; done: string[] };
+  /** 읽은 스킬북 (영구 효과) */
+  books: string[];
 }
 
 export interface Settings {

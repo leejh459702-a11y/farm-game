@@ -6,6 +6,7 @@ import { BALANCE } from '../data/balance';
 import { ANIMALS, ANIMAL_BY_ID } from '../data/animals';
 import { BUILDING_BY_ID } from '../data/buildings';
 import { CROPS, CROP_BY_ID } from '../data/crops';
+import { BOOKS } from '../data/books';
 import { MERCHANT_BASICS, MERCHANT_DECOS, RARE_SEEDS, SPECIAL_DECOS, SPECIAL_ITEMS } from '../data/economy';
 import { ITEM_BY_ID } from '../data/items';
 import { buyPrice, sellPrice, animalSellPrice, beautyBonus, type PriceContext } from '../services/EconomyService';
@@ -140,6 +141,11 @@ export class MerchantSystem {
     if (special) {
       for (const id of shuffle(r, [...RARE_SEEDS]).slice(0, 2)) out.push({ kind: 'item', id: `seed_${id}`, price: buyPrice(CROP_BY_ID[id].seedPrice, disc), stock: 5, special: true });
       for (const it of SPECIAL_ITEMS) out.push({ kind: 'item', id: it.id, price: buyPrice(it.price, disc), stock: it.stock, special: true });
+      // 스킬북 한 권 (아직 읽지 않은 것 우선)
+      const unread = BOOKS.filter((b) => !this.w.collections.hasBook(b.id));
+      const pool = unread.length ? unread : BOOKS;
+      const bk = pool[Math.floor(r() * pool.length)];
+      out.push({ kind: 'item', id: bk.id, price: buyPrice(bk.price * 2, disc), stock: 1, special: true });
       const sd = pick(r, SPECIAL_DECOS);
       out.push({ kind: 'deco', id: sd.id, price: buyPrice(sd.price, disc), stock: 1, special: true });
       // 희귀 동물 1마리 보장 (연구 여부와 무관하게 구매 가능하나 축사가 필요)

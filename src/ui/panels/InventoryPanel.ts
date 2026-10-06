@@ -108,6 +108,7 @@ export class InventoryPanel extends Panel {
       ${other ? `<button class="btn small blue" data-act="move">${other === 'bag' ? '가방으로' : '넣기'}</button>` : ''}
       ${d.category === 'seed' ? `<button class="btn small green" data-act="useSeed">씨앗 선택</button>` : ''}
       ${this.w.mine.isOpenable(s.itemId) ? `<button class="btn small purple" data-act="openGeode">열기</button>` : ''}
+      ${this.w.collections.isBook(s.itemId) ? `<button class="btn small purple" data-act="readBook" ${this.w.collections.hasBook(s.itemId) ? 'disabled' : ''}>${this.w.collections.hasBook(s.itemId) ? '읽은 책' : '읽기'}</button>` : ''}
       <button class="btn small red" data-act="discard">버리기</button>`;
   }
 
@@ -157,6 +158,10 @@ export class InventoryPanel extends Panel {
       const other = this.sel.cid === this.left ? this.right : this.left;
       if (other && !inv.moveSlot(this.sel.cid, this.sel.slot, other)) this.toast('공간이 부족합니다', 'warn');
       this.sel = null;
+    } else if (act === 'readBook') {
+      const r = this.w.collections.read(s.itemId);
+      this.toast(r.ok ? '영구 효과가 적용됐어요!' : r.reason ?? '', r.ok ? 'good' : 'warn');
+      if (!this.w.state.containers[this.sel.cid]?.slots[this.sel.slot]) this.sel = null;
     } else if (act === 'openGeode') {
       const r = this.w.mine.open(s.itemId);
       if (!r.ok) this.toast(r.reason ?? '', 'warn');

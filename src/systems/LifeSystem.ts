@@ -103,6 +103,7 @@ export class LifeSystem {
     if (lv >= 7 && isNight) m += 0.3;
     m += this.w.state.tools.rod * 0.08;
     if (this.w.skills.has('fi_rare')) m *= 1.25;
+    if (this.w.collections.hasBook('book_fishing')) m *= 1.2;
     return m;
   }
 

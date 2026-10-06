@@ -4,6 +4,7 @@
  * 스태미나 없음 — 게임 시간만 흐른다.
  */
 import { BALANCE } from '../data/balance';
+import { BOOKS } from '../data/books';
 import { FISH, FISH_BY_ID, type FishData } from '../data/fish';
 import type { SeasonId, WeatherId } from '../types/game';
 import { calendar, isNight } from './SeasonSystem';
@@ -161,7 +162,15 @@ export class FishingSystem {
     const fish = FISH_BY_ID[fishId];
     this.w.count('fish');
     // 낡은 장화 대신 가끔 물속의 보물 (유물)
-    if (fish.id === 'old_boot' && this.w.rand() < 0.3) this.w.mine.giveArtifact(this.w.mine.randomArtifact('fishing'));
+    if (fish.id === 'old_boot') {
+      const x = this.w.rand();
+      if (x < 0.3) this.w.mine.giveArtifact(this.w.mine.randomArtifact('fishing'));
+      else if (x < 0.34) {
+        const bk = BOOKS[Math.floor(this.w.rand() * BOOKS.length)];
+        this.w.inventory.add('bag', bk.id, 1);
+        this.w.notify({ key: 'fish_book', text: `물속에서 스킬북 '${bk.name}'을(를) 건졌어요!`, icon: `it_${bk.id}`, tone: 'good' });
+      }
+    }
     if (fish.rarity === 'legend') this.w.count('fish:legend');
     const [a, b] = fish.size;
     // 큰 개체는 드물게 (제곱 분포)

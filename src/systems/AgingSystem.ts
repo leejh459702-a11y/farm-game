@@ -36,7 +36,7 @@ export class AgingSystem {
 
   /** 지금 꺼내면 붙는 보너스 */
   bonusOf(s: CellarSlot): number {
-    return Math.max(s.baseBonus, agingBonus(s.itemId, this.daysAged(s)) * (this.w.skills.has('b_m_aging') ? 1.25 : 1));
+    return Math.max(s.baseBonus, agingBonus(s.itemId, this.daysAged(s)) * (1 + (this.w.skills.has('b_m_aging') ? 0.25 : 0) + (this.w.collections.hasBook('book_aging') ? 0.15 : 0)));
   }
 
   next(s: CellarSlot): { days: number; bonus: number } | null {

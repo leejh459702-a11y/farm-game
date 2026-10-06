@@ -57,6 +57,7 @@ export const GEODE_LOOT: Record<string, { id: string; min: number; max: number; 
     { id: 'emerald', min: 1, max: 1, w: 7 },
     { id: '@artifact', min: 1, max: 1, w: 8 },
     { id: '@rareseed', min: 1, max: 1, w: 5 },
+    { id: '@book', min: 1, max: 1, w: 1 },
   ],
   magma_geode: [
     { id: 'gold_ore', min: 2, max: 4, w: 16 },
@@ -66,5 +67,6 @@ export const GEODE_LOOT: Record<string, { id: string; min: number; max: number; 
     { id: 'star_crystal', min: 1, max: 1, w: 4 },
     { id: '@artifact', min: 1, max: 1, w: 12 },
     { id: '@rareseed', min: 1, max: 1, w: 8 },
+    { id: '@book', min: 1, max: 1, w: 3 },
   ],
 };

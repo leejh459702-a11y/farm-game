@@ -162,7 +162,7 @@ export class BreedingSystem {
     for (let i = 0; i < count; i++) {
       const grade = rollGrade(r, dist);
       const stats = this.inheritStats(mother, father as Animal | null, grade);
-      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex), intimacyInheritBonus(mother, (father as Animal | null) ?? null), this.w.skills.has('l_m_trait') ? 2 : 1);
+      const traits = inheritTraits(r, mother.traits, father?.traits ?? [], (ex) => this.w.animals.randomTrait(ex), intimacyInheritBonus(mother, (father as Animal | null) ?? null) + (this.w.collections.hasBook('book_genetics') ? 0.1 : 0), this.w.skills.has('l_m_trait') ? 2 : 1);
       const home = this.w.animals.findHome(mother.species, mother.buildingUid);
       const baby = this.w.animals.create(mother.species, {
         grade,

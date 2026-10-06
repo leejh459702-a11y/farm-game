@@ -7,6 +7,7 @@
 import { MINE, GEODE_LOOT, geodeChances, mineBand } from '../data/mine';
 import { ARTIFACT_BY_ID, ARTIFACT_SETS, ARTIFACTS, artifactsFrom, type ArtifactSource } from '../data/artifacts';
 import { RARE_SEEDS } from '../data/economy';
+import { BOOKS } from '../data/books';
 import { ITEM_BY_ID } from '../data/items';
 import { ROCK_BY_ID } from '../data/gathering';
 import type { RegionNode } from '../types/game';
@@ -85,6 +86,7 @@ export class MineSystem {
       if (nodes.some((n) => Math.abs(n.x - c.x) <= 0 && Math.abs(n.y - c.y) <= 0)) continue;
       const weights = { ...band.rocks };
       if (st.floor >= 16 && this.w.skills.has('ga_m_rare')) for (const k of ['rock_ruby', 'rock_emerald', 'rock_moon', 'rock_star', 'rock_relic']) if (weights[k]) weights[k] *= 2;
+      if (this.w.collections.hasBook('book_miner')) for (const k of ['rock_gold', 'rock_gem', 'rock_ruby', 'rock_emerald', 'rock_moon', 'rock_star']) if (weights[k]) weights[k] *= 1.5;
       const kind = pickWeighted<string>(r, weights);
       const hp = ROCK_BY_ID[kind].hp + Math.floor(st.floor / 8);
       nodes.push({ id: this.w.uid('m'), kind: 'rock', x: c.x, y: c.y, itemId: kind, hp, maxHp: hp, respawnDay: null });
@@ -110,7 +112,7 @@ export class MineSystem {
       this.w.events.emit('floatText', { x: n.x * 32 + 16, y: n.y * 32, text: '아래로 가는 사다리!', color: '#fff6a0' });
     }
     // 광물주머니 · 지오드
-    const geodeMul = (1 + this.w.life.level('foraging') * 0.03) * (this.w.skills.has('ga_geode') ? 1.5 : 1);
+    const geodeMul = (1 + this.w.life.level('foraging') * 0.03) * (this.w.skills.has('ga_geode') ? 1.5 : 1) * (this.w.collections.hasBook('book_miner') ? 1.2 : 1);
     for (const g of geodeChances(st.floor)) if (g.chance > 0 && r() < g.chance * geodeMul) push(g.id, 1);
     // 최상급 광물: 보석 +1
     const gem = ROCK_BY_ID[n.itemId!]?.drops.find((d) => ['amethyst', 'ruby', 'emerald', 'moonstone', 'star_crystal'].includes(d.id));
@@ -155,7 +157,7 @@ export class MineSystem {
       this.giveArtifact(a);
       drops.push({ itemId: a, qty: 1 });
     } else {
-      const id = e.id === '@rareseed' ? `seed_${RARE_SEEDS[Math.floor(r() * RARE_SEEDS.length)]}` : e.id;
+      const id = e.id === '@rareseed' ? `seed_${RARE_SEEDS[Math.floor(r() * RARE_SEEDS.length)]}` : e.id === '@book' ? BOOKS[Math.floor(r() * BOOKS.length)].id : e.id;
       const qty = randInt(r, e.min, e.max);
       this.give(id, qty);
       drops.push({ itemId: id, qty });

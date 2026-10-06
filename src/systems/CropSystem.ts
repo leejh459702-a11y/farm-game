@@ -171,7 +171,9 @@ export class CropSystem {
     this.w.inventory.consume(seedItemId, 1);
     p.cropId = ITEM_BY_ID[seedItemId].cropId!;
     p.plantedDay = this.w.state.time.day;
-    p.growthProgressDays = 0;
+    // 스킬북 '농부의 비밀노트': 성장 5일 이상 작물은 하루 앞서 시작
+    const cd = CROP_BY_ID[p.cropId];
+    p.growthProgressDays = this.w.collections.hasBook('book_farmer') && cd.growDays >= 5 && !cd.fruitTree ? 1 : 0;
     p.mature = false;
     p.regrowing = false;
     p.harvests = 0;
