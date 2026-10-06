@@ -8,6 +8,13 @@ import { confirmDialog, infoDialog } from './dialogs';
 import { AudioManager } from '../audio/AudioManager';
 import { SKILL_BY_ID } from '../data/skills';
 import { openPanel } from './openers';
+
+/** 생활 숙련도 조건 미달 시 안내 문구 */
+function lifeLock(d: { unlockLife?: { skill: 'fishing' | 'foraging'; level: number } }): string | null {
+  const w = Session.world;
+  if (!d.unlockLife || !w) return null;
+  return w.life.progress(d.unlockLife.skill).level >= d.unlockLife.level ? null : `${d.unlockLife.skill === 'fishing' ? '낚시' : '채집'} Lv.${d.unlockLife.level} 필요`;
+}
 import { ITEM_BY_ID } from '../data/items';
 
 let root: HTMLElement | null = null;
@@ -117,7 +124,7 @@ function render(): void {
       if (!list.length) list.push(`<div class="muted small" style="padding:0.8rem">상인에게 산 장식이나 철거한 장식이 여기에 보관됩니다.</div>`);
     } else {
       list = BUILDINGS.filter((d) => d.category === cat && !d.hidden && d.id !== 'house').map((d) => {
-        const locked = d.unlockSkill && !w.skills.has(d.unlockSkill) ? `${SKILL_BY_ID[d.unlockSkill]?.name ?? ''} 연구 필요` : '';
+        const locked = d.unlockSkill && !w.skills.has(d.unlockSkill) ? `${SKILL_BY_ID[d.unlockSkill]?.name ?? ''} 연구 필요` : lifeLock(d) ?? '';
         const mats = d.materials?.length ? ' + ' + d.materials.map((m) => `${ITEM_BY_ID[m.id].name}${m.qty}`).join(' ') : '';
         return itemCard(d.id, locked || `${d.price.toLocaleString()}G${mats}`, !!locked, false);
       });
@@ -165,6 +172,11 @@ function onClick(e: Event): void {
       const stock = (w.state.buildStock[arg] ?? 0) > 0;
       if (!stock && d.unlockSkill && !w.skills.has(d.unlockSkill)) {
         infoDialog(d.name, `${esc(d.desc)}<br><br><b>${esc(SKILL_BY_ID[d.unlockSkill]?.name ?? '')}</b> 연구가 필요합니다.`, d.spriteKey);
+        return;
+      }
+      const ll = !stock ? lifeLock(d) : null;
+      if (ll) {
+        infoDialog(d.name, `${esc(d.desc)}<br><br><b>${esc(ll)}</b>`, d.spriteKey);
         return;
       }
       b.setMode('place', arg);

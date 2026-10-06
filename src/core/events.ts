@@ -44,5 +44,8 @@ export interface WorldEvents {
   birth: { motherId: string; babyIds: string[] };
   /** 외곽 지역 노드 변화 */
   regions: { id: string };
+  ponds: void;
+  /** 활동 카운터 증가 (농장일지) */
+  counter: { key: string; total: number };
   floatText: { x: number; y: number; text: string; color?: string };
 }

@@ -246,6 +246,25 @@ function small(type: string): Painter {
   return p;
 }
 
+/** 양식장 3×3 — 나무 테두리 연못, 수초와 물고기 그림자 */
+function fishpond(): Painter {
+  const W = 96;
+  const H = 96 + ROOF_EXTRA;
+  const p = new Painter(W, H);
+  const top = ROOF_EXTRA;
+  p.shadow(W / 2, H - 4, W / 2 - 4, 5);
+  p.rect(2, top + 6, W - 4, H - top - 10, 0x8a5a34).rect(2, top + 6, W - 4, 3, 0xb07c4a);
+  p.rect(7, top + 12, W - 14, H - top - 22, 0x3f7fb8).rect(7, top + 12, W - 14, 4, 0x2f6aa0);
+  p.speckle(8, top + 16, W - 16, H - top - 28, 0x6aa8d8, 0.06, 41);
+  for (const [x, y] of [[18, top + 30], [62, top + 50], [40, top + 62]]) p.ellipse(x, y, 6, 2, 0x2a5a88).tri(x + 5, y, x + 9, y - 2, x + 9, y + 2, 0x2a5a88);
+  for (const [x, y] of [[12, top + 64], [80, top + 24], [78, top + 66], [14, top + 22]]) p.line(x, y, x, y - 8, 0x4a9a4a).line(x + 2, y, x + 3, y - 6, 0x5aa83c);
+  p.ellipse(68, top + 34, 5, 3, 0x5aa83c).ellipse(28, top + 52, 4, 2, 0x5aa83c).px(68, top + 32, 0xf7a8c4);
+  for (let x = 6; x < W - 6; x += 12) p.rect(x, top + 6, 2, 3, 0x6a4428);
+  p.rect(W / 2 - 10, top - 2, 20, 9, 0xb07c4a).frame(W / 2 - 10, top - 2, 20, 9, 0x6a4428).ellipse(W / 2, top + 2, 5, 2, 0x5a9ad8);
+  p.outline(0x3b2a22);
+  return p;
+}
+
 function fountain(): Painter {
   const p = new Painter(64, 64 + ROOF_EXTRA);
   const B = 64 + ROOF_EXTRA;
@@ -316,6 +335,10 @@ export function buildBuildingTextures(): BuildingTex[] {
   for (let lv = 1; lv <= 6; lv++) out.push({ key: `bld_house_${lv}`, canvas: house(lv).canvas });
   for (const d of BUILDINGS) {
     if (d.id === 'house') continue;
+    if (d.id === 'fishpond') {
+      out.push({ key: d.spriteKey, canvas: fishpond().canvas });
+      continue;
+    }
     if (d.id === 'fountain') {
       out.push({ key: d.spriteKey, canvas: fountain().canvas });
       continue;

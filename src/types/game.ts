@@ -86,6 +86,8 @@ export interface BuildingInstance {
   autoRecipe?: string | null;
   /** 장식 스킨 */
   skin?: string;
+  /** 양식장 */
+  pond?: { fishId: string | null; count: number; tier: number; fedToday: boolean; born: number };
 }
 
 export interface AnimalTraitRef {
@@ -315,6 +317,8 @@ export interface GameState {
     daysPlayed: number;
     animalsBorn: number;
   };
+  /** 누적 활동 카운터 (농장일지·통계용) — key 예: harvest:carrot, craft:mayo, pond:stock */
+  counters: Record<string, number>;
 }
 
 export interface Settings {

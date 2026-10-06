@@ -77,6 +77,10 @@ export class BuildingRenderer {
           const first = this.w.state.containers[b.outputId!]?.slots.find(Boolean);
           want.set(b.uid, first ? `it_${first.itemId}` : 'ic_star');
         } else if (this.w.animals.animalsIn(b).some((a) => !a.fedToday && !a.shipping) && (b.upgrades?.autoFeed ?? 0) === 0) want.set(b.uid, 'it_hay');
+      } else if (b.type === 'fishpond' && b.pond) {
+        const first = this.w.state.containers[b.outputId!]?.slots.find(Boolean);
+        if (first) want.set(b.uid, `it_${first.itemId}`);
+        else if (b.pond.count > 0 && !b.pond.fedToday && !b.upgrades?.autoFeed) want.set(b.uid, 'it_fish_feed');
       } else if (d.station) {
         if (this.w.processing.readyCount(b) > 0) {
           const first = this.w.state.containers[b.outputId!]?.slots.find(Boolean);

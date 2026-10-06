@@ -119,6 +119,7 @@ export class FarmScene extends Phaser.Scene {
         this.buildings.syncBubbles();
       }),
       ev.on('processing', () => this.buildings.syncBubbles()),
+      ev.on('ponds', () => this.buildings.syncBubbles()),
       ev.on('inventory', () => this.buildings.syncBubbles()),
       ev.on('merchant', () => this.buildings.syncMerchant()),
       ev.on('house', () => this.buildings.syncAll()),

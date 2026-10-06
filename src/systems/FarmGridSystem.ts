@@ -96,6 +96,7 @@ export class FarmGridSystem {
     const fromStock = (this.w.state.buildStock[type] ?? 0) > 0;
     if (!opts.free && !fromStock) {
       if (d.unlockSkill && !this.w.skills.has(d.unlockSkill)) return { ok: false, reason: '연구가 필요합니다' };
+      if (d.unlockLife && this.w.life.progress(d.unlockLife.skill).level < d.unlockLife.level) return { ok: false, reason: `${d.unlockLife.skill === 'fishing' ? '낚시' : '채집'} Lv.${d.unlockLife.level} 필요` };
       if (this.w.state.gold < d.price) return { ok: false, reason: '골드가 부족합니다' };
       if (!this.w.inventory.hasMats(d.materials)) return { ok: false, reason: '건설 재료가 부족합니다' };
     }
@@ -124,6 +125,11 @@ export class FarmGridSystem {
       inst.autoRecipe = null;
     }
     if (type === 'greenhouse') this.w.crops.createGreenhousePlots(uid, 9);
+    if (type === 'fishpond') {
+      inst.pond = { fishId: null, count: 0, tier: 0, fedToday: false, born: 0 };
+      inst.upgrades = { breedSpeed: 0, roeYield: 0, autoCollect: 0, autoFeed: 0 };
+      inst.outputId = this.w.inventory.create('output', 12, 1);
+    }
     if (type === 'butcher') inst.outputId = inst.outputId ?? this.w.inventory.create('output', 12, 1);
     this.w.state.buildings[uid] = inst;
     if (!this.w.state.codex.buildings.includes(type)) this.w.state.codex.buildings.push(type);
@@ -184,6 +190,7 @@ export class FarmGridSystem {
     if (b.animalIds && b.animalIds.length) return { ok: false, reason: '동물을 먼저 다른 축사로 옮기거나 판매하세요' };
     if (b.queue && b.queue.length) return { ok: false, reason: '진행 중인 가공이 있습니다' };
     if (b.type === 'greenhouse' && this.w.crops.greenhousePlots(uid).some((p) => p.cropId)) return { ok: false, reason: '온실 안에 작물이 있습니다' };
+    if (b.pond && b.pond.count > 0) return { ok: false, reason: '양식장의 물고기를 먼저 건져 주세요' };
     // 보관품 이전
     for (const cid of [b.containerId, b.outputId]) {
       if (!cid) continue;

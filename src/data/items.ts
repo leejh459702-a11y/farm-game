@@ -2,6 +2,7 @@ import type { ItemCategory, SeasonId } from '../types/game';
 import { CROPS, CROP_BY_ID } from './crops';
 import { RECIPES } from './recipes';
 import { FISH, FISH_BY_ID } from './fish';
+import { POND_FISH, roeId } from './aquaculture';
 import { FORAGE, RESOURCES } from './gathering';
 
 export interface ItemDef {
@@ -89,6 +90,12 @@ for (const [id, name, price, decay] of rareAnimalProducts) add({ id, name, categ
 for (const fsh of FISH) add({ id: fsh.id, name: fsh.name, category: fsh.id === 'old_boot' ? 'other' : 'fish', basePrice: fsh.baseSellPrice, decay: fsh.freshnessDecay, tags: fsh.id === 'old_boot' ? [] : ['fish'], desc: '물고기' });
 for (const fg of FORAGE) add({ id: fg.id, name: fg.name, category: 'forage', basePrice: fg.price, decay: fg.decay, tags: fg.tags, desc: '채집물' });
 for (const rs of RESOURCES) add({ id: rs.id, name: rs.name, category: 'resource', basePrice: rs.price, decay: 0, desc: '건설·업그레이드 재료' });
+// 양식장 생산물
+for (const pf of POND_FISH) add({ id: roeId(pf.id), name: `${pf.name} 알`, category: 'fish', basePrice: Math.max(30, Math.round(pf.baseSellPrice * 1.3)), decay: 9, tags: ['roe', 'seafood'], desc: `양식장에서 얻는 ${pf.name}의 어란` });
+add({ id: 'pondweed', name: '수초', category: 'resource', basePrice: 8, decay: 0, desc: '양식장에서 자라는 물풀 — 양식장 확장·업그레이드 재료' });
+add({ id: 'pearl', name: '진주', category: 'resource', basePrice: 600, decay: 0, desc: '희귀 어종 양식장에서 가끔 나오는 보석' });
+add({ id: 'shimmer_scale', name: '무지개 비늘', category: 'resource', basePrice: 900, decay: 0, desc: '매우 희귀한 어종이 남기는 반짝이는 비늘 — 희귀 제작 재료' });
+add({ id: 'fish_feed', name: '양식 사료', category: 'other', basePrice: 6, decay: 0, desc: '양식장 물고기 먹이 (3마리당 1개)' });
 add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
 
 // 기타

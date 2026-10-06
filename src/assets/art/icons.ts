@@ -3,6 +3,7 @@
  */
 import { CROPS, CROP_BY_ID, type CropData } from '../../data/crops';
 import { ITEMS } from '../../data/items';
+import { POND_FISH } from '../../data/aquaculture';
 import { FISH, type FishData } from '../../data/fish';
 import { FORAGE, RESOURCES, type ForageData, type ResourceData } from '../../data/gathering';
 import { Painter, shade, type Color } from '../painter';
@@ -341,6 +342,20 @@ const sparkle = (fn: IconFn): IconFn => (p) => {
 };
 
 const OTHER: Record<string, IconFn> = {
+  pondweed: (p) => {
+    for (const [x, c] of [[5, 0x4a9a4a], [8, 0x5aa83c], [11, 0x3f8a3c]] as const) p.line(x, 14, x - 1, 4, c).line(x - 1, 8, x + 1, 6, c);
+    p.ellipse(8, 14, 6, 1, 0x3f7fb8);
+  },
+  pearl: (p) => {
+    p.ellipse(8, 11, 6, 3, 0xd8c8b0).circle(8, 8, 4, 0xf6f2fa).px(6, 6, 0xffffff).px(7, 6, 0xffffff).px(10, 10, 0xd8c8e8);
+  },
+  shimmer_scale: (p) => {
+    p.ellipse(8, 8, 5, 6, 0x8ad0e8).ellipse(8, 9, 4, 4, 0xc8a0e8).ellipse(8, 10, 3, 2, 0xf6d870).px(6, 5, 0xffffff).px(7, 4, 0xffffff);
+  },
+  fish_feed: (p) => {
+    p.ellipse(8, 10, 6, 5, 0xc8a070).rect(5, 3, 6, 4, 0xc8a070).rect(5, 5, 6, 1, 0x8a6a4a);
+    p.ellipse(6, 4, 2, 1, 0x5a9ad8).ellipse(9, 10, 3, 2, 0x5a9ad8).tri(11, 10, 13, 8, 13, 12, 0x5a9ad8);
+  },
   egg: egg(0xf6efe0),
   giant_ostrich_egg: sparkle(egg(0xf6ead0, true, true)),
   spotted_turkey_egg: sparkle(egg(0xd8b890, false, true)),
@@ -753,6 +768,13 @@ export function buildIcons(): IconEntry[] {
     out.push(render(`it_seed_${c.id}`, seedIcon(c)));
   }
   for (const f of FISH) out.push(render(`it_${f.id}`, fishIcon(f)));
+  for (const f of POND_FISH)
+    out.push(
+      render(`it_roe_${f.id}`, (p) => {
+        p.ellipse(8, 11, 6, 3, 0xe8dcc4).ellipse(8, 10, 5, 2, 0xf6efe0);
+        for (const [x, y] of [[5, 8], [8, 7], [11, 8], [6, 10], [9, 10], [12, 10], [7, 5], [10, 5]]) p.circle(x, y, 1, f.art.fin).px(x, y - 1, 0xffffff);
+      }),
+    );
   for (const f of FORAGE) out.push(render(`it_${f.id}`, forageIcon(f)));
   for (const r of RESOURCES) out.push(render(`it_${r.id}`, resourceIcon(r)));
   const done = new Set(out.map((o) => o.key));

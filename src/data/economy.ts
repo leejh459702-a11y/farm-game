@@ -11,6 +11,7 @@ export const MERCHANT_BASICS: { id: string; price: number; stock: number; skill?
   { id: 'growth_fertilizer', price: 90, stock: 15, skill: 'f_fert1' },
   { id: 'premium_fertilizer', price: 180, stock: 10, skill: 'f_fert2' },
   { id: 'treat', price: 60, stock: 10, skill: 'l_chicken' },
+  { id: 'fish_feed', price: 10, stock: 40 },
 ];
 
 /** 일반 상인이 가끔 가져오는 장식 (건설 인벤토리로 들어감) */

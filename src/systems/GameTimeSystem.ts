@@ -73,6 +73,7 @@ export class GameTimeSystem {
     const crops = w.crops.dailyGrowth(season);
     // 2) 동물 (급식/생산/성장/출산)
     w.animals.daily();
+    w.ponds.daily();
     // 3) 신선도 감소
     const fresh = w.freshness.dailyDecay();
     if (fresh.rotted > 0) w.notify({ key: 'rotten', text: `${fresh.rotted}개의 상품이 부패했습니다`, icon: 'it_rotten', tone: 'warn' });
@@ -118,6 +119,7 @@ export class GameTimeSystem {
     w.crops.morningWater();
     // 자동화
     w.automation.morning();
+    w.ponds.morning();
     // 상인
     w.merchant.morning();
     // 외곽 지역 자원 (하루 1회 생성)
