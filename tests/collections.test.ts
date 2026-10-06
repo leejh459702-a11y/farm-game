@@ -4,6 +4,7 @@
 import { describe, expect, it } from 'vitest';
 import { freeWorld } from './helpers';
 import { agingBonus } from '../src/data/aging';
+import type { BuildingInstance } from '../src/types/game';
 
 describe('연구 컬렉션', () => {
   it('나눠서 제출 → 완성 시 보상 한 번', () => {
@@ -56,7 +57,7 @@ describe('스킬북', () => {
   it('숙성 장인의 책: 숙성 보너스 +15%', () => {
     const w = freeWorld(84);
     w.state.skills.researched.push('f_aging');
-    const b = { uid: 'x', type: 'cellar', x: 0, y: 0, rot: 0 as const };
+    const b: BuildingInstance = { uid: 'x', type: 'cellar', x: 0, y: 0, rot: 0 };
     w.state.buildings.x = b;
     w.aging.ensure(b);
     w.inventory.add('bag', 'cheese', 1);
