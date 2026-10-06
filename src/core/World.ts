@@ -27,6 +27,7 @@ import { LifeSystem } from '../systems/LifeSystem';
 import { RegionSystem } from '../systems/RegionSystem';
 import { AquacultureSystem } from '../systems/AquacultureSystem';
 import { AgingSystem } from '../systems/AgingSystem';
+import { JournalSystem } from '../systems/JournalSystem';
 import { FishingSystem } from '../systems/FishingSystem';
 import { calendar, type CalendarInfo } from '../systems/SeasonSystem';
 import { footprint } from '../data/buildings';
@@ -55,6 +56,7 @@ export class World {
   readonly fishing: FishingSystem;
   readonly ponds: AquacultureSystem;
   readonly aging: AgingSystem;
+  readonly journal: JournalSystem;
   /** 최근 알림 기록 (세이브 안 함) */
   readonly notifyLog: (GameNotification & { day: number })[] = [];
 
@@ -80,6 +82,7 @@ export class World {
     this.fishing = new FishingSystem(this);
     this.ponds = new AquacultureSystem(this);
     this.aging = new AgingSystem(this);
+    this.journal = new JournalSystem(this);
   }
 
   /** 누적 활동 카운터 증가 */
@@ -88,6 +91,7 @@ export class World {
     const c = (this.state.counters ??= {});
     c[key] = (c[key] ?? 0) + n;
     this.events.emit('counter', { key, total: c[key] });
+    this.journal?.check();
   }
 
   rand(): number {

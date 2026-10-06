@@ -30,6 +30,7 @@ export class PausePanel extends Panel {
       <div class="grid cols-3">
         ${b('resume', 'ic_farming', '계속하기', 'green')}
         ${b('save', 'ic_save', '저장')}
+        ${b('journal', 'ic_tutorial', `농장일지${w.journal.claimable() ? ` <span class="chip red">${w.journal.claimable()}</span>` : ''}`)}
         ${b('codex', 'ic_codex', '도감')}
         ${b('animals', 'ic_livestock', '동물 목록')}
         ${b('skills', 'ic_research', '기술 연구')}

@@ -19,6 +19,7 @@ import { FinancePanel, CalendarPanel } from './panels/SummaryPanels';
 import { BlueprintPanel } from './panels/BlueprintPanel';
 import { PausePanel } from './panels/PausePanel';
 import { PondPanel } from './panels/PondPanel';
+import { JournalPanel } from './panels/JournalPanel';
 import { CellarPanel } from './panels/CellarPanel';
 import { GreenhousePanel } from './panels/GreenhousePanel';
 import { SettingsPanel } from './panels/SettingsPanel';
@@ -39,7 +40,8 @@ export type PanelName =
   | 'animals'
   | 'settings'
   | 'save'
-  | 'house';
+  | 'house'
+  | 'journal';
 
 export function openPanel(name: PanelName, arg?: string): void {
   const w = Session.world;
@@ -79,6 +81,9 @@ export function openPanel(name: PanelName, arg?: string): void {
       break;
     case 'blueprints':
       Panels.open(new BlueprintPanel());
+      break;
+    case 'journal':
+      Panels.open(new JournalPanel());
       break;
     case 'codex':
       Panels.open(new CodexPanel());

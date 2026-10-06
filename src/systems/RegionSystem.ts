@@ -257,6 +257,7 @@ export class RegionSystem {
       push(n.itemId!, qty);
       st.nodes = st.nodes.filter((x) => x !== n);
       this.w.life.addXp('foraging', BALANCE.life.xp.forage);
+      this.w.count('forage');
       this.w.codex.recordHarvest(n.itemId!, qty);
       this.w.events.emit('sfx', { key: 'harvest' });
       this.w.events.emit('regions', { id });
@@ -275,6 +276,7 @@ export class RegionSystem {
       } else push(loot.id, qty);
       st.nodes = st.nodes.filter((x) => x !== n);
       this.w.life.addXp('foraging', BALANCE.life.xp.chest);
+      this.w.count('chest');
       this.w.events.emit('sfx', { key: 'special' });
       this.w.events.emit('regions', { id });
       return { ok: true, drops, depleted: true, hpLeft: 0, deco };
@@ -298,12 +300,14 @@ export class RegionSystem {
       const [a, b] = BALANCE.regions.bigTreeRegrow;
       n.respawnDay = day + (n.big ? randInt(r, a, b) : BALANCE.regions.smallTreeRegrow);
       this.w.life.addXp('foraging', BALANCE.life.xp.chop * (n.big ? 2 : 1));
+      this.w.count('chop');
     } else {
       const rock = ROCK_BY_ID[n.itemId!];
       for (const d of rock.drops) push(d.id, randInt(r, d.min, d.max) + (tools.pickaxe >= 3 && d.id.endsWith('_ore') ? 1 : 0));
       const [a, b] = BALANCE.regions.rockRegrow;
       n.respawnDay = day + randInt(r, a, b);
       this.w.life.addXp('foraging', BALANCE.life.xp.mine + rock.tier * 2);
+      this.w.count('mine');
     }
     for (const d of drops) this.w.codex.recordHarvest(d.itemId, d.qty);
     this.w.events.emit('regions', { id });

@@ -333,6 +333,8 @@ export interface GameState {
   };
   /** 누적 활동 카운터 (농장일지·통계용) — key 예: harvest:carrot, craft:mayo, pond:stock */
   counters: Record<string, number>;
+  /** 농장일지: 보상 받은 항목 / 달성 알림을 띄운 항목 */
+  journal: { claimed: string[]; notified: string[] };
 }
 
 export interface Settings {

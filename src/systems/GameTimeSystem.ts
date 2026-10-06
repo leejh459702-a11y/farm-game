@@ -121,6 +121,7 @@ export class GameTimeSystem {
     w.automation.morning();
     w.ponds.morning();
     w.aging.morning();
+    w.journal.check();
     // 상인
     w.merchant.morning();
     // 외곽 지역 자원 (하루 1회 생성)

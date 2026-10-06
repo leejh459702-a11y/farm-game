@@ -52,5 +52,6 @@ export function createNewGame(seed = (Date.now() ^ 0x9e3779b9) >>> 0, farmName =
     fishRecords: {},
     stats: { totalHarvested: 0, totalSold: 0, daysPlayed: 0, animalsBorn: 0 },
     counters: {},
+    journal: { claimed: [], notified: [] },
   };
 }

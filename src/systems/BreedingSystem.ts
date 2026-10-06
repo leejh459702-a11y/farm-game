@@ -137,6 +137,7 @@ export class BreedingSystem {
     const days = Math.max(1, Math.round(d.pregnancyDays * traitMul(m.traits, 'pregnancyMul')));
     m.pregnant = { fatherId, daysLeft: days };
     this.w.skills.addXp('livestock', BALANCE.xp.breed);
+    this.w.count('breed');
     this.w.codex.animalEntry(m.species).breedCount++;
     this.w.events.emit('animals', undefined);
     this.w.events.emit('sfx', { key: 'love' });

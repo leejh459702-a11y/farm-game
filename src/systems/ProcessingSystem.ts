@@ -82,6 +82,8 @@ export class ProcessingSystem {
       itemId = r.output;
       qty = r.outQty;
       name = r.outputName;
+      this.w.count('craft', qty);
+      this.w.count(`craft:${recipeId}`, qty);
       this.w.skills.addXp(r.station === 'kitchen' ? 'farming' : r.station === 'loom' || r.station === 'butcher' ? 'livestock' : 'farming', r.station === 'kitchen' ? BALANCE.xp.cook : BALANCE.xp.process);
     }
     const left = this.w.inventory.add(b.outputId!, itemId, qty, 100, false);

@@ -53,7 +53,7 @@ export function mountHud(): void {
     <div class="hud-right">
       <div class="hud-side-buttons">
         <button class="hud-btn merchant interactive" data-act="merchant" data-h="merchantBtn" data-tut="merchant" style="display:none">${iconHtml('ic_merchant', 26)}<span>상인</span></button>
-        <button class="hud-btn interactive" data-act="menu">${iconHtml('ic_menu', 22)}<span>메뉴</span></button>
+        <button class="hud-btn interactive" data-act="menu" style="position:relative">${iconHtml('ic_menu', 22)}<span>메뉴</span><span class="badge" data-h="menuBadge" style="display:none"></span></button>
         <button class="hud-btn interactive" data-act="overview">${iconHtml('ic_chart', 24)}<span>농장</span></button>
         <button class="hud-btn interactive" data-act="bag" data-tut="bag">${iconHtml('ic_bag', 24)}<span>가방</span></button>
         <button class="hud-btn interactive" data-act="region" data-h="regionBtn" style="display:none">${iconHtml('ic_region', 24)}<span>외곽</span></button>
@@ -106,6 +106,8 @@ export function mountHud(): void {
       if (!s.auto) showToast({ key: 'saved', text: '저장되었습니다', icon: 'ic_save', tone: 'good' });
     }),
     Session.app.on('location', () => renderLocation()),
+    w.events.on('journal', () => renderJournalBadge()),
+    w.events.on('dayStarted', () => renderJournalBadge()),
     w.events.on('regions', () => renderLocation()),
     Session.app.on('buildMode', (b) => {
       root!.style.display = b.on ? 'none' : '';
@@ -119,6 +121,16 @@ export function mountHud(): void {
   };
   raf = requestAnimationFrame(loop);
   mountTutorial();
+  renderJournalBadge();
+}
+
+function renderJournalBadge(): void {
+  const w = Session.world;
+  const el = root?.querySelector('[data-h=menuBadge]') as HTMLElement | null;
+  if (!w || !el) return;
+  const n = w.journal.claimable();
+  el.textContent = String(n);
+  el.style.display = n ? '' : 'none';
 }
 
 export function unmountHud(): void {

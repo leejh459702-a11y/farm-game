@@ -159,6 +159,8 @@ export class FishingSystem {
   /** 포획 성공 처리 */
   landCatch(fishId: string): CatchResult {
     const fish = FISH_BY_ID[fishId];
+    this.w.count('fish');
+    if (fish.rarity === 'legend') this.w.count('fish:legend');
     const [a, b] = fish.size;
     // 큰 개체는 드물게 (제곱 분포)
     const t = Math.pow(this.w.rand(), 1.8);

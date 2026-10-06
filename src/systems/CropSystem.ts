@@ -231,6 +231,8 @@ export class CropSystem {
     // 기록
     this.w.state.stats.totalHarvested += got;
     this.w.codex.recordHarvest(c.id, got);
+    this.w.count('harvest', got);
+    this.w.count(`harvest:${c.id}`, got);
     const xp = Math.max(BALANCE.xp.harvestMin, Math.round(c.baseSellPrice * got * BALANCE.xp.harvestPerPrice));
     this.w.skills.addXp('farming', xp);
     this.changed([this.key(p)]);
