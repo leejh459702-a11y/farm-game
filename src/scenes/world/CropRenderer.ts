@@ -1,7 +1,7 @@
 /** 작물 스프라이트 — 오브젝트 풀 + 화면 밖 컬링 + dirty 갱신 */
 import Phaser from 'phaser';
 import { CROP_BY_ID } from '../../data/crops';
-import { cropStage, seasonAllowsGrowth } from '../../systems/CropSystem';
+import { canGrowToday, cropStage, seasonAllowsGrowth } from '../../systems/CropSystem';
 import type { World } from '../../core/World';
 import { CROP_FH } from '../../assets/art/crops';
 import { DEPTH, TS } from './constants';
@@ -58,7 +58,7 @@ export class CropRenderer {
     if (k.startsWith('gh:')) return;
     const p = this.w.state.plots[k];
     let s = this.sprites.get(k);
-    const needWater = !!p && !!p.cropId && !p.mature && !p.wateredToday;
+    const needWater = !!p && !!p.cropId && !p.mature && !p.wateredToday && !CROP_BY_ID[p.cropId]?.fruitTree;
     let d = this.drops.get(k);
     if (needWater && !d) {
       d = this.scene.add.image(0, 0, 'ic_drop').setDepth(DEPTH.ui - 40).setAlpha(0.95);
@@ -89,7 +89,7 @@ export class CropRenderer {
     s.setPosition(p.x * TS + TS / 2, p.y * TS + TS / 2 + 6);
     s.setDepth(DEPTH.objects + p.y * TS + TS / 2);
     // 겨울 야외의 비겨울 작물은 살짝 탁하게 (성장 정지 표시)
-    const inSeason = seasonAllowsGrowth(c.id, this.w.cal.season, !!p.greenhouse);
+    const inSeason = c.fruitTree ? canGrowToday({ ...p, wateredToday: true }, this.w.cal.season) : seasonAllowsGrowth(c.id, this.w.cal.season, !!p.greenhouse);
     s.setTint(inSeason || stage === 4 ? 0xffffff : 0xc8c0b0);
   }
 

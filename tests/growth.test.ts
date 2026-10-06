@@ -213,3 +213,39 @@ describe('Season Growth Rule — 겨울만 제한', () => {
     expect(p.growthProgressDays).toBe(1);
   });
 });
+
+describe('과수', () => {
+  it('묘목은 물 없이 자라고, 다 자란 뒤 제철에만 열매를 맺어 반복 수확한다', () => {
+    const w = freeWorld(14);
+    w.state.skills.researched.push('f_orchard');
+    w.state.skills.farmingXp = 99999;
+    w.crops.till(15, 15);
+    const p = w.crops.plotAt(15, 15)!;
+    w.inventory.add('bag', 'seed_cherry', 1);
+    expect(w.crops.plant(p, 'seed_cherry').ok).toBe(true);
+    const c = { growDays: 16, regrowDays: 3 };
+    // 물을 안 줘도 나무는 자란다 (봄)
+    for (let i = 0; i < c.growDays - c.regrowDays; i++) w.crops.dailyGrowth('spring');
+    expect(p.growthProgressDays).toBe(c.growDays - c.regrowDays);
+    // 여름엔 휴면 (체리는 봄)
+    for (let i = 0; i < 5; i++) w.crops.dailyGrowth('summer');
+    expect(p.mature).toBe(false);
+    for (let i = 0; i < c.regrowDays; i++) w.crops.dailyGrowth('spring');
+    expect(p.mature).toBe(true);
+    expect(w.crops.harvest(p).ok).toBe(true);
+    expect(p.cropId).toBe('cherry'); // 나무는 남는다
+    for (let i = 0; i < c.regrowDays; i++) w.crops.dailyGrowth('spring');
+    expect(p.mature).toBe(true);
+  });
+
+  it('작물 뽑기 / 나무 베기 — 농지는 남는다', () => {
+    const w = freeWorld(15);
+    w.crops.till(15, 15);
+    const p = w.crops.plotAt(15, 15)!;
+    w.inventory.add('bag', 'seed_carrot', 1);
+    w.crops.plant(p, 'seed_carrot');
+    expect(w.crops.removeCrop(p).ok).toBe(true);
+    expect(p.cropId).toBeNull();
+    expect(w.crops.plotAt(15, 15)).toBeDefined();
+  });
+});

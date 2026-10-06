@@ -34,13 +34,13 @@ for (const crop of CROPS) {
   add({ id: crop.id, name: crop.name, category: 'crop', basePrice: crop.baseSellPrice, decay: crop.freshnessDecay, season: crop.season, tags: crop.tags, desc: `${crop.name} — 농작물` });
   add({
     id: `seed_${crop.id}`,
-    name: `${crop.name} 씨앗`,
+    name: crop.fruitTree ? `${crop.name} 묘목` : `${crop.name} 씨앗`,
     category: 'seed',
     basePrice: Math.max(1, Math.round(crop.seedPrice / 2)),
     decay: 0,
     cropId: crop.id,
     icon: `it_seed_${crop.id}`,
-    desc: `${crop.growDays}일 성장${crop.regrowDays ? `, ${crop.regrowDays}일마다 재수확` : ''}`,
+    desc: crop.fruitTree ? `과수 — ${crop.growDays}일 자라면 제철에 ${crop.regrowDays}일마다 열매 (물 필요 없음)` : `${crop.growDays}일 성장${crop.regrowDays ? `, ${crop.regrowDays}일마다 재수확` : ''}`,
   });
 }
 

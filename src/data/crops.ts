@@ -24,6 +24,11 @@ export interface CropData {
   unlockSkill?: string;
   /** 특급상인 전용 희귀 작물 */
   rare?: boolean;
+  /**
+   * 과수: 묘목을 심으면 오래 자라고(물 필요 없음), 다 자란 뒤에는 제철에만 열매를 맺어
+   * 계속 수확한다. growDays = 나무가 자라는 기간 + 첫 열매까지, regrowDays = 열매 주기.
+   */
+  fruitTree?: boolean;
   spriteKey: string;
   art: { kind: CropArt; color: number; color2?: number; leaf: number };
   tags?: string[];
@@ -91,8 +96,6 @@ export const CROPS: CropData[] = [
   c('grape', '포도', ['autumn'], 110, 58, 7, 3, 2, 9, 4, { kind: 'vine', color: 0x7a3f9a, leaf: G }, { tags: ['fruit'] }),
   c('sugarbeet', '사탕무', ['autumn'], 30, 42, 5, 0, 1, 1, 3, { kind: 'root', color: 0xf0e6dc, leaf: G2 }),
   c('peanut', '땅콩', ['autumn'], 40, 20, 4, 0, 3, 1, 2, { kind: 'leafy', color: 0xc9a36a, leaf: G2 }),
-  c('apple', '사과', ['autumn'], 280, 75, 8, 3, 3, 3, 5, { kind: 'tree', color: 0xd63a32, leaf: G2 }, { unlockSkill: 'f_orchard', tags: ['fruit'] }),
-  c('pear', '배', ['autumn'], 300, 82, 8, 3, 3, 3, 6, { kind: 'tree', color: 0xe8d36a, leaf: G2 }, { unlockSkill: 'f_orchard', tags: ['fruit'] }),
   // ───── 겨울 ─────
   c('spinach', '시금치', ['winter'], 20, 40, 2, 0, 1, 10, 1, { kind: 'leafy', color: 0x3f8f3a, leaf: G2 }),
   c('winterradish', '겨울무', ['winter'], 30, 65, 3, 0, 1, 4, 1, { kind: 'root', color: 0xf3f0e6, color2: 0x8cc06a, leaf: G }),
@@ -100,9 +103,21 @@ export const CROPS: CropData[] = [
   c('broccoli', '브로콜리', ['winter'], 60, 55, 5, 3, 1, 7, 3, { kind: 'bush', color: 0x3f8a3a, leaf: G2 }),
   c('greenonion', '대파', ['winter'], 25, 24, 3, 2, 1, 5, 1, { kind: 'stalk', color: 0xe8f2d8, leaf: G3 }),
   c('garlic', '마늘', ['winter'], 35, 28, 5, 0, 3, 1, 2, { kind: 'root', color: 0xf2ece0, leaf: G3 }),
-  c('tangerine', '감귤', ['winter'], 260, 68, 8, 3, 3, 4, 5, { kind: 'tree', color: 0xf39a2c, leaf: G2 }, { unlockSkill: 'f_orchard', tags: ['fruit'] }),
   c('winterstrawberry', '겨울딸기', ['winter'], 120, 60, 6, 3, 2, 11, 6, { kind: 'bush', color: 0xf0505c, leaf: G2 }, { tags: ['fruit'] }),
+  // ───── 과수 (1×1, 장기 투자형 · 묘목) ─────
+  c('cherry', '체리', ['spring'], 900, 60, 16, 3, 3, 8, 3, { kind: 'tree', color: 0xd8243c, leaf: G }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('peach', '복숭아', ['spring'], 1000, 70, 16, 3, 3, 8, 4, { kind: 'tree', color: 0xf6a8a0, leaf: G }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('lemon', '레몬', ['summer'], 900, 55, 15, 3, 3, 3, 3, { kind: 'tree', color: 0xf6e04a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('plum', '자두', ['summer'], 850, 50, 14, 3, 3, 7, 3, { kind: 'tree', color: 0x9a3a6a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('apple', '사과', ['autumn'], 1000, 75, 16, 3, 3, 3, 4, { kind: 'tree', color: 0xd63a32, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('pear', '배', ['autumn'], 1100, 82, 16, 3, 3, 3, 5, { kind: 'tree', color: 0xe8d36a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('persimmon', '감', ['autumn'], 900, 60, 15, 3, 4, 3, 4, { kind: 'tree', color: 0xf08a2a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('tangerine', '감귤', ['winter'], 1000, 68, 16, 3, 3, 4, 4, { kind: 'tree', color: 0xf39a2c, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, tags: ['fruit'] }),
+  c('mango', '망고', ['summer'], 2400, 160, 18, 4, 2, 6, 6, { kind: 'tree', color: 0xf6b02a, color2: 0xe05a3a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, rare: true, tags: ['fruit'] }),
+  c('yuzu', '유자', ['winter'], 2200, 140, 18, 4, 2, 3, 6, { kind: 'tree', color: 0xf2d23a, leaf: G2 }, { unlockSkill: 'f_orchard', fruitTree: true, rare: true, tags: ['fruit'] }),
   // ───── 희귀 (특급상인 전용) ─────
+  c('starfruit', '별과일', ['summer'], 650, 1300, 9, 0, 1, 4, 5, { kind: 'bush', color: 0xf6e070, color2: 0xf0b030, leaf: G }, { rare: true, unlockSkill: 'f_special', tags: ['fruit'] }),
+  c('snowlotus', '설련화', ['winter'], 800, 1600, 9, 0, 1, 2, 6, { kind: 'flower', color: 0xf4f8ff, color2: 0xa8c8f0, leaf: 0x6a9a7a }, { rare: true, unlockSkill: 'f_special' }),
   c('goldenmelon', '황금멜론', ['summer'], 550, 1100, 8, 0, 1, 3, 4, { kind: 'melon', color: 0xf5c83a, color2: 0xd9a020, leaf: G }, { rare: true, unlockSkill: 'f_special', tags: ['fruit'] }),
   c('ginseng', '산삼', ['autumn', 'winter'], 700, 1500, 8, 0, 1, 1, 5, { kind: 'root', color: 0xe8d2a0, leaf: 0x3a7a3a }, { rare: true, unlockSkill: 'f_special' }),
   c('rainbowrose', '무지개장미', ['spring'], 450, 900, 7, 4, 1, 6, 4, { kind: 'flower', color: 0xf26a9a, color2: 0x7ac6f2, leaf: G2 }, { rare: true, unlockSkill: 'f_special' }),

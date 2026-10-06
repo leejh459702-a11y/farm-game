@@ -71,9 +71,18 @@ export function seasonAllowsGrowth(cropId: string, season: SeasonId, greenhouse:
   return CROP_BY_ID[cropId]?.season.includes('winter') ?? false;
 }
 
+/** 과수가 다 자라 열매만 기다리는 단계인가 */
+export function treeGrown(p: Plot): boolean {
+  const c = p.cropId ? CROP_BY_ID[p.cropId] : null;
+  return !!c?.fruitTree && p.growthProgressDays >= c.growDays - c.regrowDays;
+}
+
 /** 오늘 성장할 수 있는가 */
 export function canGrowToday(p: Plot, season: SeasonId): boolean {
   if (!p.cropId) return false;
+  const c = CROP_BY_ID[p.cropId];
+  // 과수: 나무는 물 없이 매일 자라고, 다 자란 뒤 열매는 제철(또는 온실)에만 맺힌다
+  if (c?.fruitTree) return !treeGrown(p) || !!p.greenhouse || c.season.includes(season);
   return seasonAllowsGrowth(p.cropId, season, !!p.greenhouse) && p.wateredToday;
 }
 
@@ -119,6 +128,20 @@ export class CropSystem {
     this.changed([tileKey(x, y)]);
     this.w.events.emit('sfx', { key: 'till' });
     this.w.tutorial.signal('tilled');
+    return { ok: true };
+  }
+
+  /** 작물 뽑기 / 과수 베기 — 농지는 그대로 남는다 (확인 창은 UI 에서) */
+  removeCrop(p: Plot | undefined): ActionResult {
+    if (!p || !p.cropId) return { ok: false, reason: '작물이 없습니다' };
+    p.cropId = null;
+    p.growthProgressDays = 0;
+    p.mature = false;
+    p.regrowing = false;
+    p.harvests = 0;
+    refreshStage(p);
+    this.changed([this.key(p)]);
+    this.w.events.emit('sfx', { key: 'till' });
     return { ok: true };
   }
 
@@ -270,7 +293,7 @@ export class CropSystem {
           if (fert && fert.growthBonus > 0 && this.w.rand() < fert.growthBonus) add++;
           p.growthProgressDays = Math.min(c.growDays, p.growthProgressDays + add);
           grew++;
-        } else if (!p.wateredToday) dry++;
+        } else if (!p.wateredToday && !CROP_BY_ID[p.cropId].fruitTree) dry++;
       }
       if (p.fertilizer) {
         // 관개 Lv.2: 비료 지속시간 2배 (격일 소모)

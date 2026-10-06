@@ -7,7 +7,8 @@ import { ITEM_BY_ID } from '../../data/items';
 import { RECIPE_BY_ID } from '../../data/recipes';
 import { SEASON_BY_ID } from '../../data/seasons';
 import { SKILL_BY_ID } from '../../data/skills';
-import { cropStage, isReady, type PlotUpgradeType, seasonAllowsGrowth } from '../../systems/CropSystem';
+import { cropStage, isReady, type PlotUpgradeType, seasonAllowsGrowth, treeGrown } from '../../systems/CropSystem';
+import { confirmDialog } from '../dialogs';
 import { fertilizerChoices, seedChoices } from '../../systems/InteractionService';
 import type { Plot } from '../../types/game';
 import { Bridge } from '../../scenes/Bridge';
@@ -76,9 +77,9 @@ export class PlotPanel extends Panel {
       head = `<div class="kv card">
         <span>현재 작물</span><span>${c ? `${iconHtml(`it_${c.id}`, 20)} <b>${esc(c.name)}</b> ${isReady(p) ? '<span class="chip green">수확 가능</span>' : `<span class="chip">${['씨앗', '새싹', '성장 중', '거의 다 자람', ''][stage]}</span>`}` : '<span class="muted">비어 있음</span>'}</span>
         ${c ? `<span>성장 단계</span><span>${Math.floor(p.growthProgressDays)} / ${c.growDays}일 ${c.regrowDays ? `<span class="tiny muted">(재수확 ${c.regrowDays}일)</span>` : ''}</span>` : ''}
-        <span>물 상태</span><span>${p.wateredToday ? '<b class="good">촉촉함</b>' : '<b class="bad">마름</b> <span class="tiny muted">오늘 물을 주면 자라요</span>'}</span>
+        ${c?.fruitTree ? `<span>과수</span><span>${treeGrown(p) ? (c.season.includes(w.cal.season) || p.greenhouse ? '<b class="good">열매가 맺히는 중</b>' : `<span class="muted">휴면 중 — ${c.season.map((x) => SEASON_BY_ID[x].name).join('·')}에 열매</span>`) : '나무가 자라는 중 (물 필요 없음)'} · 수확해도 나무는 남아요</span>` : `<span>물 상태</span><span>${p.wateredToday ? '<b class="good">촉촉함</b>' : '<b class="bad">마름</b> <span class="tiny muted">오늘 물을 주면 자라요</span>'}</span>`}
         <span>비료</span><span>${p.fertilizer ? `${esc(ITEM_BY_ID[p.fertilizer.id].name)} <span class="tiny muted">(${p.fertilizer.daysLeft}일 남음)</span>` : '<span class="muted">없음</span>'}</span>
-        ${c && !inSeason ? `<span>계절</span><span class="bad">겨울에는 겨울 작물만 밭에서 자라요 — 온실에서 키우면 자라요</span>` : ''}
+        ${c && !inSeason && !c.fruitTree ? `<span>계절</span><span class="bad">겨울에는 겨울 작물만 밭에서 자라요 — 온실에서 키우면 자라요</span>` : ''}
       </div>`;
     } else {
       const ready = ps.filter(isReady).length;
@@ -123,6 +124,7 @@ export class PlotPanel extends Panel {
       ${anyDry ? `<button class="btn small blue" data-act="water">물주기</button>` : ''}
       ${anyEmpty ? `<button class="btn small" data-act="plant">${seed ? `${iconHtml(`it_${seed}`, 18)} 심기` : '씨앗 선택'}</button>` : ''}
       <button class="btn small" data-act="fert">${fert ? `${iconHtml(`it_${fert}`, 18)} 비료` : '비료 선택'}</button>
+      ${ps.length === 1 && ps[0].cropId ? `<button class="btn small red" data-act="uproot">${CROP_BY_ID[ps[0].cropId].fruitTree ? '나무 베기' : '뽑기'}</button>` : ''}
       ${ps.length > 1 ? '' : `<button class="btn small red" data-act="untill" ${ps[0].cropId ? 'disabled' : ''}>메우기</button>`}
     </div>`;
     return `${head}${actions}<div class="section-title">${iconHtml('ic_research', 20)} 내부 업그레이드 <span class="tiny muted">(외형 변화 없음 · 여러 칸 일괄)</span></div><div class="list">${rows}</div>${this.selectTools()}`;
@@ -203,6 +205,16 @@ export class PlotPanel extends Panel {
         if (ps[0]) w.crops.untill(ps[0].x, ps[0].y);
         this.close();
         return;
+      case 'uproot': {
+        const p = ps[0];
+        const c = p?.cropId ? CROP_BY_ID[p.cropId] : null;
+        if (!p || !c) break;
+        confirmDialog(c.fruitTree ? '나무 베기' : '작물 뽑기', `${esc(c.name)}을(를) ${c.fruitTree ? '베어 낼까요? 다시 심으면 처음부터 자라요' : '뽑을까요? 수확물은 얻지 못해요'}.<br><span class="tiny muted">농지는 그대로 남아요.</span>`, c.fruitTree ? '베기' : '뽑기', () => {
+          w.crops.removeCrop(p);
+          this.refresh();
+        }, true);
+        return;
+      }
       case 'mapsel':
         this.mapSelect = !this.mapSelect;
         if (Bridge.plotSelect) Bridge.plotSelect.active = this.mapSelect;
@@ -245,7 +257,7 @@ export class SeedPickerPanel extends Panel {
         return `<button class="${cx('card row', cur === itemId && 'sel', lock && 'locked')}" data-act="pick" data-arg="${itemId}" style="text-align:left">${iconHtml(`it_${c.id}`, 36)}
           <div class="grow"><b>${esc(c.name)}</b> <span class="muted small">×${qty}</span>
           <div class="tiny">${c.season.map((s) => SEASON_BY_ID[s].name).join('·')} · ${c.growDays}일${c.regrowDays ? ` · 재수확 ${c.regrowDays}일` : ''}</div>
-          <div class="tiny">${lock ? `<span class="bad">${esc(lock)}</span>` : !grows ? '<span class="bad">겨울엔 온실에서만 자라요</span>' : inSeason ? '<span class="good">제철 — 판매가 +10%</span>' : '<span class="good">지금 심으면 자라요</span>'}</div></div></button>`;
+          <div class="tiny">${lock ? `<span class="bad">${esc(lock)}</span>` : c.fruitTree ? `<span class="good">과수 — ${c.season.map((x) => SEASON_BY_ID[x].name).join('·')}에 열매</span>` : !grows ? '<span class="bad">겨울엔 온실에서만 자라요</span>' : inSeason ? '<span class="good">제철 — 판매가 +10%</span>' : '<span class="good">지금 심으면 자라요</span>'}</div></div></button>`;
       })
       .join('')}</div>`;
   }

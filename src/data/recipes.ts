@@ -62,7 +62,10 @@ export const RECIPES: RecipeData[] = [
   r('pepper_powder', 'processor', '고춧가루', [['pepper', 3]], 180, 1.45, 0),
   r('grape_juice', 'processor', '포도주스', [['grape', 3]], 300, 1.55, 1),
   r('truffle_oil', 'processor', '트러플오일', [['truffle', 1]], 360, 1.6, 0),
-  r('dried_persimmon', 'processor', '말린 배', [['pear', 2]], 300, 1.5, 0),
+  r('dried_persimmon', 'processor', '곶감', [['persimmon', 2]], 300, 1.5, 0),
+  r('peach_jam', 'processor', '복숭아잼', [['peach', 2]], 240, 1.5, 0),
+  r('lemonade', 'kitchen', '레모네이드', [['lemon', 2], ['sugar', 1]], 90, 1.9, 6),
+  r('yuzu_tea', 'processor', '유자차', [['yuzu', 1], ['sugar', 1]], 240, 1.6, 0),
   // ───── 방직소 ─────
   r('yarn', 'loom', '실', [['wool', 1]], 180, 1.4, 0),
   r('angora_yarn', 'loom', '앙고라실', [['rabbit_wool', 1]], 180, 1.45, 0),

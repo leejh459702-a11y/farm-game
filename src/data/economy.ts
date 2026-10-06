@@ -38,7 +38,7 @@ export const SPECIAL_DECOS: { id: string; price: number }[] = [
   { id: 'goldstatue', price: 3000 },
   { id: 'fountain', price: 4000 },
 ];
-export const RARE_SEEDS = ['goldenmelon', 'ginseng', 'rainbowrose'];
+export const RARE_SEEDS = ['goldenmelon', 'ginseng', 'rainbowrose', 'starfruit', 'snowlotus', 'mango', 'yuzu'];
 
 /** 상인 대사 */
 export const MERCHANT_LINES = {
