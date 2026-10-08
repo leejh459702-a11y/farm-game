@@ -22,6 +22,8 @@ interface SheetInfo {
   scale?: number;
   /** DOM 용 원본 파일 URL (디자인 에셋) */
   fileUrl?: string;
+  /** 'char20' = 디자인 캐릭터 시트 (앞/뒤/왼/오 × 서기+걷기 4) */
+  layout?: 'char20';
 }
 
 class Registry {
@@ -56,14 +58,16 @@ class Registry {
   private applyOverrides(): void {
     const S = ART_SCALE;
     const crops = new Map<string, { frame: number; img: HTMLImageElement }[]>();
+    const chars = new Map<string, { frame: number; img: HTMLImageElement }[]>();
     for (const a of loadedArt) {
       for (const key of a.keys ?? []) {
         const old = this.canvases.get(key);
         switch (a.kind) {
           case 'icon':
           case 'fx': {
-            const w = (old?.frameW ?? old?.canvas.width ?? 16) * S;
-            const h = (old?.frameH ?? old?.canvas.height ?? 16) * S;
+            const base = a.kind === 'fx' ? 48 : 16;
+            const w = (old?.frameW ?? old?.canvas.width ?? base) * S;
+            const h = (old?.frameH ?? old?.canvas.height ?? base) * S;
             const c = makeCanvas(w, h);
             drawContain(c.getContext('2d')!, a.img, 0, 0, w, h, 'center');
             this.canvases.set(key, { canvas: c, scale: 1 / S, fileUrl: a.url });
@@ -96,6 +100,18 @@ class Registry {
             crops.get(key)!.push({ frame: a.frame ?? 4, img: a.img });
             break;
           }
+          case 'portrait': {
+            const c = makeCanvas(64, 64);
+            drawContain(c.getContext('2d')!, a.img, 0, 0, 64, 64, 'center');
+            this.canvases.set(key, { canvas: c, fileUrl: a.url });
+            break;
+          }
+          case 'char': {
+            if (!chars.has(key)) chars.set(key, []);
+            chars.get(key)!.push({ frame: a.frame ?? 0, img: a.img });
+            break;
+          }
+          case 'ui':
           case 'bg': {
             const c = makeCanvas(a.img.width, a.img.height);
             c.getContext('2d')!.drawImage(a.img, 0, 0);
@@ -130,6 +146,22 @@ class Registry {
       }
       this.canvases.set(key, { canvas: c, frameW: fw, frameH: fh, scale: 1 / S });
     }
+    // 캐릭터: 20프레임 시트 (4배 해상도 — 가까이 줌해도 또렷하게). 빠진 프레임은 같은 방향 서기 프레임
+    for (const [key, frames] of chars) {
+      const old = this.canvases.get(key);
+      const CS = 4;
+      const fw = (old?.frameW ?? 24) * CS;
+      const fh = (old?.frameH ?? 32) * CS;
+      const byFrame = new Map(frames.map((f) => [f.frame, f.img]));
+      if (![0, 5, 10, 15].every((f) => byFrame.has(f))) continue;
+      const c = makeCanvas(fw * 20, fh);
+      const ctx = c.getContext('2d')!;
+      for (let i = 0; i < 20; i++) {
+        const img = byFrame.get(i) ?? byFrame.get(i - (i % 5))!;
+        drawContain(ctx, img, i * fw, 0, fw, fh - 2 * CS, 'bottom');
+      }
+      this.canvases.set(key, { canvas: c, frameW: fw, frameH: fh, scale: 1 / CS, layout: 'char20' });
+    }
   }
 
   /** 타일셋 칸 교체 (32px, 익스트루전 포함) */
@@ -155,6 +187,11 @@ class Registry {
         ctx.drawImage(ts.canvas, x + T - 1, y, 1, T, x + T, y, 1, T);
       }
     }
+  }
+
+  /** 시트 배치 방식 (디자인 캐릭터) */
+  layout(key: string): SheetInfo['layout'] {
+    return this.canvases.get(key)?.layout;
   }
 
   /** 월드 표시 배율 */
@@ -221,6 +258,12 @@ class Registry {
 }
 
 export const Art = new Registry();
+
+/** 단계별 아이콘 (예: tool_axe_2) — 디자인이 없으면 기본 아이콘 */
+export function tierIcon(base: string, tier: number): string {
+  const k = `${base}_${tier}`;
+  return tier > 0 && Art.has(k) ? k : base;
+}
 
 /** DOM <img> 태그 문자열 */
 export function iconHtml(key: string, size = 32, cls = ''): string {

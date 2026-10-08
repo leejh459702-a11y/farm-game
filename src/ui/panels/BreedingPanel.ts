@@ -5,7 +5,7 @@ import { ANIMAL_BY_ID, ANIMALS, TRAIT_BY_ID } from '../../data/animals';
 import { BALANCE } from '../../data/balance';
 import type { Animal } from '../../types/game';
 import { cx, esc } from '../dom';
-import { genderIcon, gradeChip, AnimalDetailPanel } from './AnimalPanels';
+import { genderIcon, gradeChip, traitChip, AnimalDetailPanel } from './AnimalPanels';
 import { breedSuccessChance, intimacyInheritBonus } from '../../systems/BreedingSystem';
 
 export class BreedingPanel extends Panel {
@@ -139,7 +139,7 @@ export class BirthResultPanel extends Panel {
           return `<button class="card col center" data-act="open" data-arg="${id}" style="align-items:center">${iconHtml(`portrait_${a.species}`, 56)}<div class="row center" style="gap:0.3rem"><b>${esc(a.name)}</b>${genderIcon(a.gender)}${gradeChip(a.grade)}</div>
           <div class="tiny muted">${a.id}</div>
           <div class="tiny">생산 ${a.stats.productivity} · 성장 ${a.stats.growth} · 건강 ${a.stats.health} · 번식 ${a.stats.fertility} · 체격 ${a.stats.physique}</div>
-          <div class="row wrap center">${a.traits.map((t) => `<span class="chip purple">${esc(TRAIT_BY_ID[t].name)}</span>`).join('') || '<span class="tiny muted">특성 없음</span>'}</div></button>`;
+          <div class="row wrap center">${a.traits.map(traitChip).join('') || '<span class="tiny muted">특성 없음</span>'}</div></button>`;
         })
         .join('')}</div>`;
   }

@@ -1,5 +1,6 @@
 /** 플레이어 이동 (조이스틱/키보드/탭 이동), 충돌, 방향, 경로 이동 */
 import Phaser from 'phaser';
+import { Art } from '../../assets/AssetRegistry';
 import type { Facing } from '../../types/game';
 import type { World } from '../../core/World';
 import { InputState } from '../InputState';
@@ -43,7 +44,7 @@ export class PlayerController {
 
   create(): void {
     const p = this.start ?? this.w.state.player;
-    this.sprite = this.scene.add.sprite(p.x, p.y, 'player', 0).setOrigin(0.5, 0.94);
+    this.sprite = this.scene.add.sprite(p.x, p.y, 'player', 0).setOrigin(0.5, 0.94).setScale(Art.scale('player'));
     const kb = this.scene.input.keyboard;
     if (kb) {
       for (const k of ['W', 'A', 'S', 'D', 'UP', 'DOWN', 'LEFT', 'RIGHT']) this.keys[k] = kb.addKey(k, false);
@@ -191,6 +192,12 @@ export class PlayerController {
 
   private applyFrame(): void {
     const f = this.w.state.player.facing;
+    if (Art.layout('player') === 'char20') {
+      // 디자인 시트: 앞/뒤/왼/오 × (서기 + 걷기 4프레임)
+      const dir = f === 'down' ? 0 : f === 'up' ? 1 : f === 'left' ? 2 : 3;
+      this.sprite.setFrame(dir * 5 + (this.moving ? 1 + (Math.floor(this.animT * 8) % 4) : 0)).setFlipX(false);
+      return;
+    }
     const base = f === 'down' ? 0 : f === 'up' ? 3 : 6;
     const step = this.moving ? [1, 0, 2, 0][Math.floor(this.animT * 8) % 4] : 0;
     this.sprite.setFrame(base + step);

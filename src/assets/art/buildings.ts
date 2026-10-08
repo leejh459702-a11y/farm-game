@@ -241,7 +241,21 @@ function small(type: string): Painter {
       p.circle(20, B - 31, 4, 0xe8b830).rect(20, B - 37, 3, 3, 0xd9342c).tri(24, B - 31, 28, B - 30, 24, B - 29, 0xf09a2c);
       p.tri(6, B - 26, 10, B - 18, 6, B - 16, 0xd9a020);
       break;
+    default:
+      // 디자인 에셋 전용 장식 — 이미지가 없을 때의 간단한 대체 그림
+      p.shadow(16, B - 3, 10, 3);
+      p.ellipse(16, B - 12, 10, 8, 0x5aa83c).ellipse(13, B - 15, 4, 3, 0x7cc85a);
+      break;
   }
+  p.outline(0x3b2a22);
+  return p;
+}
+
+/** 작은 연못 2×2 (디자인 에셋이 없을 때) */
+function smallPond(): Painter {
+  const B = T * 2 + ROOF_EXTRA;
+  const p = new Painter(T * 2, B);
+  p.ellipse(32, B - 30, 28, 20, 0x9a958c).ellipse(32, B - 31, 24, 16, 0x4a8ac8).ellipse(25, B - 35, 7, 3, 0x8ac8f0);
   p.outline(0x3b2a22);
   return p;
 }
@@ -339,6 +353,10 @@ export function buildBuildingTextures(): BuildingTex[] {
     if (d.id === 'house') continue;
     if (d.id === 'fishpond') {
       out.push({ key: d.spriteKey, canvas: fishpond().canvas });
+      continue;
+    }
+    if (d.id === 'pond_small') {
+      out.push({ key: d.spriteKey, canvas: smallPond().canvas });
       continue;
     }
     if (d.id === 'fountain') {

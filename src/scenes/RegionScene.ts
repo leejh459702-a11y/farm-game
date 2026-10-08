@@ -5,7 +5,8 @@
 import Phaser from 'phaser';
 import { Session } from '../core/Session';
 import type { World } from '../core/World';
-import { Art } from '../assets/AssetRegistry';
+import { Art, tierIcon } from '../assets/AssetRegistry';
+import { popFx } from './world/Fx';
 import { TILE } from '../assets/art/tiles';
 import { ITEM_BY_ID } from '../data/items';
 import { REGION_BY_ID, ROCK_BY_ID } from '../data/gathering';
@@ -240,14 +241,14 @@ export class RegionScene extends Phaser.Scene {
       if (n.kind === 'forage') return { kind: 'forage', label: '채집', icon: `it_${n.itemId}`, enabled: true, node: n };
       if (n.kind === 'chest') return { kind: 'chest', label: '상자 열기', icon: 'node_chest', enabled: true, node: n };
       if (n.kind === 'ladder') return { kind: 'ladder', label: '내려가기', icon: 'ic_mine', enabled: true, node: n };
-      if (n.kind === 'tree') return { kind: 'tree', label: '벌목', icon: 'tool_axe', enabled: true, node: n };
+      if (n.kind === 'tree') return { kind: 'tree', label: '벌목', icon: tierIcon('tool_axe', w.state.tools.axe), enabled: true, node: n };
       const rock = ROCK_BY_ID[n.itemId!];
       const ok = w.state.tools.pickaxe >= rock.tier;
-      return { kind: 'rock', label: '채광', icon: 'tool_pickaxe', enabled: ok, hint: ok ? undefined : `${rock.name}은(는) 더 좋은 곡괭이가 필요해요`, node: n };
+      return { kind: 'rock', label: '채광', icon: tierIcon('tool_pickaxe', w.state.tools.pickaxe), enabled: ok, hint: ok ? undefined : `${rock.name}은(는) 더 좋은 곡괭이가 필요해요`, node: n };
     }
     if (w.regions.isWater(this.regionId, x, y)) {
       const c = w.fishing.canFish();
-      return { kind: 'fish', label: '낚시', icon: 'tool_rod', enabled: c.ok, hint: c.reason };
+      return { kind: 'fish', label: '낚시', icon: tierIcon('tool_rod', w.state.tools.rod), enabled: c.ok, hint: c.reason };
     }
     return { kind: 'none', label: '조사', icon: 'tool_hand', enabled: false };
   }
@@ -369,6 +370,7 @@ export class RegionScene extends Phaser.Scene {
       this.floatText(x * TS + TS / 2, y * TS - 4, `${c.node.hp}/${c.node.maxHp}`, '#ffffff');
     }
     r.drops.forEach((d, i) => this.floatText(x * TS + TS / 2, y * TS - 4 - i * 12, `+${d.qty} ${ITEM_BY_ID[d.itemId].name}`, '#fff6a0'));
+    if (c.kind === 'forage' && r.drops.length) popFx(this, 'fx_harvest', x * TS + TS / 2, y * TS + TS / 2);
     this.lastCtx = '';
   }
 

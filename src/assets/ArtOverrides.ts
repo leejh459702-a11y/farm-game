@@ -11,7 +11,7 @@ export const ART_SCALE = 2;
 export interface ArtEntry {
   src: string;
   file: string;
-  kind: 'icon' | 'fx' | 'building' | 'cart' | 'node' | 'animal' | 'crop' | 'tile' | 'bg' | 'ui';
+  kind: 'icon' | 'fx' | 'building' | 'cart' | 'node' | 'animal' | 'crop' | 'tile' | 'bg' | 'ui' | 'char' | 'portrait';
   w: number;
   h: number;
   keys?: string[];

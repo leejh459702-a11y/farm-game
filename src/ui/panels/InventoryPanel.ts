@@ -1,6 +1,6 @@
 /** 인벤토리 / 창고 / 냉장창고 — 탭, 검색, 자동정렬, 즐겨찾기, 일괄 이동 */
 import { Panel, type Watch } from '../Panel';
-import { iconHtml } from '../../assets/AssetRegistry';
+import { Art, iconHtml } from '../../assets/AssetRegistry';
 import { CATEGORY_NAME, ITEM_BY_ID } from '../../data/items';
 import { CROP_BY_ID } from '../../data/crops';
 import { RECIPES } from '../../data/recipes';
@@ -100,7 +100,7 @@ export class InventoryPanel extends Panel {
     const uses = RECIPES.filter((r) => r.inputs.some((i) => i.id === s.itemId)).slice(0, 4).map((r) => r.outputName);
     const other = this.sel.cid === this.left ? this.right : this.left;
     return `<div class="row grow" style="min-width:0">${iconHtml(d.icon, 40)}<div class="grow" style="min-width:0">
-        <b>${esc(d.name)}</b> <span class="muted small">×${s.qty}</span> ${s.freshness !== undefined ? `<span class="chip ${s.freshness >= 70 ? 'green' : s.freshness >= 50 ? 'gold' : 'red'}">신선도 ${Math.ceil(s.freshness)} · ${freshnessLabel(s.freshness)}</span>` : ''}
+        <b>${esc(d.name)}</b> <span class="muted small">×${s.qty}</span> ${s.freshness !== undefined ? `<span class="chip ${s.freshness >= 70 ? 'green' : s.freshness >= 50 ? 'gold' : 'red'}">${freshIcon(s.freshness)}신선도 ${Math.ceil(s.freshness)} · ${freshnessLabel(s.freshness)}</span>` : ''}
         ${crop && crop.season.includes(this.w.cal.season) ? '<span class="chip green">제철 +10%</span>' : ''}
         ${s.bonus && s.bonus > 0.12 ? `<span class="chip gold">숙성 +${Math.round(s.bonus * 100)}%</span>` : ''}
         <div class="small muted ellipsis">${d.sellable ? `예상 판매가 ${price.toLocaleString()}G/개` : esc(d.desc)}${uses.length ? ` · 가공: ${esc(uses.join(', '))}` : ''}</div></div></div>
@@ -186,4 +186,10 @@ export class InventoryPanel extends Panel {
     }
     this.refresh();
   }
+}
+
+/** 신선도 단계 아이콘 (디자인 에셋이 있을 때만) */
+function freshIcon(f: number): string {
+  const k = `ic_fresh_${f <= 0 ? 0 : f >= 88 ? 100 : f >= 63 ? 75 : f >= 38 ? 50 : 25}`;
+  return Art.has(k) ? iconHtml(k, 14) : '';
 }

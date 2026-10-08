@@ -1,6 +1,6 @@
 /** 축사 관리 / 축사 자동화 / 동물 목록 / 동물 상세 / 혈통도 */
 import { Panel, type Watch } from '../Panel';
-import { iconHtml } from '../../assets/AssetRegistry';
+import { Art, iconHtml } from '../../assets/AssetRegistry';
 import { ANIMAL_BY_ID, ANIMALS, GROWTH_STAGE_NAME, TRAIT_BY_ID } from '../../data/animals';
 import { BUILDING_BY_ID } from '../../data/buildings';
 import { ITEM_BY_ID } from '../../data/items';
@@ -17,7 +17,15 @@ export function genderIcon(g: 'F' | 'M', size = 18): string {
 }
 
 export function gradeChip(g: 1 | 2 | 3): string {
-  return `<span class="chip ${g === 1 ? 'gold' : g === 2 ? 'blue' : ''}">${g}등급</span>`;
+  const ic = Art.has(`ic_grade_${g}`) ? iconHtml(`ic_grade_${g}`, 14) : '';
+  return `<span class="chip ${g === 1 ? 'gold' : g === 2 ? 'blue' : ''}">${ic}${g}등급</span>`;
+}
+
+/** 특성 칩 (디자인 아이콘이 있으면 함께) */
+export function traitChip(id: string): string {
+  const t = TRAIT_BY_ID[id];
+  const ic = Art.has(`trait_${id}`) ? iconHtml(`trait_${id}`, 14) : '';
+  return `<span class="chip purple" title="${esc(t.desc)}">${ic}${esc(t.name)}</span>`;
 }
 
 /** 친밀도(하트) + 행복도(웃는 얼굴) 막대 */
@@ -201,7 +209,7 @@ export class AnimalDetailPanel extends Panel {
     };
     const barn = a.buildingUid ? w.state.buildings[a.buildingUid] : null;
     const stats = STAT_NAMES.map(([k, n]) => `<div class="stat-bar"><span>${n}</span><div class="bar ${a.stats[k] >= 70 ? 'gold' : ''}"><i style="width:${a.stats[k]}%"></i></div><b>${a.stats[k]}</b></div>`).join('');
-    const traits = a.traits.length ? a.traits.map((t) => `<span class="chip purple" title="${esc(TRAIT_BY_ID[t].desc)}">${esc(TRAIT_BY_ID[t].name)}</span>`).join(' ') : '<span class="muted small">특성 없음</span>';
+    const traits = a.traits.length ? a.traits.map(traitChip).join(' ') : '<span class="muted small">특성 없음</span>';
     return `<div class="row" style="align-items:flex-start;gap:0.8rem">
       <div class="card center" style="min-width:7.5rem">${iconHtml(`portrait_${a.species}`, 72)}<div class="row center" style="gap:0.3rem">${genderIcon(a.gender)}${gradeChip(a.grade)}</div>
         <div class="tiny muted">${GROWTH_STAGE_NAME[a.stage]} · ${a.age}일</div>

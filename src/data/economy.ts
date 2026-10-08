@@ -63,7 +63,7 @@ export const MERCHANT_KINDS: Record<MerchantKind, { name: string; desc: string; 
 /** 계절 상인 한정 장식 */
 export const SEASONAL_DECOS: Record<string, { id: string; price: number }[]> = {
   spring: [{ id: 'cherrytree', price: 1300 }, { id: 'flowerbed', price: 100 }],
-  summer: [{ id: 'fountain', price: 3600 }, { id: 'sapling', price: 150 }],
-  autumn: [{ id: 'scarecrow', price: 180 }, { id: 'haybale', price: 50 }],
-  winter: [{ id: 'lamp', price: 220 }, { id: 'goldstatue', price: 2800 }],
+  summer: [{ id: 'fountain', price: 3600 }, { id: 'sapling', price: 150 }, { id: 'summerbed', price: 280 }],
+  autumn: [{ id: 'scarecrow', price: 180 }, { id: 'haybale', price: 50 }, { id: 'mapletree', price: 1300 }, { id: 'leafpile', price: 70 }],
+  winter: [{ id: 'lamp', price: 220 }, { id: 'goldstatue', price: 2800 }, { id: 'snowman', price: 180 }, { id: 'winterlamp', price: 320 }],
 };

@@ -1,6 +1,6 @@
 /** 집: 오늘 마치기 / 집 업그레이드 / 운영비 */
 import { Panel, type Watch } from '../Panel';
-import { iconHtml } from '../../assets/AssetRegistry';
+import { iconHtml, tierIcon } from '../../assets/AssetRegistry';
 import { BALANCE } from '../../data/balance';
 import { HOUSE_NAMES } from '../../systems/HouseUpgradeSystem';
 import { clockString } from '../../systems/SeasonSystem';
@@ -54,8 +54,8 @@ export class HousePanel extends Panel {
           const lv = w.state.tools[t];
           const owned = t !== 'rod' || w.state.tools.rodOwned;
           const next = info.next !== null ? def.tiers[info.next] : null;
-          return `<div class="card"><div class="row">${iconHtml(def.icon, 36)}<div class="grow"><b>${owned ? def.tiers[lv].name : `${def.label} (미보유)`}</b><div class="tiny muted">${esc(def.effect[lv])}</div></div></div>
-            ${next ? `<div class="row wrap" style="margin-top:0.3rem"><span class="small">→ <b>${next.name}</b>: ${esc(def.effect[info.next!])}</span></div>
+          return `<div class="card"><div class="row">${iconHtml(tierIcon(def.icon, lv), 36)}<div class="grow"><b>${owned ? def.tiers[lv].name : `${def.label} (미보유)`}</b><div class="tiny muted">${esc(def.effect[lv])}</div></div></div>
+            ${next ? `<div class="row wrap" style="margin-top:0.3rem"><span class="small">→ ${iconHtml(tierIcon(def.icon, info.next!), 20)}<b>${next.name}</b>: ${esc(def.effect[info.next!])}</span></div>
             <div class="row wrap" style="margin-top:0.3rem"><span class="${cx('chip', w.state.gold >= next.cost ? 'green' : 'red')}">${next.cost.toLocaleString()}G</span>
             ${next.mats.map((m) => `<span class="${cx('chip', w.inventory.countAll(m.id) >= m.qty ? 'green' : 'red')}">${iconHtml(ITEM_BY_ID[m.id].icon, 14)}${ITEM_BY_ID[m.id].name} ${w.inventory.countAll(m.id)}/${m.qty}</span>`).join('')}
             <button class="btn small green right" data-act="tool" data-arg="${t}" ${info.ok ? '' : 'disabled'}>${info.ok ? '업그레이드' : esc(info.reason ?? '')}</button></div>` : '<span class="chip gold">최고 단계</span>'}</div>`;

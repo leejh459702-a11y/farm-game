@@ -1369,13 +1369,13 @@ html.art-ui .slot {
   background: var(--ui-hotbar-slot) center / 100% 100% no-repeat;
   box-shadow: none;
 }
-html.art-ui .slot.sel { filter: drop-shadow(0 0 0 #f2c83a) drop-shadow(0 0 4px #f2c83a) brightness(1.06); }
+html.art-ui .slot.sel { background-image: var(--ui-hotbar-slot-selected, var(--ui-hotbar-slot)); filter: drop-shadow(0 0 3px #f2c83a) brightness(1.06); }
 html.art-ui .item-slot:not(.empty) {
   border: none;
   border-radius: 0;
   background: var(--ui-inventory-slot) center / 100% 100% no-repeat;
 }
-html.art-ui .item-slot.sel { box-shadow: none; filter: drop-shadow(0 0 3px var(--green)) drop-shadow(0 0 2px var(--green)); }
+html.art-ui .item-slot.sel { box-shadow: none; background: var(--ui-inventory-slot-selected, var(--ui-inventory-slot)) center / 100% 100% no-repeat; filter: drop-shadow(0 0 3px var(--green)); }
 html.art-ui .action-btn {
   border: none;
   background: var(--ui-action-button) center / 100% 100% no-repeat;

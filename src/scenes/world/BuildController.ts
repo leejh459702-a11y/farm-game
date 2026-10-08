@@ -9,6 +9,7 @@ import type { World } from '../../core/World';
 import { Session } from '../../core/Session';
 import type { BuildingRenderer } from './BuildingRenderer';
 import { DEPTH, TS } from './constants';
+import { popFx } from './Fx';
 
 export type BuildMode = 'select' | 'place' | 'move' | 'land';
 
@@ -251,6 +252,10 @@ export class BuildController {
       const r = this.w.grid.place(this.placeType, this.ghost.x, this.ghost.y, this.rot, { free: this.tutorialHouse });
       if (!r.ok) return r;
       const type = this.placeType;
+      {
+        const fp = footprint(type, this.rot);
+        popFx(this.scene, 'fx_build_complete', (this.ghost.x + fp.w / 2) * TS, (this.ghost.y + fp.h / 2) * TS, 34);
+      }
       if (this.tutorialHouse) {
         this.tutorialHouse = false;
         return r;

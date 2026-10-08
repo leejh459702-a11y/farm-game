@@ -5,11 +5,14 @@ import { SettingsStore } from '../services/SettingsStore';
 import { Session } from '../core/Session';
 import { Bridge } from './Bridge';
 import { Panels } from '../ui/PanelManager';
+import { Art } from '../assets/AssetRegistry';
+
+type JoyPart = Phaser.GameObjects.Arc | Phaser.GameObjects.Image;
 
 export class ControlsScene extends Phaser.Scene {
-  private base!: Phaser.GameObjects.Arc;
-  private knob!: Phaser.GameObjects.Arc;
-  private ring!: Phaser.GameObjects.Arc;
+  private base!: JoyPart;
+  private knob!: JoyPart;
+  private ring!: JoyPart;
   private pid: number | null = null;
   private origin = { x: 0, y: 0 };
   private readonly R = 70;
@@ -21,9 +24,16 @@ export class ControlsScene extends Phaser.Scene {
   private downAt = { x: 0, y: 0, t: 0, far: false };
 
   create(): void {
-    this.base = this.add.circle(0, 0, this.R, 0x3b2a22, 0.35).setStrokeStyle(4, 0xfff6e2, 0.5);
-    this.ring = this.add.circle(0, 0, this.R * 0.55, 0x000000, 0).setStrokeStyle(2, 0xfff6e2, 0.25);
-    this.knob = this.add.circle(0, 0, 32, 0xfff6e2, 0.85).setStrokeStyle(4, 0x5a3a22, 0.9);
+    if (Art.has('ui_joystick_base') && Art.has('ui_joystick_knob')) {
+      // 디자인 조이스틱
+      this.base = this.add.image(0, 0, 'ui_joystick_base').setDisplaySize(this.R * 2, this.R * 2);
+      this.ring = this.add.circle(0, 0, 1, 0x000000, 0);
+      this.knob = this.add.image(0, 0, 'ui_joystick_knob').setDisplaySize(64, 64);
+    } else {
+      this.base = this.add.circle(0, 0, this.R, 0x3b2a22, 0.35).setStrokeStyle(4, 0xfff6e2, 0.5);
+      this.ring = this.add.circle(0, 0, this.R * 0.55, 0x000000, 0).setStrokeStyle(2, 0xfff6e2, 0.25);
+      this.knob = this.add.circle(0, 0, 32, 0xfff6e2, 0.85).setStrokeStyle(4, 0x5a3a22, 0.9);
+    }
     this.setRest();
     this.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!this.enabledNow() || this.pid !== null) return;

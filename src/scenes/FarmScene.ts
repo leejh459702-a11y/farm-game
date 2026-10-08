@@ -19,6 +19,7 @@ import { BuildController } from './world/BuildController';
 import { BORDER, DEFAULT_ZOOM, DEPTH, FH, FW, TS, WORLD_MIN } from './world/constants';
 import { InputState } from './InputState';
 import { Bridge } from './Bridge';
+import { popFx } from './world/Fx';
 import { Panels } from '../ui/PanelManager';
 import { RegionSelectPanel } from '../ui/panels/RegionSelectPanel';
 
@@ -136,6 +137,7 @@ export class FarmScene extends Phaser.Scene {
         this.buildings.syncBubbles();
       }),
       ev.on('floatText', (e) => this.floatText(e.x, e.y, e.text, e.color)),
+      ev.on('levelUp', () => this.scene.isActive() && popFx(this, 'fx_level_up', this.player.sprite.x, this.player.sprite.y - 30, 26)),
       Session.app.on('focusTile', (e) => this.focusTile(e.x, e.y)),
       Session.app.on('action', () => this.scene.isActive() && this.doAction()),
     );
@@ -360,6 +362,7 @@ export class FarmScene extends Phaser.Scene {
       if (r.ok) {
         this.insects.catchAnim(bug);
         this.floatText(t.wx, t.wy - 10, r.first ? `NEW! ${r.name}` : r.name ?? '', r.first ? '#fff6a0' : '#ffffff');
+        if (r.first) popFx(this, 'fx_rare_find', t.wx, t.wy - 4);
       }
       return;
     }
@@ -466,7 +469,11 @@ export class FarmScene extends Phaser.Scene {
       for (const h of r.harvested) sum[h.itemId] = (sum[h.itemId] ?? 0) + h.qty;
       let i = 0;
       for (const [id, q] of Object.entries(sum)) this.floatText(x * TS + TS / 2, y * TS - 4 - i++ * 12, `+${q} ${ITEM_BY_ID[id].name}`, '#fff6a0');
-    } else if (before.kind === 'water') this.splash(tiles);
+      popFx(this, 'fx_harvest', x * TS + TS / 2, y * TS + TS / 2);
+    } else if (before.kind === 'water') {
+      this.splash(tiles);
+      popFx(this, 'fx_splash', x * TS + TS / 2, y * TS + TS / 2, 18);
+    }
     this.lastContext = '';
   }
 

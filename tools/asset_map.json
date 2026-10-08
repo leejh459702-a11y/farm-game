@@ -1,800 +1,480 @@
 {
-  "_doc": "디자인 에셋 파일명 → 게임 asset key. kind: icon(아이템/아이콘) · building · cart · node · animal · crop(frame=성장 단계 1~4) · tile(tiles=타일셋 인덱스, season=적용 계절) · bg · fx",
-  "item_carrot.png": {
-    "kind": "icon",
-    "keys": [
-      "it_carrot"
-    ]
-  },
-  "item_potato.png": {
-    "kind": "icon",
-    "keys": [
-      "it_potato"
-    ]
-  },
-  "item_egg.png": {
-    "kind": "icon",
-    "keys": [
-      "it_egg"
-    ]
-  },
-  "item_duck_egg.png": {
-    "kind": "icon",
-    "keys": [
-      "it_duck_egg"
-    ]
-  },
-  "item_goose_egg.png": {
-    "kind": "icon",
-    "keys": [
-      "it_goose_egg"
-    ]
-  },
-  "item_ostrich_egg.png": {
-    "kind": "icon",
-    "keys": [
-      "it_ostrich_egg"
-    ]
-  },
-  "item_milk.png": {
-    "kind": "icon",
-    "keys": [
-      "it_milk"
-    ]
-  },
-  "item_goat_milk.png": {
-    "kind": "icon",
-    "keys": [
-      "it_goat_milk"
-    ]
-  },
-  "item_buffalo_milk.png": {
-    "kind": "icon",
-    "keys": [
-      "it_buffalo_milk"
-    ]
-  },
-  "item_wool.png": {
-    "kind": "icon",
-    "keys": [
-      "it_wool"
-    ]
-  },
-  "item_alpaca_wool.png": {
-    "kind": "icon",
-    "keys": [
-      "it_alpaca_wool"
-    ]
-  },
-  "item_rabbit_fur.png": {
-    "kind": "icon",
-    "keys": [
-      "it_rabbit_wool"
-    ]
-  },
-  "item_pork.png": {
-    "kind": "icon",
-    "keys": [
-      "it_pork"
-    ]
-  },
-  "item_turkey_meat.png": {
-    "kind": "icon",
-    "keys": [
-      "it_turkey_meat"
-    ]
-  },
-  "fish_crucian_carp.png": {
-    "kind": "icon",
-    "keys": [
-      "it_crucian"
-    ]
-  },
-  "fish_minnow.png": {
-    "kind": "icon",
-    "keys": [
-      "it_minnow"
-    ]
-  },
-  "fish_goby.png": {
-    "kind": "icon",
-    "keys": [
-      "it_ricefish"
-    ]
-  },
-  "fish_carp.png": {
-    "kind": "icon",
-    "keys": [
-      "it_carp"
-    ]
-  },
-  "fish_catfish.png": {
-    "kind": "icon",
-    "keys": [
-      "it_catfish"
-    ]
-  },
-  "fish_rare_spring.png": {
-    "kind": "icon",
-    "keys": [
-      "it_sakura_trout"
-    ]
-  },
-  "fish_bass.png": {
-    "kind": "icon",
-    "keys": [
-      "it_bass"
-    ]
-  },
-  "fish_eel.png": {
-    "kind": "icon",
-    "keys": [
-      "it_eel"
-    ]
-  },
-  "fish_ayu.png": {
-    "kind": "icon",
-    "keys": [
-      "it_sweetfish"
-    ]
-  },
-  "fish_snakehead.png": {
-    "kind": "icon",
-    "keys": [
-      "it_snakehead"
-    ]
-  },
-  "fish_perch.png": {
-    "kind": "icon",
-    "keys": [
-      "it_mandarin_fish"
-    ]
-  },
-  "fish_rare_summer.png": {
-    "kind": "icon",
-    "keys": [
-      "it_golden_catfish"
-    ]
-  },
-  "fish_trout.png": {
-    "kind": "icon",
-    "keys": [
-      "it_trout"
-    ]
-  },
-  "fish_salmon.png": {
-    "kind": "icon",
-    "keys": [
-      "it_salmon"
-    ]
-  },
-  "fish_chub.png": {
-    "kind": "icon",
-    "keys": [
-      "it_char"
-    ]
-  },
-  "fish_rare_autumn.png": {
-    "kind": "icon",
-    "keys": [
-      "it_maple_salmon"
-    ]
-  },
-  "fish_smelt.png": {
-    "kind": "icon",
-    "keys": [
-      "it_smelt"
-    ]
-  },
-  "fish_pike.png": {
-    "kind": "icon",
-    "keys": [
-      "it_lenok"
-    ]
-  },
-  "fish_rainbow_trout.png": {
-    "kind": "icon",
-    "keys": [
-      "it_masu"
-    ]
-  },
-  "fish_rare_winter.png": {
-    "kind": "icon",
-    "keys": [
-      "it_ice_king"
-    ]
-  },
-  "fish_loach.png": {
-    "kind": "icon",
-    "keys": [
-      "it_loach"
-    ]
-  },
-  "forage_acorn.png": {
-    "kind": "icon",
-    "keys": [
-      "it_acorn"
-    ]
-  },
-  "forage_blueberry.png": {
-    "kind": "icon",
-    "keys": [
-      "it_wild_blueberry"
-    ]
-  },
-  "forage_chestnut.png": {
-    "kind": "icon",
-    "keys": [
-      "it_chestnut"
-    ]
-  },
-  "forage_clam.png": {
-    "kind": "icon",
-    "keys": [
-      "it_clam"
-    ]
-  },
-  "forage_flower.png": {
-    "kind": "icon",
-    "keys": [
-      "it_wildflower"
-    ]
-  },
-  "forage_herb.png": {
-    "kind": "icon",
-    "keys": [
-      "it_herb"
-    ]
-  },
-  "forage_mushroom_brown.png": {
-    "kind": "icon",
-    "keys": [
-      "it_shiitake"
-    ]
-  },
-  "forage_reed.png": {
-    "kind": "icon",
-    "keys": [
-      "it_reed"
-    ]
-  },
-  "forage_wild_strawberry.png": {
-    "kind": "icon",
-    "keys": [
-      "it_wild_strawberry"
-    ]
-  },
-  "resource_wood.png": {
-    "kind": "icon",
-    "keys": [
-      "it_wood"
-    ]
-  },
-  "resource_stone.png": {
-    "kind": "icon",
-    "keys": [
-      "it_stone"
-    ]
-  },
-  "resource_clay.png": {
-    "kind": "icon",
-    "keys": [
-      "it_clay"
-    ]
-  },
-  "resource_copper_ore.png": {
-    "kind": "icon",
-    "keys": [
-      "it_copper_ore"
-    ]
-  },
-  "resource_iron_ore.png": {
-    "kind": "icon",
-    "keys": [
-      "it_iron_ore"
-    ]
-  },
-  "tool_axe.png": {
-    "kind": "icon",
-    "keys": [
-      "tool_axe"
-    ]
-  },
-  "tool_pickaxe.png": {
-    "kind": "icon",
-    "keys": [
-      "tool_pickaxe"
-    ]
-  },
-  "tool_fishing_rod.png": {
-    "kind": "icon",
-    "keys": [
-      "tool_rod"
-    ]
-  },
-  "tool_watering_can.png": {
-    "kind": "icon",
-    "keys": [
-      "tool_water"
-    ]
-  },
-  "icon_coin.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_coin"
-    ]
-  },
-  "icon_farming.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_farming"
-    ]
-  },
-  "icon_fishing.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_fish"
-    ]
-  },
-  "icon_weather_sunny.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_sunny"
-    ]
-  },
-  "icon_action_harvest.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_harvest"
-    ]
-  },
-  "notification_merchant.png": {
-    "kind": "icon",
-    "keys": [
-      "ic_merchant"
-    ]
-  },
-  "fx_harvest_sparkle.png": {
-    "kind": "fx",
-    "keys": [
-      "fx_harvest"
-    ]
-  },
-  "fx_water_splash.png": {
-    "kind": "fx",
-    "keys": [
-      "fx_splash"
-    ]
-  },
-  "building_house_lv1.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_1"
-    ]
-  },
-  "building_house_lv2.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_2"
-    ]
-  },
-  "building_house_lv3.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_3"
-    ]
-  },
-  "building_house_lv4.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_4"
-    ]
-  },
-  "building_house_lv5.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_5"
-    ]
-  },
-  "building_house_lv6.png": {
-    "kind": "building",
-    "keys": [
-      "bld_house_6"
-    ]
-  },
-  "building_chicken_coop.png": {
-    "kind": "building",
-    "keys": [
-      "bld_coop"
-    ]
-  },
-  "building_duck_coop.png": {
-    "kind": "building",
-    "keys": [
-      "bld_duckhouse"
-    ]
-  },
-  "building_rabbit_hutch.png": {
-    "kind": "building",
-    "keys": [
-      "bld_rabbithutch"
-    ]
-  },
-  "building_sheep_goat_barn.png": {
-    "kind": "building",
-    "keys": [
-      "bld_sheepbarn",
-      "bld_sheepbarn_r"
-    ]
-  },
-  "building_cow_barn.png": {
-    "kind": "building",
-    "keys": [
-      "bld_cowbarn"
-    ]
-  },
-  "building_pig_barn.png": {
-    "kind": "building",
-    "keys": [
-      "bld_pigsty"
-    ]
-  },
-  "building_large_barn.png": {
-    "kind": "building",
-    "keys": [
-      "bld_bigbarn",
-      "bld_bigbarn_r"
-    ]
-  },
-  "building_small_storage.png": {
-    "kind": "building",
-    "keys": [
-      "bld_warehouse"
-    ]
-  },
-  "building_big_storage.png": {
-    "kind": "building",
-    "keys": [
-      "bld_bigwarehouse",
-      "bld_bigwarehouse_r"
-    ]
-  },
-  "building_cold_storage.png": {
-    "kind": "building",
-    "keys": [
-      "bld_fridge",
-      "bld_fridge_r",
-      "bld_coldstorage",
-      "bld_coldstorage_r"
-    ]
-  },
-  "building_greenhouse.png": {
-    "kind": "building",
-    "keys": [
-      "bld_greenhouse"
-    ]
-  },
-  "building_kitchen.png": {
-    "kind": "building",
-    "keys": [
-      "bld_kitchen"
-    ]
-  },
-  "building_processing_house.png": {
-    "kind": "building",
-    "keys": [
-      "bld_processor"
-    ]
-  },
-  "building_textile_workshop.png": {
-    "kind": "building",
-    "keys": [
-      "bld_loom"
-    ]
-  },
-  "building_meat_processing.png": {
-    "kind": "building",
-    "keys": [
-      "bld_butcher",
-      "bld_butcher_r"
-    ]
-  },
-  "building_breeding_center.png": {
-    "kind": "building",
-    "keys": [
-      "bld_breeding",
-      "bld_breeding_r"
-    ]
-  },
-  "building_breeding_lab.png": {
-    "kind": "building",
-    "keys": [
-      "bld_breedlab",
-      "bld_breedlab_r"
-    ]
-  },
-  "prop_storage_box.png": {
-    "kind": "building",
-    "keys": [
-      "bld_chest"
-    ]
-  },
-  "prop_compost_bin.png": {
-    "kind": "building",
-    "keys": [
-      "bld_compost"
-    ]
-  },
-  "prop_well.png": {
-    "kind": "building",
-    "keys": [
-      "bld_well"
-    ]
-  },
-  "prop_wood_fence.png": {
-    "kind": "building",
-    "keys": [
-      "bld_fence"
-    ]
-  },
-  "prop_bench.png": {
-    "kind": "building",
-    "keys": [
-      "bld_bench"
-    ]
-  },
-  "prop_lamp.png": {
-    "kind": "building",
-    "keys": [
-      "bld_lamp"
-    ]
-  },
-  "building_merchant_cart.png": {
-    "kind": "cart",
-    "keys": [
-      "cart"
-    ]
-  },
-  "building_premium_merchant_cart.png": {
-    "kind": "cart",
-    "keys": [
-      "cart_special"
-    ]
-  },
-  "node_rock_small.png": {
-    "kind": "node",
-    "keys": [
-      "node_rock_stone"
-    ]
-  },
-  "node_tree_small.png": {
-    "kind": "node",
-    "keys": [
-      "node_tree_small_0",
-      "node_tree_small_1"
-    ]
-  },
-  "animal_chicken_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_chicken"
-    ],
-    "portrait": "portrait_chicken"
-  },
-  "animal_chicken_baby.png": {
-    "kind": "animal",
-    "keys": [
-      "an_chicken_baby"
-    ]
-  },
-  "animal_cow_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_cow"
-    ],
-    "portrait": "portrait_cow"
-  },
-  "animal_cow_baby.png": {
-    "kind": "animal",
-    "keys": [
-      "an_cow_baby"
-    ]
-  },
-  "animal_duck_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_duck"
-    ],
-    "portrait": "portrait_duck"
-  },
-  "animal_goat_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_goat"
-    ],
-    "portrait": "portrait_goat"
-  },
-  "animal_rabbit_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_rabbit"
-    ],
-    "portrait": "portrait_rabbit"
-  },
-  "animal_sheep_adult.png": {
-    "kind": "animal",
-    "keys": [
-      "an_sheep"
-    ],
-    "portrait": "portrait_sheep"
-  },
-  "crop_carrot_stage1.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_carrot"
-    ],
-    "frame": 1
-  },
-  "crop_carrot_stage2.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_carrot"
-    ],
-    "frame": 2
-  },
-  "crop_carrot_stage3.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_carrot"
-    ],
-    "frame": 3
-  },
-  "crop_carrot_stage4.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_carrot"
-    ],
-    "frame": 4
-  },
-  "crop_potato_stage1.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_potato"
-    ],
-    "frame": 1
-  },
-  "crop_potato_stage2.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_potato"
-    ],
-    "frame": 2
-  },
-  "crop_potato_stage3.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_potato"
-    ],
-    "frame": 3
-  },
-  "crop_potato_stage4.png": {
-    "kind": "crop",
-    "keys": [
-      "crop_potato"
-    ],
-    "frame": 4
-  },
-  "tile_grass.png": {
-    "kind": "tile",
-    "tiles": [
-      "grassA",
-      "grassB",
-      "grassFlower"
-    ],
-    "seasons": [
-      0,
-      1
-    ],
-    "enhance": {
-      "brightness": 1.15,
-      "color": 1.12
-    }
-  },
-  "tile_soil_dry.png": {
-    "kind": "tile",
-    "tiles": [
-      "soilDry"
-    ]
-  },
-  "tile_soil_wet.png": {
-    "kind": "tile",
-    "tiles": [
-      "soilWet"
-    ]
-  },
-  "tile_path_dirt.png": {
-    "kind": "tile",
-    "tiles": [
-      "path"
-    ]
-  },
-  "tile_water.png": {
-    "kind": "tile",
-    "tiles": [
-      "waterA",
-      "waterB"
-    ]
-  },
-  "tile_path_stone.png": {
-    "kind": "building",
-    "keys": [
-      "bld_stonepath"
-    ]
-  },
-  "bg_title_farm.png": {
-    "kind": "bg",
-    "keys": [
-      "menu_bg"
-    ]
-  },
-  "bg_river_area.png": {
-    "kind": "bg",
-    "keys": [
-      "bg_river"
-    ]
-  },
-  "bg_forest_area.png": {
-    "kind": "bg",
-    "keys": [
-      "bg_forest"
-    ]
-  },
-  "bg_quarry_area.png": {
-    "kind": "bg",
-    "keys": [
-      "bg_hill"
-    ]
-  },
-  "bg_merchant_spot.png": {
-    "kind": "bg",
-    "keys": [
-      "bg_merchant"
-    ]
-  },
-  "ui_hotbar_slot.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_hotbar_slot"
-    ]
-  },
-  "ui_inventory_slot.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_inventory_slot"
-    ]
-  },
-  "ui_action_button.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_action_button"
-    ]
-  },
-  "ui_panel_large.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_panel_large"
-    ]
-  },
-  "ui_button_primary.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_button_primary"
-    ]
-  },
-  "ui_tab_normal.png": {
-    "kind": "ui",
-    "keys": [
-      "ui_tab_normal"
-    ]
-  }
+ "_doc": "디자인 에셋 파일명 → 게임 asset key. kind: icon(아이템/아이콘) · building · cart · node · animal · crop(frame=성장 단계 1~4) · tile(tiles=타일셋 인덱스, season=적용 계절) · bg · fx · char(플레이어 시트 frame=방향*5+걸음, 방향 앞/뒤/왼/오) · ui(CSS 프레임/조이스틱)",
+ "item_carrot.png": {"kind": "icon", "keys": ["it_carrot"]},
+ "item_potato.png": {"kind": "icon", "keys": ["it_potato"]},
+ "item_egg.png": {"kind": "icon", "keys": ["it_egg"]},
+ "item_duck_egg.png": {"kind": "icon", "keys": ["it_duck_egg"]},
+ "item_goose_egg.png": {"kind": "icon", "keys": ["it_goose_egg"]},
+ "item_ostrich_egg.png": {"kind": "icon", "keys": ["it_ostrich_egg"]},
+ "item_milk.png": {"kind": "icon", "keys": ["it_milk"]},
+ "item_goat_milk.png": {"kind": "icon", "keys": ["it_goat_milk"]},
+ "item_buffalo_milk.png": {"kind": "icon", "keys": ["it_buffalo_milk"]},
+ "item_wool.png": {"kind": "icon", "keys": ["it_wool"]},
+ "item_alpaca_wool.png": {"kind": "icon", "keys": ["it_alpaca_wool"]},
+ "item_rabbit_fur.png": {"kind": "icon", "keys": ["it_rabbit_wool"]},
+ "item_pork.png": {"kind": "icon", "keys": ["it_pork"]},
+ "item_turkey_meat.png": {"kind": "icon", "keys": ["it_turkey_meat"]},
+ "fish_crucian_carp.png": {"kind": "icon", "keys": ["it_crucian"]},
+ "fish_minnow.png": {"kind": "icon", "keys": ["it_minnow"]},
+ "fish_goby.png": {"kind": "icon", "keys": ["it_ricefish"]},
+ "fish_carp.png": {"kind": "icon", "keys": ["it_carp"]},
+ "fish_catfish.png": {"kind": "icon", "keys": ["it_catfish"]},
+ "fish_rare_spring.png": {"kind": "icon", "keys": ["it_sakura_trout"]},
+ "fish_bass.png": {"kind": "icon", "keys": ["it_bass"]},
+ "fish_eel.png": {"kind": "icon", "keys": ["it_eel"]},
+ "fish_ayu.png": {"kind": "icon", "keys": ["it_sweetfish"]},
+ "fish_snakehead.png": {"kind": "icon", "keys": ["it_snakehead"]},
+ "fish_perch.png": {"kind": "icon", "keys": ["it_mandarin_fish"]},
+ "fish_rare_summer.png": {"kind": "icon", "keys": ["it_golden_catfish"]},
+ "fish_trout.png": {"kind": "icon", "keys": ["it_trout"]},
+ "fish_salmon.png": {"kind": "icon", "keys": ["it_salmon"]},
+ "fish_chub.png": {"kind": "icon", "keys": ["it_char"]},
+ "fish_rare_autumn.png": {"kind": "icon", "keys": ["it_maple_salmon"]},
+ "fish_smelt.png": {"kind": "icon", "keys": ["it_smelt"]},
+ "fish_pike.png": {"kind": "icon", "keys": ["it_lenok"]},
+ "fish_rainbow_trout.png": {"kind": "icon", "keys": ["it_masu"]},
+ "fish_rare_winter.png": {"kind": "icon", "keys": ["it_ice_king"]},
+ "fish_loach.png": {"kind": "icon", "keys": ["it_loach"]},
+ "forage_acorn.png": {"kind": "icon", "keys": ["it_acorn"]},
+ "forage_blueberry.png": {"kind": "icon", "keys": ["it_wild_blueberry"]},
+ "forage_chestnut.png": {"kind": "icon", "keys": ["it_chestnut"]},
+ "forage_clam.png": {"kind": "icon", "keys": ["it_clam"]},
+ "forage_flower.png": {"kind": "icon", "keys": ["it_wildflower"]},
+ "forage_herb.png": {"kind": "icon", "keys": ["it_herb"]},
+ "forage_mushroom_brown.png": {"kind": "icon", "keys": ["it_shiitake"]},
+ "forage_reed.png": {"kind": "icon", "keys": ["it_reed"]},
+ "forage_wild_strawberry.png": {"kind": "icon", "keys": ["it_wild_strawberry"]},
+ "resource_wood.png": {"kind": "icon", "keys": ["it_wood"]},
+ "resource_stone.png": {"kind": "icon", "keys": ["it_stone"]},
+ "resource_clay.png": {"kind": "icon", "keys": ["it_clay"]},
+ "resource_copper_ore.png": {"kind": "icon", "keys": ["it_copper_ore"]},
+ "resource_iron_ore.png": {"kind": "icon", "keys": ["it_iron_ore"]},
+ "tool_axe.png": {"kind": "icon", "keys": ["tool_axe"]},
+ "tool_pickaxe.png": {"kind": "icon", "keys": ["tool_pickaxe"]},
+ "tool_fishing_rod.png": {"kind": "icon", "keys": ["tool_rod"]},
+ "tool_watering_can.png": {"kind": "icon", "keys": ["tool_water"]},
+ "icon_coin.png": {"kind": "icon", "keys": ["ic_coin"]},
+ "icon_farming.png": {"kind": "icon", "keys": ["ic_farming"]},
+ "icon_fishing.png": {"kind": "icon", "keys": ["ic_fish"]},
+ "icon_weather_sunny.png": {"kind": "icon", "keys": ["ic_sunny"]},
+ "icon_action_harvest.png": {"kind": "icon", "keys": ["ic_harvest"]},
+ "notification_merchant.png": {"kind": "icon", "keys": ["ic_merchant"]},
+ "fx_harvest_sparkle.png": {"kind": "fx", "keys": ["fx_harvest"]},
+ "fx_water_splash.png": {"kind": "fx", "keys": ["fx_splash"]},
+ "building_house_lv1.png": {"kind": "building", "keys": ["bld_house_1"]},
+ "building_house_lv2.png": {"kind": "building", "keys": ["bld_house_2"]},
+ "building_house_lv3.png": {"kind": "building", "keys": ["bld_house_3"]},
+ "building_house_lv4.png": {"kind": "building", "keys": ["bld_house_4"]},
+ "building_house_lv5.png": {"kind": "building", "keys": ["bld_house_5"]},
+ "building_house_lv6.png": {"kind": "building", "keys": ["bld_house_6"]},
+ "building_chicken_coop.png": {"kind": "building", "keys": ["bld_coop"]},
+ "building_duck_coop.png": {"kind": "building", "keys": ["bld_duckhouse"]},
+ "building_rabbit_hutch.png": {"kind": "building", "keys": ["bld_rabbithutch"]},
+ "building_sheep_goat_barn.png": {"kind": "building", "keys": ["bld_sheepbarn", "bld_sheepbarn_r"]},
+ "building_cow_barn.png": {"kind": "building", "keys": ["bld_cowbarn"]},
+ "building_pig_barn.png": {"kind": "building", "keys": ["bld_pigsty"]},
+ "building_large_barn.png": {"kind": "building", "keys": ["bld_bigbarn", "bld_bigbarn_r"]},
+ "building_small_storage.png": {"kind": "building", "keys": ["bld_warehouse"]},
+ "building_big_storage.png": {"kind": "building", "keys": ["bld_bigwarehouse", "bld_bigwarehouse_r"]},
+ "building_cold_storage.png": {"kind": "building", "keys": ["bld_fridge", "bld_fridge_r", "bld_coldstorage", "bld_coldstorage_r"]},
+ "building_greenhouse.png": {"kind": "building", "keys": ["bld_greenhouse"]},
+ "building_kitchen.png": {"kind": "building", "keys": ["bld_kitchen"]},
+ "building_processing_house.png": {"kind": "building", "keys": ["bld_processor"]},
+ "building_textile_workshop.png": {"kind": "building", "keys": ["bld_loom"]},
+ "building_meat_processing.png": {"kind": "building", "keys": ["bld_butcher", "bld_butcher_r"]},
+ "building_breeding_center.png": {"kind": "building", "keys": ["bld_breeding", "bld_breeding_r"]},
+ "building_breeding_lab.png": {"kind": "building", "keys": ["bld_breedlab", "bld_breedlab_r"]},
+ "prop_storage_box.png": {"kind": "building", "keys": ["bld_chest"]},
+ "prop_compost_bin.png": {"kind": "building", "keys": ["bld_compost"]},
+ "prop_well.png": {"kind": "building", "keys": ["bld_well"]},
+ "prop_wood_fence.png": {"kind": "building", "keys": ["bld_fence"]},
+ "prop_bench.png": {"kind": "building", "keys": ["bld_bench"]},
+ "prop_lamp.png": {"kind": "building", "keys": ["bld_lamp"]},
+ "building_merchant_cart.png": {"kind": "cart", "keys": ["cart"]},
+ "building_premium_merchant_cart.png": {"kind": "cart", "keys": ["cart_special"]},
+ "node_rock_small.png": {"kind": "node", "keys": ["node_rock_stone"]},
+ "node_tree_small.png": {"kind": "node", "keys": ["node_tree_small_0", "node_tree_small_1"]},
+ "animal_chicken_adult.png": {"kind": "animal", "keys": ["an_chicken"]},
+ "animal_chicken_baby.png": {"kind": "animal", "keys": ["an_chicken_baby"]},
+ "animal_cow_adult.png": {"kind": "animal", "keys": ["an_cow"]},
+ "animal_cow_baby.png": {"kind": "animal", "keys": ["an_cow_baby"]},
+ "animal_duck_adult.png": {"kind": "animal", "keys": ["an_duck"]},
+ "animal_goat_adult.png": {"kind": "animal", "keys": ["an_goat"]},
+ "animal_rabbit_adult.png": {"kind": "animal", "keys": ["an_rabbit"]},
+ "animal_sheep_adult.png": {"kind": "animal", "keys": ["an_sheep"]},
+ "crop_carrot_stage1.png": {"kind": "crop", "keys": ["crop_carrot"], "frame": 1},
+ "crop_carrot_stage2.png": {"kind": "crop", "keys": ["crop_carrot"], "frame": 2},
+ "crop_carrot_stage3.png": {"kind": "crop", "keys": ["crop_carrot"], "frame": 3},
+ "crop_carrot_stage4.png": {"kind": "crop", "keys": ["crop_carrot"], "frame": 4},
+ "crop_potato_stage1.png": {"kind": "crop", "keys": ["crop_potato"], "frame": 1},
+ "crop_potato_stage2.png": {"kind": "crop", "keys": ["crop_potato"], "frame": 2},
+ "crop_potato_stage3.png": {"kind": "crop", "keys": ["crop_potato"], "frame": 3},
+ "crop_potato_stage4.png": {"kind": "crop", "keys": ["crop_potato"], "frame": 4},
+ "tile_grass.png": {"kind": "tile", "tiles": ["grassA", "grassB", "grassFlower"], "seasons": [0, 1], "enhance": {"brightness": 1.15, "color": 1.12}},
+ "tile_soil_dry.png": {"kind": "tile", "tiles": ["soilDry"]},
+ "tile_soil_wet.png": {"kind": "tile", "tiles": ["soilWet"]},
+ "tile_path_dirt.png": {"kind": "tile", "tiles": ["path"]},
+ "tile_water.png": {"kind": "tile", "tiles": ["waterA", "waterB"]},
+ "tile_path_stone.png": {"kind": "building", "keys": ["bld_stonepath"]},
+ "bg_title_farm.png": {"kind": "bg", "keys": ["menu_bg"]},
+ "bg_river_area.png": {"kind": "bg", "keys": ["bg_river"]},
+ "bg_forest_area.png": {"kind": "bg", "keys": ["bg_forest"]},
+ "bg_quarry_area.png": {"kind": "bg", "keys": ["bg_hill"]},
+ "bg_merchant_spot.png": {"kind": "bg", "keys": ["bg_merchant"]},
+ "ui_hotbar_slot.png": {"kind": "ui", "keys": ["ui_hotbar_slot"]},
+ "ui_inventory_slot.png": {"kind": "ui", "keys": ["ui_inventory_slot"]},
+ "ui_action_button.png": {"kind": "ui", "keys": ["ui_action_button"]},
+ "ui_panel_large.png": {"kind": "ui", "keys": ["ui_panel_large"]},
+ "ui_button_primary.png": {"kind": "ui", "keys": ["ui_button_primary"]},
+ "ui_tab_normal.png": {"kind": "ui", "keys": ["ui_tab_normal"]},
+ "food_salad.png": {"kind": "icon", "keys": ["it_salad"]},
+ "food_vegetable_soup.png": {"kind": "icon", "keys": ["it_radish_soup"]},
+ "item_blueberry_jam.png": {"kind": "icon", "keys": ["it_blueberry_jam"]},
+ "item_bread.png": {"kind": "icon", "keys": ["it_bread"]},
+ "item_buffalo_cheese.png": {"kind": "icon", "keys": ["it_mozzarella"]},
+ "item_butter.png": {"kind": "icon", "keys": ["it_butter"]},
+ "item_cheese.png": {"kind": "icon", "keys": ["it_cheese"]},
+ "item_cream.png": {"kind": "icon", "keys": ["it_mayonnaise"]},
+ "item_fabric.png": {"kind": "icon", "keys": ["it_fabric"]},
+ "item_flour.png": {"kind": "icon", "keys": ["it_flour"]},
+ "item_goat_cheese.png": {"kind": "icon", "keys": ["it_goat_cheese"]},
+ "item_grape_jam.png": {"kind": "icon", "keys": ["it_grape_jam"]},
+ "item_oil.png": {"kind": "icon", "keys": ["it_sunflower_oil"]},
+ "item_strawberry_jam.png": {"kind": "icon", "keys": ["it_strawberry_jam"]},
+ "item_sugar.png": {"kind": "icon", "keys": ["it_sugar"]},
+ "item_yarn.png": {"kind": "icon", "keys": ["it_yarn"]},
+ "node_clay.png": {"kind": "node", "keys": ["node_rock_clay"]},
+ "node_copper_ore.png": {"kind": "node", "keys": ["node_rock_copper"]},
+ "node_gold_ore.png": {"kind": "node", "keys": ["node_rock_gold"]},
+ "node_iron_ore.png": {"kind": "node", "keys": ["node_rock_iron"]},
+ "node_silver_ore.png": {"kind": "node", "keys": ["node_rock_silver"]},
+ "node_stump.png": {"kind": "node", "keys": ["node_stump"]},
+ "node_tree_large.png": {"kind": "node", "keys": ["node_tree_big_0"]},
+ "resource_branch.png": {"kind": "icon", "keys": ["it_branch"]},
+ "resource_coal.png": {"kind": "icon", "keys": ["it_coal"]},
+ "resource_gold_ore.png": {"kind": "icon", "keys": ["it_gold_ore"]},
+ "resource_rare_ore.png": {"kind": "icon", "keys": ["it_amethyst"]},
+ "resource_sap.png": {"kind": "icon", "keys": ["it_sap"]},
+ "resource_silver_ore.png": {"kind": "icon", "keys": ["it_silver_ore"]},
+ "tool_axe_copper.png": {"kind": "icon", "keys": ["tool_axe_1"]},
+ "tool_axe_iron.png": {"kind": "icon", "keys": ["tool_axe_2"]},
+ "tool_axe_advanced.png": {"kind": "icon", "keys": ["tool_axe_3"]},
+ "tool_pickaxe_copper.png": {"kind": "icon", "keys": ["tool_pickaxe_1"]},
+ "tool_pickaxe_iron.png": {"kind": "icon", "keys": ["tool_pickaxe_2"]},
+ "tool_pickaxe_advanced.png": {"kind": "icon", "keys": ["tool_pickaxe_3"]},
+ "tool_fishing_rod_better.png": {"kind": "icon", "keys": ["tool_rod_1"]},
+ "tool_fishing_rod_professional.png": {"kind": "icon", "keys": ["tool_rod_2"]},
+ "tool_fishing_rod_master.png": {"kind": "icon", "keys": ["tool_rod_3"]},
+ "tool_hoe.png": {"kind": "icon", "keys": ["tool_hoe"]},
+ "food_cheese_plate.png": {"kind": "icon", "keys": ["it_premium_cheese"]},
+ "food_farm_breakfast.png": {"kind": "icon", "keys": ["it_ostrich_omelette"]},
+ "food_fish_grill.png": {"kind": "icon", "keys": ["it_grilled_fish"]},
+ "food_fish_soup.png": {"kind": "icon", "keys": ["it_spicy_fish_stew"]},
+ "food_fruit_salad.png": {"kind": "icon", "keys": ["it_watermelon_punch"]},
+ "food_omelet.png": {"kind": "icon", "keys": ["it_omelette"]},
+ "food_pizza.png": {"kind": "icon", "keys": ["it_cheese_pizza"]},
+ "food_pumpkin_soup.png": {"kind": "icon", "keys": ["it_pumpkin_porridge"]},
+ "food_rice_bowl.png": {"kind": "icon", "keys": ["it_fern_bibim"]},
+ "food_strawberry_dessert.png": {"kind": "icon", "keys": ["it_strawberry_cake"]},
+ "item_bait_basic.png": {"kind": "icon", "keys": ["it_fish_feed"]},
+ "item_bait_premium.png": {"kind": "icon", "keys": ["it_rare_bait"]},
+ "item_feed_basic.png": {"kind": "icon", "keys": ["it_hay", "tool_feed"]},
+ "item_feed_premium.png": {"kind": "icon", "keys": ["it_golden_feed"]},
+ "item_feed_quality.png": {"kind": "icon", "keys": ["it_treat"]},
+ "item_fertilizer_basic.png": {"kind": "icon", "keys": ["it_basic_fertilizer", "tool_fertilizer"]},
+ "item_fertilizer_growth.png": {"kind": "icon", "keys": ["it_growth_fertilizer"]},
+ "item_fertilizer_advanced.png": {"kind": "icon", "keys": ["it_premium_fertilizer"]},
+ "item_fertilizer_yield.png": {"kind": "icon", "keys": ["it_special_fertilizer"]},
+ "item_fertilizer_preserve.png": {"kind": "icon", "keys": ["it_compost"]},
+ "ui_hotbar_slot_selected.png": {"kind": "ui", "keys": ["ui_hotbar_slot_selected"]},
+ "ui_inventory_slot_selected.png": {"kind": "ui", "keys": ["ui_inventory_slot_selected"]},
+ "ui_joystick_base.png": {"kind": "ui", "keys": ["ui_joystick_base"]},
+ "ui_joystick_knob.png": {"kind": "ui", "keys": ["ui_joystick_knob"]},
+ "ui_button_secondary.png": {"kind": "ui", "keys": ["ui_button_secondary"]},
+ "ui_tab_selected.png": {"kind": "ui", "keys": ["ui_tab_selected"]},
+ "grade_1.png": {"kind": "icon", "keys": ["ic_grade_1"]},
+ "grade_2.png": {"kind": "icon", "keys": ["ic_grade_2"]},
+ "grade_3.png": {"kind": "icon", "keys": ["ic_grade_3"]},
+ "icon_action_interact.png": {"kind": "icon", "keys": ["tool_hand"]},
+ "icon_action_plant.png": {"kind": "icon", "keys": ["tool_seed"]},
+ "icon_spring.png": {"kind": "icon", "keys": ["ic_spring"]},
+ "icon_summer.png": {"kind": "icon", "keys": ["ic_summer"]},
+ "icon_autumn.png": {"kind": "icon", "keys": ["ic_autumn"]},
+ "icon_winter.png": {"kind": "icon", "keys": ["ic_winter"]},
+ "icon_baby.png": {"kind": "icon", "keys": ["ic_baby"]},
+ "icon_breeding.png": {"kind": "icon", "keys": ["ic_breed"]},
+ "icon_breeding_ready.png": {"kind": "icon", "keys": ["ic_breed_ready"]},
+ "icon_book.png": {"kind": "icon", "keys": ["ic_codex"]},
+ "icon_build.png": {"kind": "icon", "keys": ["ic_build"]},
+ "icon_clock.png": {"kind": "icon", "keys": ["ic_clock"]},
+ "icon_finance.png": {"kind": "icon", "keys": ["ic_chart"]},
+ "icon_foraging.png": {"kind": "icon", "keys": ["ic_forage"]},
+ "icon_gender_female.png": {"kind": "icon", "keys": ["ic_female"]},
+ "icon_gender_male.png": {"kind": "icon", "keys": ["ic_male"]},
+ "icon_growth.png": {"kind": "icon", "keys": ["ic_growth"]},
+ "icon_happiness.png": {"kind": "icon", "keys": ["ic_happy"]},
+ "icon_health.png": {"kind": "icon", "keys": ["ic_heart"]},
+ "icon_house.png": {"kind": "icon", "keys": ["ic_house"]},
+ "icon_inventory.png": {"kind": "icon", "keys": ["ic_bag"]},
+ "icon_livestock.png": {"kind": "icon", "keys": ["ic_livestock"]},
+ "icon_pregnant.png": {"kind": "icon", "keys": ["ic_pregnant"]},
+ "icon_processing.png": {"kind": "icon", "keys": ["ic_process"]},
+ "icon_settings.png": {"kind": "icon", "keys": ["ic_gear"]},
+ "icon_skill.png": {"kind": "icon", "keys": ["ic_research"]},
+ "icon_storage.png": {"kind": "icon", "keys": ["ic_storage"]},
+ "icon_weather_cloudy.png": {"kind": "icon", "keys": ["ic_cloudy"]},
+ "icon_weather_rain.png": {"kind": "icon", "keys": ["ic_rain"]},
+ "icon_weather_snow.png": {"kind": "icon", "keys": ["ic_snow"]},
+ "icon_weather_storm.png": {"kind": "icon", "keys": ["ic_storm"]},
+ "icon_calendar.png": {"kind": "icon", "keys": ["ic_calendar"]},
+ "trait_fast_growth.png": {"kind": "icon", "keys": ["trait_fastgrow"]},
+ "trait_fertile.png": {"kind": "icon", "keys": ["trait_fertile"]},
+ "trait_healthy.png": {"kind": "icon", "keys": ["trait_healthy"]},
+ "trait_high_production.png": {"kind": "icon", "keys": ["trait_producer"]},
+ "trait_large_body.png": {"kind": "icon", "keys": ["trait_large"]},
+ "trait_big_eater.png": {"kind": "icon", "keys": ["trait_bigeater"]},
+ "trait_calm.png": {"kind": "icon", "keys": ["trait_gentle"]},
+ "trait_good_genetics.png": {"kind": "icon", "keys": ["trait_goodgenes"]},
+ "trait_light_eater.png": {"kind": "icon", "keys": ["trait_lighteater"]},
+ "trait_long_life.png": {"kind": "icon", "keys": ["trait_longlived"]},
+ "decor_barrel.png": {"kind": "building", "keys": ["bld_barrel"]},
+ "decor_fence_stone.png": {"kind": "building", "keys": ["bld_fence_stone"]},
+ "decor_fence_white.png": {"kind": "building", "keys": ["bld_fence_white"]},
+ "decor_flower_blue.png": {"kind": "building", "keys": ["bld_flower_blue"]},
+ "decor_flower_pink.png": {"kind": "building", "keys": ["bld_flower_pink"]},
+ "decor_flower_red.png": {"kind": "building", "keys": ["bld_flower_red"]},
+ "decor_flower_yellow.png": {"kind": "building", "keys": ["bld_flower_yellow"]},
+ "decor_fountain.png": {"kind": "building", "keys": ["bld_fountain"]},
+ "decor_haystack.png": {"kind": "building", "keys": ["bld_haybale"]},
+ "decor_lamp_iron.png": {"kind": "building", "keys": ["bld_lamp_iron"]},
+ "decor_pond_small.png": {"kind": "building", "keys": ["bld_pond_small"]},
+ "decor_scarecrow.png": {"kind": "building", "keys": ["bld_scarecrow"]},
+ "decor_sign.png": {"kind": "building", "keys": ["bld_signpost"]},
+ "decor_tree_round.png": {"kind": "building", "keys": ["bld_tree_round"]},
+ "decor_tree_small.png": {"kind": "building", "keys": ["bld_sapling"]},
+ "decor_watering_barrel.png": {"kind": "building", "keys": ["bld_rain_barrel"]},
+ "decor_wheelbarrow.png": {"kind": "building", "keys": ["bld_wheelbarrow"]},
+ "freshness_100.png": {"kind": "icon", "keys": ["ic_fresh_100"]},
+ "freshness_75.png": {"kind": "icon", "keys": ["ic_fresh_75"]},
+ "freshness_50.png": {"kind": "icon", "keys": ["ic_fresh_50"]},
+ "freshness_25.png": {"kind": "icon", "keys": ["ic_fresh_25"]},
+ "freshness_spoiled.png": {"kind": "icon", "keys": ["ic_fresh_0"]},
+ "fx_birth_sparkle.png": {"kind": "fx", "keys": ["fx_birth_sparkle"]},
+ "fx_breeding_heart.png": {"kind": "fx", "keys": ["fx_breeding_heart"]},
+ "fx_build_complete.png": {"kind": "fx", "keys": ["fx_build_complete"]},
+ "fx_coin_pop.png": {"kind": "fx", "keys": ["fx_coin_pop"]},
+ "fx_fishing_bite.png": {"kind": "fx", "keys": ["fx_fishing_bite"]},
+ "fx_level_up.png": {"kind": "fx", "keys": ["fx_level_up"]},
+ "fx_purchase.png": {"kind": "fx", "keys": ["fx_purchase"]},
+ "fx_rare_find.png": {"kind": "fx", "keys": ["fx_rare_find"]},
+ "notification_land.png": {"kind": "icon", "keys": ["ic_land"]},
+ "notification_upgrade.png": {"kind": "icon", "keys": ["ic_upgrade"]},
+ "notification_freshness.png": {"kind": "icon", "keys": ["ic_fresh"]},
+ "crop_lettuce_stage1.png": {"kind": "crop", "keys": ["crop_lettuce"], "frame": 1},
+ "crop_lettuce_stage2.png": {"kind": "crop", "keys": ["crop_lettuce"], "frame": 2},
+ "crop_lettuce_stage3.png": {"kind": "crop", "keys": ["crop_lettuce"], "frame": 3},
+ "crop_lettuce_stage4.png": {"kind": "crop", "keys": ["crop_lettuce"], "frame": 4},
+ "item_lettuce.png": {"kind": "icon", "keys": ["it_lettuce"]},
+ "crop_onion_stage1.png": {"kind": "crop", "keys": ["crop_onion"], "frame": 1},
+ "crop_onion_stage2.png": {"kind": "crop", "keys": ["crop_onion"], "frame": 2},
+ "crop_onion_stage3.png": {"kind": "crop", "keys": ["crop_onion"], "frame": 3},
+ "crop_onion_stage4.png": {"kind": "crop", "keys": ["crop_onion"], "frame": 4},
+ "item_onion.png": {"kind": "icon", "keys": ["it_onion"]},
+ "crop_peas_stage1.png": {"kind": "crop", "keys": ["crop_pea"], "frame": 1},
+ "crop_peas_stage2.png": {"kind": "crop", "keys": ["crop_pea"], "frame": 2},
+ "crop_peas_stage3.png": {"kind": "crop", "keys": ["crop_pea"], "frame": 3},
+ "crop_peas_stage4.png": {"kind": "crop", "keys": ["crop_pea"], "frame": 4},
+ "item_peas.png": {"kind": "icon", "keys": ["it_pea"]},
+ "crop_radish_stage1.png": {"kind": "crop", "keys": ["crop_radish"], "frame": 1},
+ "crop_radish_stage2.png": {"kind": "crop", "keys": ["crop_radish"], "frame": 2},
+ "crop_radish_stage3.png": {"kind": "crop", "keys": ["crop_radish"], "frame": 3},
+ "crop_radish_stage4.png": {"kind": "crop", "keys": ["crop_radish"], "frame": 4},
+ "item_radish.png": {"kind": "icon", "keys": ["it_radish"]},
+ "player_front.png": {"kind": "char", "keys": ["player"], "frame": 0},
+ "player_walk_front_1.png": {"kind": "char", "keys": ["player"], "frame": 1},
+ "player_walk_front_2.png": {"kind": "char", "keys": ["player"], "frame": 2},
+ "player_walk_front_3.png": {"kind": "char", "keys": ["player"], "frame": 3},
+ "player_walk_front_4.png": {"kind": "char", "keys": ["player"], "frame": 4},
+ "player_back.png": {"kind": "char", "keys": ["player"], "frame": 5},
+ "player_walk_back_1.png": {"kind": "char", "keys": ["player"], "frame": 6},
+ "player_walk_back_2.png": {"kind": "char", "keys": ["player"], "frame": 7},
+ "player_walk_back_3.png": {"kind": "char", "keys": ["player"], "frame": 8},
+ "player_walk_back_4.png": {"kind": "char", "keys": ["player"], "frame": 9},
+ "player_left.png": {"kind": "char", "keys": ["player"], "frame": 10},
+ "player_walk_left_1.png": {"kind": "char", "keys": ["player"], "frame": 11},
+ "player_walk_left_2.png": {"kind": "char", "keys": ["player"], "frame": 12},
+ "player_walk_left_3.png": {"kind": "char", "keys": ["player"], "frame": 13},
+ "player_walk_left_4.png": {"kind": "char", "keys": ["player"], "frame": 14},
+ "player_right.png": {"kind": "char", "keys": ["player"], "frame": 15},
+ "player_walk_right_1.png": {"kind": "char", "keys": ["player"], "frame": 16},
+ "player_walk_right_2.png": {"kind": "char", "keys": ["player"], "frame": 17},
+ "player_walk_right_3.png": {"kind": "char", "keys": ["player"], "frame": 18},
+ "player_walk_right_4.png": {"kind": "char", "keys": ["player"], "frame": 19},
+ "summer_tree.png": {"kind": "node", "keys": ["node_tree_big_1"]},
+ "autumn_maple_tree.png": {"kind": "node", "keys": ["node_tree_big_2", "bld_mapletree"]},
+ "winter_frozen_tree.png": {"kind": "node", "keys": ["node_tree_big_3"]},
+ "spring_cherry_tree.png": {"kind": "building", "keys": ["bld_cherrytree"]},
+ "spring_flower_bed.png": {"kind": "building", "keys": ["bld_flowerbed"]},
+ "summer_flower_bed.png": {"kind": "building", "keys": ["bld_summerbed"]},
+ "autumn_leaf_pile.png": {"kind": "building", "keys": ["bld_leafpile"]},
+ "winter_lantern.png": {"kind": "building", "keys": ["bld_winterlamp"]},
+ "winter_snowman.png": {"kind": "building", "keys": ["bld_snowman"]},
+ "crop_asparagus_stage1.png": {"kind": "crop", "keys": ["crop_asparagus"], "frame": 1},
+ "crop_asparagus_stage2.png": {"kind": "crop", "keys": ["crop_asparagus"], "frame": 2},
+ "crop_asparagus_stage3.png": {"kind": "crop", "keys": ["crop_asparagus"], "frame": 3},
+ "crop_asparagus_stage4.png": {"kind": "crop", "keys": ["crop_asparagus"], "frame": 4},
+ "item_asparagus.png": {"kind": "icon", "keys": ["it_asparagus"]},
+ "crop_blueberry_stage1.png": {"kind": "crop", "keys": ["crop_blueberry"], "frame": 1},
+ "crop_blueberry_stage2.png": {"kind": "crop", "keys": ["crop_blueberry"], "frame": 2},
+ "crop_blueberry_stage3.png": {"kind": "crop", "keys": ["crop_blueberry"], "frame": 3},
+ "crop_blueberry_stage4.png": {"kind": "crop", "keys": ["crop_blueberry"], "frame": 4},
+ "item_blueberry.png": {"kind": "icon", "keys": ["it_blueberry"]},
+ "crop_chili_stage1.png": {"kind": "crop", "keys": ["crop_pepper"], "frame": 1},
+ "crop_chili_stage2.png": {"kind": "crop", "keys": ["crop_pepper"], "frame": 2},
+ "crop_chili_stage3.png": {"kind": "crop", "keys": ["crop_pepper"], "frame": 3},
+ "crop_chili_stage4.png": {"kind": "crop", "keys": ["crop_pepper"], "frame": 4},
+ "item_chili.png": {"kind": "icon", "keys": ["it_pepper"]},
+ "crop_corn_stage1.png": {"kind": "crop", "keys": ["crop_corn"], "frame": 1},
+ "crop_corn_stage2.png": {"kind": "crop", "keys": ["crop_corn"], "frame": 2},
+ "crop_corn_stage3.png": {"kind": "crop", "keys": ["crop_corn"], "frame": 3},
+ "crop_corn_stage4.png": {"kind": "crop", "keys": ["crop_corn"], "frame": 4},
+ "item_corn.png": {"kind": "icon", "keys": ["it_corn"]},
+ "crop_cucumber_stage1.png": {"kind": "crop", "keys": ["crop_cucumber"], "frame": 1},
+ "crop_cucumber_stage2.png": {"kind": "crop", "keys": ["crop_cucumber"], "frame": 2},
+ "crop_cucumber_stage3.png": {"kind": "crop", "keys": ["crop_cucumber"], "frame": 3},
+ "crop_cucumber_stage4.png": {"kind": "crop", "keys": ["crop_cucumber"], "frame": 4},
+ "item_cucumber.png": {"kind": "icon", "keys": ["it_cucumber"]},
+ "crop_melon_stage1.png": {"kind": "crop", "keys": ["crop_melon"], "frame": 1},
+ "crop_melon_stage2.png": {"kind": "crop", "keys": ["crop_melon"], "frame": 2},
+ "crop_melon_stage3.png": {"kind": "crop", "keys": ["crop_melon"], "frame": 3},
+ "crop_melon_stage4.png": {"kind": "crop", "keys": ["crop_melon"], "frame": 4},
+ "item_melon.png": {"kind": "icon", "keys": ["it_melon"]},
+ "crop_strawberry_stage1.png": {"kind": "crop", "keys": ["crop_strawberry"], "frame": 1},
+ "crop_strawberry_stage2.png": {"kind": "crop", "keys": ["crop_strawberry"], "frame": 2},
+ "crop_strawberry_stage3.png": {"kind": "crop", "keys": ["crop_strawberry"], "frame": 3},
+ "crop_strawberry_stage4.png": {"kind": "crop", "keys": ["crop_strawberry"], "frame": 4},
+ "item_strawberry.png": {"kind": "icon", "keys": ["it_strawberry"]},
+ "crop_sunflower_stage1.png": {"kind": "crop", "keys": ["crop_sunflower"], "frame": 1},
+ "crop_sunflower_stage2.png": {"kind": "crop", "keys": ["crop_sunflower"], "frame": 2},
+ "crop_sunflower_stage3.png": {"kind": "crop", "keys": ["crop_sunflower"], "frame": 3},
+ "crop_sunflower_stage4.png": {"kind": "crop", "keys": ["crop_sunflower"], "frame": 4},
+ "item_sunflower.png": {"kind": "icon", "keys": ["it_sunflower"]},
+ "crop_tomato_stage1.png": {"kind": "crop", "keys": ["crop_tomato"], "frame": 1},
+ "crop_tomato_stage2.png": {"kind": "crop", "keys": ["crop_tomato"], "frame": 2},
+ "crop_tomato_stage3.png": {"kind": "crop", "keys": ["crop_tomato"], "frame": 3},
+ "crop_tomato_stage4.png": {"kind": "crop", "keys": ["crop_tomato"], "frame": 4},
+ "item_tomato.png": {"kind": "icon", "keys": ["it_tomato"]},
+ "crop_watermelon_stage1.png": {"kind": "crop", "keys": ["crop_watermelon"], "frame": 1},
+ "crop_watermelon_stage2.png": {"kind": "crop", "keys": ["crop_watermelon"], "frame": 2},
+ "crop_watermelon_stage3.png": {"kind": "crop", "keys": ["crop_watermelon"], "frame": 3},
+ "crop_watermelon_stage4.png": {"kind": "crop", "keys": ["crop_watermelon"], "frame": 4},
+ "item_watermelon.png": {"kind": "icon", "keys": ["it_watermelon"]},
+ "crop_apple_stage1.png": {"kind": "crop", "keys": ["crop_apple"], "frame": 1},
+ "crop_apple_stage2.png": {"kind": "crop", "keys": ["crop_apple"], "frame": 2},
+ "crop_apple_stage3.png": {"kind": "crop", "keys": ["crop_apple"], "frame": 3},
+ "crop_apple_stage4.png": {"kind": "crop", "keys": ["crop_apple"], "frame": 4},
+ "item_apple.png": {"kind": "icon", "keys": ["it_apple"]},
+ "crop_grape_stage1.png": {"kind": "crop", "keys": ["crop_grape"], "frame": 1},
+ "crop_grape_stage2.png": {"kind": "crop", "keys": ["crop_grape"], "frame": 2},
+ "crop_grape_stage3.png": {"kind": "crop", "keys": ["crop_grape"], "frame": 3},
+ "crop_grape_stage4.png": {"kind": "crop", "keys": ["crop_grape"], "frame": 4},
+ "item_grape.png": {"kind": "icon", "keys": ["it_grape"]},
+ "crop_napa_cabbage_stage1.png": {"kind": "crop", "keys": ["crop_cabbage"], "frame": 1},
+ "crop_napa_cabbage_stage2.png": {"kind": "crop", "keys": ["crop_cabbage"], "frame": 2},
+ "crop_napa_cabbage_stage3.png": {"kind": "crop", "keys": ["crop_cabbage"], "frame": 3},
+ "crop_napa_cabbage_stage4.png": {"kind": "crop", "keys": ["crop_cabbage"], "frame": 4},
+ "item_napa_cabbage.png": {"kind": "icon", "keys": ["it_cabbage"]},
+ "crop_peanut_stage1.png": {"kind": "crop", "keys": ["crop_peanut"], "frame": 1},
+ "crop_peanut_stage2.png": {"kind": "crop", "keys": ["crop_peanut"], "frame": 2},
+ "crop_peanut_stage3.png": {"kind": "crop", "keys": ["crop_peanut"], "frame": 3},
+ "crop_peanut_stage4.png": {"kind": "crop", "keys": ["crop_peanut"], "frame": 4},
+ "item_peanut.png": {"kind": "icon", "keys": ["it_peanut"]},
+ "crop_pear_stage1.png": {"kind": "crop", "keys": ["crop_pear"], "frame": 1},
+ "crop_pear_stage2.png": {"kind": "crop", "keys": ["crop_pear"], "frame": 2},
+ "crop_pear_stage3.png": {"kind": "crop", "keys": ["crop_pear"], "frame": 3},
+ "crop_pear_stage4.png": {"kind": "crop", "keys": ["crop_pear"], "frame": 4},
+ "item_pear.png": {"kind": "icon", "keys": ["it_pear"]},
+ "crop_pumpkin_stage1.png": {"kind": "crop", "keys": ["crop_pumpkin"], "frame": 1},
+ "crop_pumpkin_stage2.png": {"kind": "crop", "keys": ["crop_pumpkin"], "frame": 2},
+ "crop_pumpkin_stage3.png": {"kind": "crop", "keys": ["crop_pumpkin"], "frame": 3},
+ "crop_pumpkin_stage4.png": {"kind": "crop", "keys": ["crop_pumpkin"], "frame": 4},
+ "item_pumpkin.png": {"kind": "icon", "keys": ["it_pumpkin"]},
+ "crop_rice_stage1.png": {"kind": "crop", "keys": ["crop_rice"], "frame": 1},
+ "crop_rice_stage2.png": {"kind": "crop", "keys": ["crop_rice"], "frame": 2},
+ "crop_rice_stage3.png": {"kind": "crop", "keys": ["crop_rice"], "frame": 3},
+ "crop_rice_stage4.png": {"kind": "crop", "keys": ["crop_rice"], "frame": 4},
+ "item_rice.png": {"kind": "icon", "keys": ["it_rice"]},
+ "crop_spinach_stage1.png": {"kind": "crop", "keys": ["crop_spinach"], "frame": 1},
+ "crop_spinach_stage2.png": {"kind": "crop", "keys": ["crop_spinach"], "frame": 2},
+ "crop_spinach_stage3.png": {"kind": "crop", "keys": ["crop_spinach"], "frame": 3},
+ "crop_spinach_stage4.png": {"kind": "crop", "keys": ["crop_spinach"], "frame": 4},
+ "item_spinach.png": {"kind": "icon", "keys": ["it_spinach"]},
+ "crop_sweet_potato_stage1.png": {"kind": "crop", "keys": ["crop_sweetpotato"], "frame": 1},
+ "crop_sweet_potato_stage2.png": {"kind": "crop", "keys": ["crop_sweetpotato"], "frame": 2},
+ "crop_sweet_potato_stage3.png": {"kind": "crop", "keys": ["crop_sweetpotato"], "frame": 3},
+ "crop_sweet_potato_stage4.png": {"kind": "crop", "keys": ["crop_sweetpotato"], "frame": 4},
+ "item_sweet_potato.png": {"kind": "icon", "keys": ["it_sweetpotato"]},
+ "crop_broccoli_stage1.png": {"kind": "crop", "keys": ["crop_broccoli"], "frame": 1},
+ "crop_broccoli_stage2.png": {"kind": "crop", "keys": ["crop_broccoli"], "frame": 2},
+ "crop_broccoli_stage3.png": {"kind": "crop", "keys": ["crop_broccoli"], "frame": 3},
+ "crop_broccoli_stage4.png": {"kind": "crop", "keys": ["crop_broccoli"], "frame": 4},
+ "item_broccoli.png": {"kind": "icon", "keys": ["it_broccoli"]},
+ "crop_garlic_stage1.png": {"kind": "crop", "keys": ["crop_garlic"], "frame": 1},
+ "crop_garlic_stage2.png": {"kind": "crop", "keys": ["crop_garlic"], "frame": 2},
+ "crop_garlic_stage3.png": {"kind": "crop", "keys": ["crop_garlic"], "frame": 3},
+ "crop_garlic_stage4.png": {"kind": "crop", "keys": ["crop_garlic"], "frame": 4},
+ "item_garlic.png": {"kind": "icon", "keys": ["it_garlic"]},
+ "crop_green_onion_stage1.png": {"kind": "crop", "keys": ["crop_greenonion"], "frame": 1},
+ "crop_green_onion_stage2.png": {"kind": "crop", "keys": ["crop_greenonion"], "frame": 2},
+ "crop_green_onion_stage3.png": {"kind": "crop", "keys": ["crop_greenonion"], "frame": 3},
+ "crop_green_onion_stage4.png": {"kind": "crop", "keys": ["crop_greenonion"], "frame": 4},
+ "item_green_onion.png": {"kind": "icon", "keys": ["it_greenonion"]},
+ "crop_mandarin_stage1.png": {"kind": "crop", "keys": ["crop_tangerine"], "frame": 1},
+ "crop_mandarin_stage2.png": {"kind": "crop", "keys": ["crop_tangerine"], "frame": 2},
+ "crop_mandarin_stage3.png": {"kind": "crop", "keys": ["crop_tangerine"], "frame": 3},
+ "crop_mandarin_stage4.png": {"kind": "crop", "keys": ["crop_tangerine"], "frame": 4},
+ "item_mandarin.png": {"kind": "icon", "keys": ["it_tangerine"]},
+ "crop_winter_napa_cabbage_stage1.png": {"kind": "crop", "keys": ["crop_wintercabbage"], "frame": 1},
+ "crop_winter_napa_cabbage_stage2.png": {"kind": "crop", "keys": ["crop_wintercabbage"], "frame": 2},
+ "crop_winter_napa_cabbage_stage3.png": {"kind": "crop", "keys": ["crop_wintercabbage"], "frame": 3},
+ "crop_winter_napa_cabbage_stage4.png": {"kind": "crop", "keys": ["crop_wintercabbage"], "frame": 4},
+ "item_winter_napa_cabbage.png": {"kind": "icon", "keys": ["it_wintercabbage"]},
+ "crop_winter_radish_stage1.png": {"kind": "crop", "keys": ["crop_winterradish"], "frame": 1},
+ "crop_winter_radish_stage2.png": {"kind": "crop", "keys": ["crop_winterradish"], "frame": 2},
+ "crop_winter_radish_stage3.png": {"kind": "crop", "keys": ["crop_winterradish"], "frame": 3},
+ "crop_winter_radish_stage4.png": {"kind": "crop", "keys": ["crop_winterradish"], "frame": 4},
+ "item_winter_radish.png": {"kind": "icon", "keys": ["it_winterradish"]},
+ "crop_winter_strawberry_stage1.png": {"kind": "crop", "keys": ["crop_winterstrawberry"], "frame": 1},
+ "crop_winter_strawberry_stage2.png": {"kind": "crop", "keys": ["crop_winterstrawberry"], "frame": 2},
+ "crop_winter_strawberry_stage3.png": {"kind": "crop", "keys": ["crop_winterstrawberry"], "frame": 3},
+ "crop_winter_strawberry_stage4.png": {"kind": "crop", "keys": ["crop_winterstrawberry"], "frame": 4},
+ "item_winter_strawberry.png": {"kind": "icon", "keys": ["it_winterstrawberry"]},
+ "animal_alpaca_adult.png": {"kind": "animal", "keys": ["an_alpaca"]},
+ "animal_buffalo_adult.png": {"kind": "animal", "keys": ["an_buffalo"]},
+ "animal_goose_adult.png": {"kind": "animal", "keys": ["an_goose"]},
+ "animal_ostrich_adult.png": {"kind": "animal", "keys": ["an_ostrich"]},
+ "animal_pig_adult.png": {"kind": "animal", "keys": ["an_pig"]},
+ "animal_turkey_adult.png": {"kind": "animal", "keys": ["an_turkey"]},
+ "animal_duck_baby.png": {"kind": "animal", "keys": ["an_duck_baby"]},
+ "animal_goat_baby.png": {"kind": "animal", "keys": ["an_goat_baby"]},
+ "animal_rabbit_baby.png": {"kind": "animal", "keys": ["an_rabbit_baby"]},
+ "animal_sheep_baby.png": {"kind": "animal", "keys": ["an_sheep_baby"]},
+ "animal_alpaca_baby.png": {"kind": "animal", "keys": ["an_alpaca_baby"]},
+ "animal_buffalo_baby.png": {"kind": "animal", "keys": ["an_buffalo_baby"]},
+ "animal_goose_baby.png": {"kind": "animal", "keys": ["an_goose_baby"]},
+ "animal_ostrich_baby.png": {"kind": "animal", "keys": ["an_ostrich_baby"]},
+ "animal_pig_baby.png": {"kind": "animal", "keys": ["an_pig_baby"]},
+ "animal_turkey_baby.png": {"kind": "animal", "keys": ["an_turkey_baby"]},
+ "animal_chicken_portrait.png": {"kind": "portrait", "keys": ["portrait_chicken"]},
+ "animal_duck_portrait.png": {"kind": "portrait", "keys": ["portrait_duck"]},
+ "animal_rabbit_portrait.png": {"kind": "portrait", "keys": ["portrait_rabbit"]},
+ "animal_sheep_portrait.png": {"kind": "portrait", "keys": ["portrait_sheep"]},
+ "animal_cow_portrait.png": {"kind": "portrait", "keys": ["portrait_cow"]},
+ "animal_goat_portrait.png": {"kind": "portrait", "keys": ["portrait_goat"]},
+ "animal_alpaca_portrait.png": {"kind": "portrait", "keys": ["portrait_alpaca"]},
+ "animal_buffalo_portrait.png": {"kind": "portrait", "keys": ["portrait_buffalo"]},
+ "animal_goose_portrait.png": {"kind": "portrait", "keys": ["portrait_goose"]},
+ "animal_ostrich_portrait.png": {"kind": "portrait", "keys": ["portrait_ostrich"]},
+ "animal_pig_portrait.png": {"kind": "portrait", "keys": ["portrait_pig"]},
+ "animal_turkey_portrait.png": {"kind": "portrait", "keys": ["portrait_turkey"]}
 }
