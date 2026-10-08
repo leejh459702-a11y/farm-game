@@ -133,8 +133,12 @@ export const RECIPES: RecipeData[] = [
   r('caviar', 'processor', '캐비아', [['#roe', 3]], 360, 1.8, 2),
   r('honey_cake', 'kitchen', '설탕 쿠키', [['flour', 1], ['sugar', 1], ['butter', 1]], 180, 2.0, 6),
   r('fruit_jam_tart', 'kitchen', '잼 타르트', [['flour', 1], ['sugar', 1], ['strawberry_jam', 1]], 240, 2.0, 8),
+  r('sandwich', 'kitchen', '햄 샌드위치', [['bread', 1], ['ham', 1], ['lettuce', 1]], 120, 2.0, 10),
+  r('bread_plate', 'kitchen', '버터 빵 모둠', [['bread', 2], ['butter', 1]], 90, 1.9, 6),
+  r('melon_dessert', 'kitchen', '멜론 빙수', [['melon', 1], ['milk', 1], ['sugar', 1]], 150, 2.0, 14),
   r('roe_rice', 'kitchen', '알밥', [['#roe', 2], ['rice', 1], ['egg', 1]], 180, 2.0, 12),
   r('fish_feed', 'processor', '양식 사료', [['wheat', 2]], 120, 1.0, 0, { outQty: 5, category: 'other' }),
+  r('good_bait', 'processor', '좋은 미끼', [['wheat', 1], ['herb', 1]], 90, 1.0, 0, { outQty: 6, category: 'other' }),
   r('bait_craft', 'processor', '희귀 미끼', [['#fish', 1], ['herb', 1]], 120, 1.0, 0, { output: 'rare_bait', outQty: 3, category: 'other', unlockSkill: 'fi_bait' }),
   // ───── 퇴비통 ─────
   r('compost', 'compost', '퇴비', [['rotten', 3]], 1440, 0, 0, { unlockSkill: 'f_compost' }),

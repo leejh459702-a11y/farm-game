@@ -26,6 +26,9 @@ export const FORAGE: ForageData[] = [
   { id: 'enoki', name: '팽이버섯', price: 18, decay: 8, tags: ['mushroom'], art: { shape: 'mushroom', color: 0xf6f0d8, color2: 0xfffaf0 } },
   { id: 'herb', name: '약초', price: 16, decay: 3, tags: ['herb'], art: { shape: 'leaf', color: 0x5a9a4a } },
   { id: 'wild_ginseng', name: '산삼 뿌리', price: 320, decay: 2, tags: ['herb'], art: { shape: 'leaf', color: 0xd8c08a, color2: 0x3a7a3a }, rare: true },
+  { id: 'wild_garlic', name: '산마늘', price: 18, decay: 8, tags: ['vegetable', 'herb'], art: { shape: 'leaf', color: 0x4a9a3a, color2: 0xf6f0e0 } },
+  { id: 'wild_onion', name: '달래', price: 14, decay: 8, tags: ['vegetable'], art: { shape: 'leaf', color: 0x7cbf4a, color2: 0xf0e8d0 } },
+  { id: 'red_mushroom', name: '붉은 점박이 버섯', price: 45, decay: 5, tags: [], art: { shape: 'mushroom', color: 0xd8342c, color2: 0xfff6e8 } },
   { id: 'fern', name: '고사리', price: 12, decay: 8, tags: ['vegetable'], art: { shape: 'leaf', color: 0x7cbf4a } },
   { id: 'wildflower', name: '들꽃', price: 10, decay: 10, tags: ['flower'], art: { shape: 'flower', color: 0xf7a8c4, color2: 0xf7d84a } },
   { id: 'acorn', name: '도토리', price: 6, decay: 0.5, tags: ['nut'], art: { shape: 'nut', color: 0xa0703a } },
@@ -98,13 +101,13 @@ export const ROCK_BY_ID: Record<string, RockKind> = Object.fromEntries(ROCKS.map
 /** 지역별 계절 채집 테이블 (가중치) */
 export const FORAGE_TABLE: Record<'forest' | 'river', Record<SeasonId, Record<string, number>>> = {
   forest: {
-    spring: { wild_strawberry: 20, fern: 18, herb: 14, shiitake: 10, wildflower: 16, branch: 12, pine_mushroom: 1, wild_ginseng: 1 },
-    summer: { wild_blueberry: 22, herb: 14, shiitake: 12, wildflower: 18, branch: 12, pine_mushroom: 1, wild_ginseng: 1 },
-    autumn: { chestnut: 20, acorn: 20, shiitake: 14, herb: 12, branch: 10, pine_mushroom: 3, wild_ginseng: 1 },
+    spring: { wild_strawberry: 20, fern: 18, herb: 14, shiitake: 10, wildflower: 16, branch: 12, wild_garlic: 10, wild_onion: 12, pine_mushroom: 1, wild_ginseng: 1 },
+    summer: { wild_blueberry: 22, herb: 14, shiitake: 12, wildflower: 18, branch: 12, red_mushroom: 4, pine_mushroom: 1, wild_ginseng: 1 },
+    autumn: { chestnut: 20, acorn: 20, shiitake: 14, herb: 12, branch: 10, red_mushroom: 6, pine_mushroom: 3, wild_ginseng: 1 },
     winter: { pine_cone: 22, enoki: 16, herb: 10, branch: 16, acorn: 8, wild_ginseng: 1 },
   },
   river: {
-    spring: { reed: 20, clam: 16, watercress: 18, river_snail: 8 },
+    spring: { reed: 20, clam: 16, watercress: 18, river_snail: 8, wild_onion: 8 },
     summer: { reed: 18, clam: 16, watercress: 14, river_snail: 16 },
     autumn: { reed: 24, clam: 18, river_snail: 10 },
     winter: { reed: 20, clam: 14 },

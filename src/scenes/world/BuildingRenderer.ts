@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { Art } from '../../assets/AssetRegistry';
 import { BUILDING_BY_ID, footprint } from '../../data/buildings';
 import type { World } from '../../core/World';
+import { WALKABLE } from '../../systems/FarmGridSystem';
 import { DEPTH, FH, TS } from './constants';
 
 export interface LightSpot {
@@ -48,7 +49,8 @@ export class BuildingRenderer {
       img.setScale(Art.scale(key));
       img.setOrigin(0, 1);
       img.setPosition(b.x * TS, (b.y + h) * TS);
-      img.setDepth(DEPTH.objects + (b.y + h) * TS - 1);
+      // 밟고 지나가는 바닥 장식은 캐릭터·물체 아래
+      img.setDepth(WALKABLE.has(b.type) ? DEPTH.cursor - 0.5 : DEPTH.objects + (b.y + h) * TS - 1);
       img.clearTint();
       img.setAlpha(1);
       const d = BUILDING_BY_ID[b.type];

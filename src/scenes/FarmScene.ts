@@ -20,6 +20,7 @@ import { BORDER, DEFAULT_ZOOM, DEPTH, FH, FW, TS, WORLD_MIN } from './world/cons
 import { InputState } from './InputState';
 import { Bridge } from './Bridge';
 import { popFx } from './world/Fx';
+import { footprint } from '../data/buildings';
 import { Panels } from '../ui/PanelManager';
 import { RegionSelectPanel } from '../ui/panels/RegionSelectPanel';
 
@@ -137,6 +138,13 @@ export class FarmScene extends Phaser.Scene {
         this.buildings.syncBubbles();
       }),
       ev.on('floatText', (e) => this.floatText(e.x, e.y, e.text, e.color)),
+      ev.on('birth', (e) => {
+        const m = this.w.animals.get(e.motherId);
+        const b = m?.buildingUid ? this.w.state.buildings[m.buildingUid] : null;
+        if (!b) return;
+        const fp = footprint(b.type, b.rot);
+        this.time.delayedCall(700, () => this.scene.isActive() && popFx(this, 'fx_birth_sparkle', (b.x + fp.w / 2) * TS, (b.y + fp.h / 2) * TS, 34));
+      }),
       ev.on('levelUp', () => this.scene.isActive() && popFx(this, 'fx_level_up', this.player.sprite.x, this.player.sprite.y - 30, 26)),
       Session.app.on('focusTile', (e) => this.focusTile(e.x, e.y)),
       Session.app.on('action', () => this.scene.isActive() && this.doAction()),

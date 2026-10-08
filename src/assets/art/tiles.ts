@@ -30,7 +30,9 @@ export const TILE = {
   caveA: 60,
   caveB: 61,
   caveWall: 62,
-  count: 63,
+  /** 물가 (위쪽이 땅인 첫 물 줄) */
+  waterEdge: 63,
+  count: 64,
 } as const;
 
 interface SeasonPal {
@@ -307,6 +309,7 @@ export function buildTileset(): { canvas: HTMLCanvasElement; tileW: number; marg
   mk2((p) => caveFloor(p, 91));
   mk2((p) => caveFloor(p, 113));
   mk2((p) => caveWall(p));
+  mk2((p) => water(p, 51));
 
   const cell = TS + 2;
   const c = document.createElement('canvas');

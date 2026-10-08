@@ -1,5 +1,6 @@
 /** 방문상인 / 특급상인 — 구매·판매·특급 상품 */
 import { Panel, type Watch } from '../Panel';
+import { popDomFx } from '../DomFx';
 import { iconHtml } from '../../assets/AssetRegistry';
 import { ITEM_BY_ID } from '../../data/items';
 import { ANIMAL_BY_ID, TRAIT_BY_ID } from '../../data/animals';
@@ -149,7 +150,10 @@ export class MerchantPanel extends Panel {
       quantityDialog('구매 수량', icon, max, e.price, '구매', (q) => {
         const r = m.buy(Number(arg), q);
         if (!r.ok) this.toast(r.reason ?? '', 'warn');
-        else this.toast('구매했습니다', 'good');
+        else {
+          this.toast('구매했습니다', 'good');
+          popDomFx('fx_purchase', innerWidth / 2, innerHeight * 0.42, 72);
+        }
         this.refresh();
       });
     } else if (act === 'sell') {
@@ -160,7 +164,10 @@ export class MerchantPanel extends Panel {
       quantityDialog('판매 수량', ITEM_BY_ID[s.itemId].icon, s.qty, unit, '판매', (q) => {
         const r = m.sellSlot(cid, Number(slot), q);
         if (!r.ok) this.toast(r.reason ?? '', 'warn');
-        else this.toast(`+${r.gold!.toLocaleString()}G`, 'good');
+        else {
+          this.toast(`+${r.gold!.toLocaleString()}G`, 'good');
+          popDomFx('fx_coin_pop', innerWidth / 2, innerHeight * 0.42, 64);
+        }
         this.refresh();
       }, '판매 금액');
     } else if (act === 'storage') {
@@ -177,6 +184,7 @@ export class MerchantPanel extends Panel {
         if (r.ok) total += r.gold!;
       });
       this.toast(total ? `+${total.toLocaleString()}G 판매 완료` : '판매할 농산물이 없습니다', total ? 'good' : 'warn');
+      if (total) popDomFx('fx_coin_pop', innerWidth / 2, innerHeight * 0.42, 64);
     } else if (act === 'sellAnimal') {
       const a = w.animals.get(arg);
       if (!a) return;
@@ -184,6 +192,7 @@ export class MerchantPanel extends Panel {
       confirmDialog('동물 판매', `${esc(a.name)}(${a.id})을(를) <b class="gold-text">${price.toLocaleString()}G</b>에 판매할까요?${a.favorite ? '<br><b class="bad">아끼는 동물로 표시되어 있어요!</b>' : ''}`, '판매', () => {
         const r = m.sellAnimal(arg);
         if (!r.ok) this.toast(r.reason ?? '', 'warn');
+        else popDomFx('fx_coin_pop', innerWidth / 2, innerHeight * 0.42, 64);
       }, true);
     }
   }

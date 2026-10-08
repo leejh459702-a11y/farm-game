@@ -145,6 +145,7 @@ export class MerchantSystem {
       }
       case 'fishing': {
         item('rare_bait', 55, 15);
+        item('good_bait', 14, 30);
         item('fish_feed', 8, 80);
         item('pondweed', 14, 15);
         item('clam', 20, 10);

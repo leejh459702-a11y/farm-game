@@ -149,8 +149,12 @@ export class RegionScene extends Phaser.Scene {
       case 'T':
         return base + (r < 0.5 ? TILE.treeA : TILE.treeB);
       case 'W':
+        // 물가 첫 줄은 디자인 물가 타일 (풀 → 물)
+        if (Art.hasTile('waterEdge') && terrainAt(this.regionId, x, y - 1) !== 'W') return TILE.waterEdge;
         return r < 0.5 ? TILE.waterA : TILE.waterB;
       case 'S':
+        // 물가 타일이 풀에서 물로 이어지므로 강가 둑은 풀로
+        if (Art.hasTile('waterEdge') && terrainAt(this.regionId, x, y + 1) === 'W') return base + (r < 0.5 ? TILE.grassA : TILE.grassB);
         return TILE.sand;
       case 'R':
         return r < 0.5 ? TILE.rockA : TILE.rockB;

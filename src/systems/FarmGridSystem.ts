@@ -10,7 +10,7 @@ import type { World } from '../core/World';
 const W = BALANCE.farm.maxWidth;
 const H = BALANCE.farm.maxHeight;
 /** 지나갈 수 있는 장식 */
-const WALKABLE = new Set(['stonepath']);
+export const WALKABLE = new Set(['stonepath', 'woodpath', 'flowerlawn']);
 
 export interface PlaceCheck {
   ok: boolean;

@@ -11,7 +11,7 @@ export const ART_SCALE = 2;
 export interface ArtEntry {
   src: string;
   file: string;
-  kind: 'icon' | 'fx' | 'building' | 'cart' | 'node' | 'animal' | 'crop' | 'tile' | 'bg' | 'ui' | 'char' | 'portrait';
+  kind: 'icon' | 'fx' | 'building' | 'cart' | 'node' | 'animal' | 'crop' | 'tile' | 'bg' | 'ui' | 'ui9' | 'char' | 'portrait';
   w: number;
   h: number;
   keys?: string[];
@@ -53,7 +53,7 @@ export async function loadArtOverrides(): Promise<void> {
     );
     for (const l of loaded) if (l) loadedArt.push(l);
     // UI 프레임은 CSS 변수로
-    for (const l of loadedArt) if (l.kind === 'ui') for (const k of l.keys ?? []) document.documentElement.style.setProperty(`--${k.replace(/_/g, '-')}`, `url("${new URL(l.url, location.href).href}")`);
+    for (const l of loadedArt) if (l.kind === 'ui' || l.kind === 'ui9') for (const k of l.keys ?? []) document.documentElement.style.setProperty(`--${k.replace(/_/g, '-')}`, `url("${new URL(l.url, location.href).href}")`);
     if (loadedArt.some((l) => l.kind === 'ui')) document.documentElement.classList.add('art-ui');
   } catch {
     /* 오프라인 첫 실행 등 — 기본 그래픽 사용 */

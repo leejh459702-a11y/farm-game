@@ -1383,3 +1383,130 @@ html.art-ui .action-btn {
   filter: drop-shadow(0 4px 0 rgba(59, 42, 34, 0.55));
 }
 html.art-ui .action-btn:active { filter: drop-shadow(0 1px 0 rgba(59, 42, 34, 0.55)); }
+
+/* ───── 새 계절 화면 · UI 이펙트 ───── */
+.season-splash {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  background: #2a1e18;
+  animation: splash-in 0.5s ease-out;
+  cursor: pointer;
+}
+.season-splash img { width: 100%; height: 100%; object-fit: cover; image-rendering: auto; }
+.season-splash-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.8rem 2rem;
+  background: rgba(59, 42, 34, 0.72);
+  border: 3px solid rgba(255, 230, 190, 0.55);
+  border-radius: 14px;
+  color: #fff6e2;
+  text-align: center;
+}
+.season-splash-text b { font-size: 2.4rem; letter-spacing: 0.3rem; }
+.season-splash-text span { font-size: 0.9rem; }
+.season-splash.out { opacity: 0; transition: opacity 0.45s; }
+@keyframes splash-in { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+.dom-fx {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  object-fit: contain;
+  animation: dom-fx 0.9s ease-out forwards;
+}
+@keyframes dom-fx {
+  0% { opacity: 0; transform: scale(0.5); }
+  25% { opacity: 1; transform: scale(1.1) translateY(-6px); }
+  70% { opacity: 1; transform: scale(1) translateY(-14px); }
+  100% { opacity: 0; transform: translateY(-24px); }
+}
+
+/* ───── 디자인 UI 프레임 (9-slice) — 색 버튼은 색을 유지하고 나무 테두리만 씌운다 ───── */
+html.art-ui .btn {
+  border-style: solid;
+  border-width: 9px 11px;
+  border-image: var(--ui-button-secondary) 46 52 fill / 9px 11px stretch;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  filter: drop-shadow(0 2px 0 rgba(59, 42, 34, 0.45));
+  padding: 0 0.6rem;
+}
+html.art-ui .btn:active { box-shadow: none; filter: none; }
+html.art-ui .btn.green,
+html.art-ui .btn.red,
+html.art-ui .btn.blue,
+html.art-ui .btn.wood,
+html.art-ui .btn.gold,
+html.art-ui .btn.purple {
+  border-image: var(--ui-button-primary) 50 54 / 9px 11px stretch;
+  background-clip: padding-box;
+  border-radius: 6px;
+}
+html.art-ui .btn.green { background-color: var(--green); background-image: linear-gradient(#7cc65a, var(--green)); }
+html.art-ui .btn.red { background-color: var(--red); background-image: linear-gradient(#e0705e, var(--red)); }
+html.art-ui .btn.blue { background-image: linear-gradient(#6a8ac0, var(--blue)); }
+html.art-ui .btn.wood { background-image: linear-gradient(#c8945a, var(--wood)); }
+html.art-ui .btn.gold { background-image: linear-gradient(#ffe48a, var(--gold)); }
+html.art-ui .btn.purple { background-image: linear-gradient(#b08ad8, var(--purple)); }
+html.art-ui .btn.small { border-width: 7px 9px; border-image-width: 7px 9px; }
+
+html.art-ui .tab {
+  border-style: solid;
+  border-width: 8px 10px;
+  border-image: var(--ui-tab-normal) 42 50 fill / 8px 10px stretch;
+  border-radius: 0;
+  background: none;
+  padding: 0 0.4rem;
+}
+html.art-ui .tab.on {
+  border-image-source: var(--ui-tab-selected);
+  color: var(--ink);
+  background: none;
+}
+html.art-ui .tab.special.on { color: var(--red-dark); }
+html.art-ui .tabs + .panel-body { border-top: 3px solid var(--wood-dark); }
+
+html.art-ui .panel {
+  border-style: solid;
+  border-width: 13px;
+  border-image: var(--ui-panel-large) 56 / 13px stretch;
+  border-radius: 0;
+  box-shadow: none;
+  background-clip: padding-box;
+  filter: drop-shadow(0 6px 0 rgba(0, 0, 0, 0.3));
+}
+html.art-ui .panel.medium { border-image-source: var(--ui-panel-medium); }
+html.art-ui .panel.small { border-image-source: var(--ui-panel-small); border-image-slice: 62; }
+
+html.art-ui .hud-hint {
+  background: none;
+  color: var(--ink);
+  border-style: solid;
+  border-width: 8px 12px;
+  border-image: var(--ui-tooltip) 44 52 fill / 8px 12px stretch;
+  border-radius: 0;
+  padding: 0.05rem 0.4rem;
+}
+
+html.art-ui .stat-bar .bar {
+  height: 16px;
+  border-style: solid;
+  border-width: 4px 6px;
+  border-image: var(--ui-progress-bar-empty) 40 48 fill / 4px 6px stretch;
+  border-radius: 0;
+  background: none;
+}
+html.art-ui .stat-bar .bar > i {
+  background: var(--ui-progress-bar-fill) center / 100% 100% no-repeat;
+  border-radius: 4px;
+}
+/* 할 수 없는 행동일 때 행동 버튼은 보조(차분한) 테두리 */
+html.art-ui .action-btn.disabled { background-image: var(--ui-action-button-secondary, var(--ui-action-button)); }

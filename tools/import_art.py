@@ -16,7 +16,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 OUT = os.path.join(ROOT, 'public', 'art')
 MAP = json.load(open(os.path.join(ROOT, 'tools', 'asset_map.json'), encoding='utf-8'))
 # 종류별 최대 변 길이 (게임 화면 2배 해상도 + 메뉴용 여유)
-MAX = {'icon': 128, 'fx': 128, 'building': 288, 'cart': 192, 'node': 160, 'animal': 160, 'crop': 128, 'tile': 64, 'bg': 1280, 'ui': 256, 'char': 128, 'portrait': 160}
+MAX = {'icon': 128, 'fx': 128, 'building': 288, 'cart': 192, 'node': 160, 'animal': 160, 'crop': 128, 'tile': 64, 'bg': 1280, 'ui': 256, 'ui9': 384, 'char': 128, 'portrait': 160}
 
 
 def find(srcs, name):
@@ -104,6 +104,21 @@ def main():
                 entry[k] = spec[k]
         by_file[name] = entry
         done += 1
+        # 같은 원본에서 일부만 잘라 다른 용도로 (예: 경고 버튼의 삼각형 → 경고 아이콘)
+        for ex in spec.get('extra', []):
+            src_im = Image.open(path).convert('RGBA')
+            bb = alpha_bbox(src_im) or (0, 0, src_im.width, src_im.height)
+            src_im = src_im.crop(bb)
+            fx0, fy0, fx1, fy1 = ex['crop']
+            part = src_im.crop((int(fx0 * src_im.width), int(fy0 * src_im.height), int(fx1 * src_im.width), int(fy1 * src_im.height)))
+            tmp = os.path.join(OUT, '_tmp_extra.png')
+            part.save(tmp)
+            pim, pext = process(tmp, ex['kind'])
+            os.remove(tmp)
+            ex_name = os.path.splitext(name)[0] + '__' + ex['keys'][0] + '.' + pext
+            pim.save(os.path.join(OUT, ex_name), optimize=True)
+            ex_src = name + '#' + ex['keys'][0]
+            by_file[ex_src] = {'src': ex_src, 'file': ex_name, 'kind': ex['kind'], 'w': pim.width, 'h': pim.height, 'keys': ex['keys']}
     manifest['assets'] = sorted(by_file.values(), key=lambda a: a['src'])
     json.dump(manifest, open(man_path, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
     total = sum(os.path.getsize(os.path.join(OUT, a['file'])) for a in manifest['assets'])

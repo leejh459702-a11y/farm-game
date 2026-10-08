@@ -106,6 +106,7 @@ add({ id: 'magma_geode', name: '용암 지오드', category: 'other', basePrice:
 for (const ar of ARTIFACTS) add({ id: ar.id, name: ar.name, category: 'artifact', basePrice: ar.price, decay: 0, desc: `유물 — ${ar.desc}` });
 for (const bk of BOOKS) add({ id: bk.id, name: bk.name, category: 'other', basePrice: bk.price, decay: 0, tags: ['book'], desc: `스킬북 — ${bk.desc} (가방에서 읽기, 영구 효과)` });
 for (const [sid, sname, sprice] of SPIRIT_PRODUCTS) add({ id: sid, name: sname, category: 'resource', basePrice: sprice, decay: 0, tags: ['spirit'], desc: '정령이 만든 희귀 제작 재료' });
+add({ id: 'good_bait', name: '좋은 미끼', category: 'other', basePrice: 12, decay: 0, desc: '낚시할 때 자동 사용 — 입질이 훨씬 빨리 와요' });
 add({ id: 'rare_bait', name: '희귀 미끼', category: 'other', basePrice: 60, decay: 0, desc: '낚시할 때 자동 사용 — 희귀 물고기 확률 크게 증가' });
 
 // 기타

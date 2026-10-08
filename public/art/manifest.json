@@ -382,6 +382,46 @@
    ]
   },
   {
+   "src": "bg_farm_autumn.png",
+   "file": "bg_farm_autumn.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_farm_autumn"
+   ]
+  },
+  {
+   "src": "bg_farm_spring.png",
+   "file": "bg_farm_spring.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_farm_spring"
+   ]
+  },
+  {
+   "src": "bg_farm_summer.png",
+   "file": "bg_farm_summer.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_farm_summer"
+   ]
+  },
+  {
+   "src": "bg_farm_winter.png",
+   "file": "bg_farm_winter.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_farm_winter"
+   ]
+  },
+  {
    "src": "bg_forest_area.png",
    "file": "bg_forest_area.jpg",
    "kind": "bg",
@@ -2109,6 +2149,26 @@
    ]
   },
   {
+   "src": "decor_bench_wood.png",
+   "file": "decor_bench_wood.png",
+   "kind": "building",
+   "w": 288,
+   "h": 257,
+   "keys": [
+    "bld_bench_back"
+   ]
+  },
+  {
+   "src": "decor_fence_basic.png",
+   "file": "decor_fence_basic.png",
+   "kind": "building",
+   "w": 288,
+   "h": 207,
+   "keys": [
+    "bld_fence_rail"
+   ]
+  },
+  {
    "src": "decor_fence_stone.png",
    "file": "decor_fence_stone.png",
    "kind": "building",
@@ -2199,6 +2259,16 @@
    ]
   },
   {
+   "src": "decor_lamp_wood.png",
+   "file": "decor_lamp_wood.png",
+   "kind": "building",
+   "w": 182,
+   "h": 288,
+   "keys": [
+    "bld_lamp_wood"
+   ]
+  },
+  {
    "src": "decor_pond_small.png",
    "file": "decor_pond_small.png",
    "kind": "building",
@@ -2286,6 +2356,16 @@
    "h": 75,
    "keys": [
     "it_bass"
+   ]
+  },
+  {
+   "src": "fish_bluegill.png",
+   "file": "fish_bluegill.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 87,
+   "keys": [
+    "it_bluegill"
    ]
   },
   {
@@ -2479,6 +2559,16 @@
    ]
   },
   {
+   "src": "food_bread_plate.png",
+   "file": "food_bread_plate.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 96,
+   "keys": [
+    "it_bread_plate"
+   ]
+  },
+  {
    "src": "food_cheese_plate.png",
    "file": "food_cheese_plate.png",
    "kind": "icon",
@@ -2529,6 +2619,16 @@
    ]
   },
   {
+   "src": "food_melon_dessert.png",
+   "file": "food_melon_dessert.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 118,
+   "keys": [
+    "it_melon_dessert"
+   ]
+  },
+  {
    "src": "food_omelet.png",
    "file": "food_omelet.png",
    "kind": "icon",
@@ -2576,6 +2676,16 @@
    "h": 113,
    "keys": [
     "it_salad"
+   ]
+  },
+  {
+   "src": "food_sandwich.png",
+   "file": "food_sandwich.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 115,
+   "keys": [
+    "it_sandwich"
    ]
   },
   {
@@ -2669,6 +2779,16 @@
    ]
   },
   {
+   "src": "forage_mushroom_red.png",
+   "file": "forage_mushroom_red.png",
+   "kind": "icon",
+   "w": 123,
+   "h": 128,
+   "keys": [
+    "it_red_mushroom"
+   ]
+  },
+  {
    "src": "forage_reed.png",
    "file": "forage_reed.png",
    "kind": "icon",
@@ -2676,6 +2796,26 @@
    "h": 128,
    "keys": [
     "it_reed"
+   ]
+  },
+  {
+   "src": "forage_wild_garlic.png",
+   "file": "forage_wild_garlic.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 119,
+   "keys": [
+    "it_wild_garlic"
+   ]
+  },
+  {
+   "src": "forage_wild_onion.png",
+   "file": "forage_wild_onion.png",
+   "kind": "icon",
+   "w": 110,
+   "h": 128,
+   "keys": [
+    "it_wild_onion"
    ]
   },
   {
@@ -2869,6 +3009,26 @@
    ]
   },
   {
+   "src": "icon_action_axe.png",
+   "file": "icon_action_axe.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 128,
+   "keys": [
+    "act_axe"
+   ]
+  },
+  {
+   "src": "icon_action_fish.png",
+   "file": "icon_action_fish.png",
+   "kind": "icon",
+   "w": 120,
+   "h": 128,
+   "keys": [
+    "act_fish"
+   ]
+  },
+  {
    "src": "icon_action_harvest.png",
    "file": "icon_action_harvest.png",
    "kind": "icon",
@@ -2889,6 +3049,16 @@
    ]
   },
   {
+   "src": "icon_action_mine.png",
+   "file": "icon_action_mine.png",
+   "kind": "icon",
+   "w": 120,
+   "h": 128,
+   "keys": [
+    "act_mine"
+   ]
+  },
+  {
    "src": "icon_action_plant.png",
    "file": "icon_action_plant.png",
    "kind": "icon",
@@ -2896,6 +3066,16 @@
    "h": 110,
    "keys": [
     "tool_seed"
+   ]
+  },
+  {
+   "src": "icon_action_water.png",
+   "file": "icon_action_water.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 92,
+   "keys": [
+    "act_water"
    ]
   },
   {
@@ -2916,6 +3096,16 @@
    "h": 109,
    "keys": [
     "ic_baby"
+   ]
+  },
+  {
+   "src": "icon_body_size.png",
+   "file": "icon_body_size.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 103,
+   "keys": [
+    "ic_body_size"
    ]
   },
   {
@@ -2999,6 +3189,16 @@
    ]
   },
   {
+   "src": "icon_fertility.png",
+   "file": "icon_fertility.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 99,
+   "keys": [
+    "ic_fertility"
+   ]
+  },
+  {
    "src": "icon_finance.png",
    "file": "icon_finance.png",
    "kind": "icon",
@@ -3075,7 +3275,8 @@
    "w": 128,
    "h": 110,
    "keys": [
-    "ic_heart"
+    "ic_heart",
+    "ic_health"
    ]
   },
   {
@@ -3126,6 +3327,16 @@
    "h": 122,
    "keys": [
     "ic_process"
+   ]
+  },
+  {
+   "src": "icon_production.png",
+   "file": "icon_production.png",
+   "kind": "icon",
+   "w": 66,
+   "h": 128,
+   "keys": [
+    "ic_production"
    ]
   },
   {
@@ -3276,6 +3487,16 @@
    "h": 128,
    "keys": [
     "it_fish_feed"
+   ]
+  },
+  {
+   "src": "item_bait_good.png",
+   "file": "item_bait_good.png",
+   "kind": "icon",
+   "w": 120,
+   "h": 128,
+   "keys": [
+    "it_good_bait"
    ]
   },
   {
@@ -3961,6 +4182,19 @@
    ]
   },
   {
+   "src": "node_rock_large.png",
+   "file": "node_rock_large.png",
+   "kind": "node",
+   "w": 160,
+   "h": 147,
+   "keys": [
+    "node_rock_dark"
+   ],
+   "tiles": [
+    "decorRock"
+   ]
+  },
+  {
    "src": "node_rock_small.png",
    "file": "node_rock_small.png",
    "kind": "node",
@@ -4012,6 +4246,16 @@
    ]
   },
   {
+   "src": "notification_birth.png",
+   "file": "notification_birth.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 112,
+   "keys": [
+    "ic_birth"
+   ]
+  },
+  {
    "src": "notification_freshness.png",
    "file": "notification_freshness.png",
    "kind": "icon",
@@ -4019,6 +4263,16 @@
    "h": 128,
    "keys": [
     "ic_fresh"
+   ]
+  },
+  {
+   "src": "notification_harvest.png",
+   "file": "notification_harvest.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 111,
+   "keys": [
+    "ic_harvest_basket"
    ]
   },
   {
@@ -4039,6 +4293,16 @@
    "h": 128,
    "keys": [
     "ic_merchant"
+   ]
+  },
+  {
+   "src": "notification_processing.png",
+   "file": "notification_processing.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 123,
+   "keys": [
+    "ic_proc_done"
    ]
   },
   {
@@ -4482,6 +4746,31 @@
    ]
   },
   {
+   "src": "tile_dirt.png",
+   "file": "tile_dirt.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "forestFloor"
+   ],
+   "seasons": [
+    0,
+    1,
+    2
+   ]
+  },
+  {
+   "src": "tile_flower_patch.png",
+   "file": "tile_flower_patch.png",
+   "kind": "building",
+   "w": 288,
+   "h": 288,
+   "keys": [
+    "bld_flowerlawn"
+   ]
+  },
+  {
    "src": "tile_grass.png",
    "file": "tile_grass.png",
    "kind": "tile",
@@ -4518,6 +4807,16 @@
    ]
   },
   {
+   "src": "tile_path_wood.png",
+   "file": "tile_path_wood.png",
+   "kind": "building",
+   "w": 288,
+   "h": 288,
+   "keys": [
+    "bld_woodpath"
+   ]
+  },
+  {
    "src": "tile_soil_dry.png",
    "file": "tile_soil_dry.png",
    "kind": "tile",
@@ -4546,6 +4845,16 @@
    "tiles": [
     "waterA",
     "waterB"
+   ]
+  },
+  {
+   "src": "tile_water_edge.png",
+   "file": "tile_water_edge.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "waterEdge"
    ]
   },
   {
@@ -4799,11 +5108,21 @@
    ]
   },
   {
-   "src": "ui_button_primary.png",
-   "file": "ui_button_primary.png",
+   "src": "ui_action_button_secondary.png",
+   "file": "ui_action_button_secondary.png",
    "kind": "ui",
    "w": 256,
-   "h": 128,
+   "h": 256,
+   "keys": [
+    "ui_action_button_secondary"
+   ]
+  },
+  {
+   "src": "ui_button_primary.png",
+   "file": "ui_button_primary.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 144,
    "keys": [
     "ui_button_primary"
    ]
@@ -4811,11 +5130,31 @@
   {
    "src": "ui_button_secondary.png",
    "file": "ui_button_secondary.png",
-   "kind": "ui",
-   "w": 256,
-   "h": 128,
+   "kind": "ui9",
+   "w": 384,
+   "h": 133,
    "keys": [
     "ui_button_secondary"
+   ]
+  },
+  {
+   "src": "ui_button_warning.png",
+   "file": "ui_button_warning.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 163,
+   "keys": [
+    "ui_button_warning"
+   ]
+  },
+  {
+   "src": "ui_button_warning.png#ic_warn",
+   "file": "ui_button_warning__ic_warn.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 56,
+   "keys": [
+    "ic_warn"
    ]
   },
   {
@@ -4881,19 +5220,59 @@
   {
    "src": "ui_panel_large.png",
    "file": "ui_panel_large.png",
-   "kind": "ui",
-   "w": 256,
-   "h": 171,
+   "kind": "ui9",
+   "w": 384,
+   "h": 235,
    "keys": [
     "ui_panel_large"
    ]
   },
   {
+   "src": "ui_panel_medium.png",
+   "file": "ui_panel_medium.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 259,
+   "keys": [
+    "ui_panel_medium"
+   ]
+  },
+  {
+   "src": "ui_panel_small.png",
+   "file": "ui_panel_small.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 251,
+   "keys": [
+    "ui_panel_small"
+   ]
+  },
+  {
+   "src": "ui_progress_bar_empty.png",
+   "file": "ui_progress_bar_empty.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 135,
+   "keys": [
+    "ui_progress_bar_empty"
+   ]
+  },
+  {
+   "src": "ui_progress_bar_fill.png",
+   "file": "ui_progress_bar_fill.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 61,
+   "keys": [
+    "ui_progress_bar_fill"
+   ]
+  },
+  {
    "src": "ui_tab_normal.png",
    "file": "ui_tab_normal.png",
-   "kind": "ui",
-   "w": 256,
-   "h": 128,
+   "kind": "ui9",
+   "w": 384,
+   "h": 125,
    "keys": [
     "ui_tab_normal"
    ]
@@ -4901,11 +5280,21 @@
   {
    "src": "ui_tab_selected.png",
    "file": "ui_tab_selected.png",
-   "kind": "ui",
-   "w": 256,
-   "h": 128,
+   "kind": "ui9",
+   "w": 384,
+   "h": 139,
    "keys": [
     "ui_tab_selected"
+   ]
+  },
+  {
+   "src": "ui_tooltip.png",
+   "file": "ui_tooltip.png",
+   "kind": "ui9",
+   "w": 384,
+   "h": 148,
+   "keys": [
+    "ui_tooltip"
    ]
   },
   {

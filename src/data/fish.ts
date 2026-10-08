@@ -51,6 +51,7 @@ export const FISH: FishData[] = [
   f('catfish', '메기', ['spring', 'summer'], 'night', ['rain', 'storm'], 'rare', 5, 75, [30, 90], { body: 0x5a5a4a, belly: 0xb8b0a0, fin: 0x3a3a30, shape: 'long' }),
   f('sakura_trout', '벚꽃 송어', ['spring'], 'day', ['sunny'], 'legend', 9, 900, [50, 80], { body: 0xf2a8c0, belly: 0xfff0f4, fin: 0xd86a8a, shape: 'slim' }),
   // ───── 여름 ─────
+  f('bluegill', '블루길', ['summer', 'autumn'], 'day', 'any', 'common', 3, 20, [10, 25], { body: 0x6a8a4a, belly: 0xe8a040, fin: 0x3a5a3a, shape: 'round' }),
   f('bass', '농어', ['summer'], 'day', 'any', 'common', 4, 35, [25, 60], { body: 0x6a8a7a, belly: 0xe0e8e0, fin: 0x4a6a5a, shape: 'slim' }),
   f('eel', '장어', ['summer'], 'night', ['rain', 'storm'], 'rare', 6, 90, [40, 100], { body: 0x4a4a3a, belly: 0x8a8a6a, fin: 0x2a2a20, shape: 'long' }),
   f('sweetfish', '은어', ['summer'], 'day', ['sunny'], 'common', 4, 30, [15, 28], { body: 0xa8b8a0, belly: 0xf6f6ea, fin: 0xe8c84a, shape: 'slim' }),

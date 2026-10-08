@@ -4,6 +4,7 @@
  * 화면 어디든 누르고 있으면 영역 상승, 떼면 하강. 한 손 조작.
  */
 import type { World } from '../core/World';
+import { popDomFxAt } from './DomFx';
 import { FishingGame } from '../systems/FishingSystem';
 import { RARITY_NAME, type FishData } from '../data/fish';
 import { iconHtml } from '../assets/AssetRegistry';
@@ -121,6 +122,7 @@ class FishingSession {
           this.fish = this.w.fishing.bite();
           this.q('msg').innerHTML = '<b class="bite">!</b> 입질!';
           this.q('bobber').classList.add('bite');
+          popDomFxAt(this.q('bobber'), 'fx_fishing_bite', 60);
           vibrate([30, 40, 30]);
           AudioManager.sfx('bell');
         }

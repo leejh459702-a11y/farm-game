@@ -178,12 +178,12 @@ export class AnimalListPanel extends Panel {
   }
 }
 
-const STAT_NAMES: [keyof Animal['stats'], string][] = [
-  ['productivity', '생산력'],
-  ['growth', '성장력'],
-  ['health', '건강'],
-  ['fertility', '번식력'],
-  ['physique', '체격'],
+const STAT_NAMES: [keyof Animal['stats'], string, string][] = [
+  ['productivity', '생산력', 'ic_production'],
+  ['growth', '성장력', 'ic_growth'],
+  ['health', '건강', 'ic_health'],
+  ['fertility', '번식력', 'ic_fertility'],
+  ['physique', '체격', 'ic_body_size'],
 ];
 
 export class AnimalDetailPanel extends Panel {
@@ -208,7 +208,7 @@ export class AnimalDetailPanel extends Panel {
       return p ? `${esc(p.name)} <span class="tiny muted">${p.id} · ${p.grade}등급${p.status !== 'alive' ? ` · ${p.status === 'sold' ? '판매됨' : '출하됨'}` : ''}</span>` : id;
     };
     const barn = a.buildingUid ? w.state.buildings[a.buildingUid] : null;
-    const stats = STAT_NAMES.map(([k, n]) => `<div class="stat-bar"><span>${n}</span><div class="bar ${a.stats[k] >= 70 ? 'gold' : ''}"><i style="width:${a.stats[k]}%"></i></div><b>${a.stats[k]}</b></div>`).join('');
+    const stats = STAT_NAMES.map(([k, n, ic]) => `<div class="stat-bar"><span>${Art.has(ic) ? iconHtml(ic, 14) : ''}${n}</span><div class="bar ${a.stats[k] >= 70 ? 'gold' : ''}"><i style="width:${a.stats[k]}%"></i></div><b>${a.stats[k]}</b></div>`).join('');
     const traits = a.traits.length ? a.traits.map(traitChip).join(' ') : '<span class="muted small">특성 없음</span>';
     return `<div class="row" style="align-items:flex-start;gap:0.8rem">
       <div class="card center" style="min-width:7.5rem">${iconHtml(`portrait_${a.species}`, 72)}<div class="row center" style="gap:0.3rem">${genderIcon(a.gender)}${gradeChip(a.grade)}</div>

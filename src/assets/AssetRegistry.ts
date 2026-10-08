@@ -22,6 +22,8 @@ interface SheetInfo {
   scale?: number;
   /** DOM 용 원본 파일 URL (디자인 에셋) */
   fileUrl?: string;
+  fileW?: number;
+  fileH?: number;
   /** 'char20' = 디자인 캐릭터 시트 (앞/뒤/왼/오 × 서기+걷기 4) */
   layout?: 'char20';
 }
@@ -29,6 +31,8 @@ interface SheetInfo {
 class Registry {
   private canvases = new Map<string, SheetInfo>();
   private urls = new Map<string, string>();
+  /** 디자인 이미지로 교체된 타일 이름 */
+  private paintedTiles = new Set<string>();
   tileset: { canvas: HTMLCanvasElement; tileW: number; margin: number; spacing: number } | null = null;
   generated = false;
 
@@ -70,7 +74,7 @@ class Registry {
             const h = (old?.frameH ?? old?.canvas.height ?? base) * S;
             const c = makeCanvas(w, h);
             drawContain(c.getContext('2d')!, a.img, 0, 0, w, h, 'center');
-            this.canvases.set(key, { canvas: c, scale: 1 / S, fileUrl: a.url });
+            this.canvases.set(key, { canvas: c, scale: 1 / S, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
             break;
           }
           case 'building':
@@ -80,7 +84,7 @@ class Registry {
             const h = (old?.frameH ?? old?.canvas.height ?? 32) * S;
             const c = makeCanvas(w, h);
             drawContain(c.getContext('2d')!, a.img, 0, 0, w, h, 'bottom');
-            this.canvases.set(key, { canvas: c, scale: 1 / S, fileUrl: a.url });
+            this.canvases.set(key, { canvas: c, scale: 1 / S, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
             break;
           }
           case 'animal': {
@@ -92,7 +96,7 @@ class Registry {
             const ctx = c.getContext('2d')!;
             drawContain(ctx, a.img, 0, 0, fw, fh, 'bottom');
             drawContain(ctx, a.img, fw, -2, fw, fh, 'bottom');
-            this.canvases.set(key, { canvas: c, frameW: fw, frameH: fh, scale: 1 / S, fileUrl: a.url });
+            this.canvases.set(key, { canvas: c, frameW: fw, frameH: fh, scale: 1 / S, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
             break;
           }
           case 'crop': {
@@ -103,7 +107,7 @@ class Registry {
           case 'portrait': {
             const c = makeCanvas(64, 64);
             drawContain(c.getContext('2d')!, a.img, 0, 0, 64, 64, 'center');
-            this.canvases.set(key, { canvas: c, fileUrl: a.url });
+            this.canvases.set(key, { canvas: c, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
             break;
           }
           case 'char': {
@@ -112,10 +116,11 @@ class Registry {
             break;
           }
           case 'ui':
+          case 'ui9':
           case 'bg': {
             const c = makeCanvas(a.img.width, a.img.height);
             c.getContext('2d')!.drawImage(a.img, 0, 0);
-            this.canvases.set(key, { canvas: c, fileUrl: a.url });
+            this.canvases.set(key, { canvas: c, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
             break;
           }
         }
@@ -123,9 +128,9 @@ class Registry {
       if (a.portrait) {
         const c = makeCanvas(64, 64);
         drawContain(c.getContext('2d')!, a.img, 0, 0, 64, 64, 'center');
-        this.canvases.set(a.portrait, { canvas: c, fileUrl: a.url });
+        this.canvases.set(a.portrait, { canvas: c, fileUrl: a.url, fileW: a.img.width, fileH: a.img.height });
       }
-      if (a.kind === 'tile' && this.tileset) this.paintTile(a);
+      if (a.tiles && this.tileset) this.paintTile(a);
     }
     // 작물: 기존 시트를 2배로 키운 뒤 디자인된 단계만 교체 (없는 단계는 기존 그림)
     for (const [key, frames] of crops) {
@@ -171,6 +176,7 @@ class Registry {
     const T = ts.tileW;
     const cell = T + ts.spacing;
     for (const name of a.tiles ?? []) {
+      this.paintedTiles.add(name);
       const base = TILE[name] as number;
       const perSeason = base < TILE.perSeason * 4 && base < 48;
       const idxs = perSeason ? (a.seasons ?? [0, 1, 2, 3]).map((s) => s * TILE.perSeason + base) : [base];
@@ -187,6 +193,11 @@ class Registry {
         ctx.drawImage(ts.canvas, x + T - 1, y, 1, T, x + T, y, 1, T);
       }
     }
+  }
+
+  /** 타일셋 칸이 디자인 이미지로 교체됐는가 */
+  hasTile(name: keyof typeof TILE): boolean {
+    return this.paintedTiles.has(name);
   }
 
   /** 시트 배치 방식 (디자인 캐릭터) */
@@ -249,6 +260,8 @@ class Registry {
   dims(key: string): { w: number; h: number } {
     const info = this.canvases.get(key);
     if (!info) return { w: 16, h: 16 };
+    // DOM 은 원본 파일을 쓰므로 원본 비율
+    if (info.fileUrl && info.fileW && info.fileH) return { w: info.fileW, h: info.fileH };
     return { w: info.frameW ?? info.canvas.width, h: info.frameH ?? info.canvas.height };
   }
 

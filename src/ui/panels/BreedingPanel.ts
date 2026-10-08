@@ -5,6 +5,7 @@ import { ANIMAL_BY_ID, ANIMALS, TRAIT_BY_ID } from '../../data/animals';
 import { BALANCE } from '../../data/balance';
 import type { Animal } from '../../types/game';
 import { cx, esc } from '../dom';
+import { popDomFx } from '../DomFx';
 import { genderIcon, gradeChip, traitChip, AnimalDetailPanel } from './AnimalPanels';
 import { breedSuccessChance, intimacyInheritBonus } from '../../systems/BreedingSystem';
 
@@ -82,7 +83,10 @@ export class BreedingPanel extends Panel {
       const r = w.breeding.breed(this.mother, this.father);
       if (!r.ok) this.toast(r.reason ?? '', 'warn');
       else if (r.missed) this.toast('이번엔 인연이 닿지 않았어요. 동물들을 더 행복하게 해 주고 다시 시도해 보세요. (비용 없음)', 'info');
-      else this.manager.open(new BreedResultPanel(m, f, r.days!, dist));
+      else {
+        this.manager.open(new BreedResultPanel(m, f, r.days!, dist));
+        popDomFx('fx_breeding_heart', innerWidth / 2, innerHeight * 0.4, 84);
+      }
       this.mother = null;
     }
     this.refresh();

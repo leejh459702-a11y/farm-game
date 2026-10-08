@@ -142,7 +142,8 @@ export class FishingSystem {
   /** 입질 대기 시간 (초) */
   waitTime(): number {
     const cfg = BALANCE.fishing;
-    return (cfg.waitMin + this.w.rand() * (cfg.waitMax - cfg.waitMin)) * this.w.life.fishWaitMul();
+    const bait = this.w.inventory.countAll('good_bait') > 0 ? 0.6 : 1;
+    return (cfg.waitMin + this.w.rand() * (cfg.waitMax - cfg.waitMin)) * this.w.life.fishWaitMul() * bait;
   }
 
   /** 입질 — 물고기 결정 (희귀 미끼 자동 사용) */
@@ -150,6 +151,7 @@ export class FishingSystem {
     const ctx = this.context();
     const fish = pickFish(() => this.w.rand(), ctx);
     if (ctx.bait) this.w.inventory.consume('rare_bait', 1);
+    if (this.w.inventory.countAll('good_bait') > 0) this.w.inventory.consume('good_bait', 1);
     return fish;
   }
 

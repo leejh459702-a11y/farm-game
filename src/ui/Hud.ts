@@ -3,7 +3,8 @@
  * 좌상: 계절/날짜/날씨/시간 · 우상: 보유금/집·농사·목축 레벨 · 하단: 도구바 · 우측: 행동 버튼 · 좌측: 조이스틱(Phaser)
  */
 import { Session } from '../core/Session';
-import { iconHtml } from '../assets/AssetRegistry';
+import { Art, iconHtml } from '../assets/AssetRegistry';
+import { maybeShowSeasonSplash } from './SeasonSplash';
 import { calendar, clockString, dateLabel, dayLength } from '../systems/SeasonSystem';
 import { WEATHER_INFO } from '../data/seasons';
 import { TOOLS, fertilizerChoices, seedChoices } from '../systems/InteractionService';
@@ -89,6 +90,7 @@ export function mountHud(): void {
     ev.on('dayStarted', () => {
       renderStatic();
       renderToolbar();
+      maybeShowSeasonSplash(w);
     }),
     ev.on('inventory', () => renderToolbar()),
     ev.on('research', () => renderToolbar()),
@@ -242,7 +244,7 @@ function renderToolbar(): void {
 
 function renderContext(c: { label: string; icon: string; enabled: boolean; hint?: string }): void {
   if (!root) return;
-  q('[data-h=actionIcon]').innerHTML = iconHtml(c.icon, 34);
+  q('[data-h=actionIcon]').innerHTML = iconHtml(actionIcon(c.icon), 34);
   q('[data-h=actionLabel]').textContent = c.label;
   q('[data-h=action]').classList.toggle('disabled', !c.enabled);
   const h = q('[data-h=hint]');
@@ -322,6 +324,26 @@ function onHudAction(act: string, arg: string): void {
   }
 }
 
+/** 알림 종류별 디자인 알림 아이콘 (있으면) */
+function toastIcon(n: GameNotification): string | undefined {
+  const k = n.key;
+  const alt =
+    k === 'birth' ? 'ic_birth'
+    : k === 'auto_harvest' ? 'ic_harvest_basket'
+    : k.startsWith('proc_') ? 'ic_proc_done'
+    : k === 'house' || k.startsWith('tool_') ? 'ic_upgrade'
+    : k === 'rotten' ? 'ic_fresh'
+    : undefined;
+  return alt && Art.has(alt) ? alt : n.icon;
+}
+
+/** 행동 버튼용 디자인 아이콘 (도구 아이콘 → 행동 아이콘) */
+function actionIcon(icon: string): string {
+  const base = icon.replace(/_\d$/, '');
+  const alt = ({ tool_axe: 'act_axe', tool_pickaxe: 'act_mine', tool_rod: 'act_fish', tool_water: 'act_water' } as Record<string, string>)[base];
+  return alt && Art.has(alt) ? alt : icon;
+}
+
 export function showToast(n: GameNotification): void {
   if (!root) return;
   const box = q('[data-h=toasts]');
@@ -337,7 +359,8 @@ export function showToast(n: GameNotification): void {
     return;
   }
   const t = el('div', cx('toast', n.tone === 'warn' && 'warn', n.tone === 'info' && 'info', 'interactive'));
-  t.innerHTML = `${n.icon ? iconHtml(n.icon, 22) : ''}<span class="txt">${esc(n.text)}</span><span class="count" style="display:none"></span>`;
+  const icon = toastIcon(n);
+  t.innerHTML = `${icon ? iconHtml(icon, 22) : ''}<span class="txt">${esc(n.text)}</span><span class="count" style="display:none"></span>`;
   if (n.target) {
     t.style.cursor = 'pointer';
     t.addEventListener('click', () => {
