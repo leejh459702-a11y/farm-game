@@ -1,5 +1,6 @@
 /** 동물 스프라이트 — 축사 앞 배회 (화면 밖은 정지) */
 import Phaser from 'phaser';
+import { Art } from '../../assets/AssetRegistry';
 import type { World } from '../../core/World';
 import type { BuildingRenderer } from './BuildingRenderer';
 import { DEPTH, TS } from './constants';
@@ -36,7 +37,12 @@ export class AnimalRenderer {
         v = { id: a.id, sprite, tx: sprite.x, ty: sprite.y, wait: Math.random() * 2, frameT: 0 };
         this.vis.set(a.id, v);
       }
-      v.sprite.setScale(a.stage === 'baby' ? 0.62 : a.stage === 'juvenile' ? 0.82 : 1);
+      // 아기 전용 그림이 있으면 사용
+      const babyKey = `an_${a.species}_baby`;
+      const key = a.stage === 'baby' && Art.has(babyKey) ? babyKey : `an_${a.species}`;
+      if (v.sprite.texture.key !== key) v.sprite.setTexture(key, 0);
+      const stageMul = a.stage === 'baby' ? (key === babyKey ? 0.85 : 0.62) : a.stage === 'juvenile' ? 0.82 : 1;
+      v.sprite.setScale(stageMul * Art.scale(key));
       if (a.traits.includes('golden')) v.sprite.setTint(0xffe9a0);
       else if (a.traits.includes('colorvar')) v.sprite.setTint(0xe0d0ff);
       else v.sprite.clearTint();

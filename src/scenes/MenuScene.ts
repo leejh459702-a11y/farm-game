@@ -99,7 +99,9 @@ export class MenuScene extends Phaser.Scene {
     if (!this.textures.exists('cloud')) this.textures.addCanvas('cloud', cloud());
     if (!this.textures.exists('menu_sign')) this.textures.addCanvas('menu_sign', sign());
     this.bg = this.add.image(0, 0, 'menu_bg').setOrigin(0.5);
-    for (let i = 0; i < 6; i++) this.clouds.push(this.add.image(Math.random() * 1400, 40 + Math.random() * 160, 'cloud').setScale(3 + Math.random() * 2).setAlpha(0.9));
+    // 디자인 배경에는 구름이 이미 그려져 있다 — 코드로 그린 구름은 기본 배경일 때만
+    const bigBg = (this.bg.texture.getSourceImage() as HTMLImageElement).width > 400;
+    for (let i = 0; i < (bigBg ? 0 : 6); i++) this.clouds.push(this.add.image(Math.random() * 1400, 40 + Math.random() * 160, 'cloud').setScale(3 + Math.random() * 2).setAlpha(0.9));
     this.signImg = this.add.image(0, 0, 'menu_sign');
     this.title = this.add
       .text(0, 0, '나의 작은 농장', { fontFamily: 'Galmuri11', fontStyle: 'bold', fontSize: '22px', color: '#fff3c4', stroke: '#5a3a22', strokeThickness: 6 })
@@ -119,7 +121,10 @@ export class MenuScene extends Phaser.Scene {
   private layout(): void {
     const { width, height } = this.scale;
     const s = Math.max(width / 320, height / 180);
-    this.bg.setPosition(width / 2, height / 2).setScale(Math.ceil(s * 2) / 2);
+    // 디자인 배경(큰 그림)이면 화면을 덮도록, 기본 배경(320×180 픽셀아트)이면 정수 배율로
+    const src = this.bg.texture.getSourceImage() as HTMLImageElement | HTMLCanvasElement;
+    if (src.width > 400) this.bg.setPosition(width / 2, height / 2).setScale(Math.max(width / src.width, height / src.height));
+    else this.bg.setPosition(width / 2, height / 2).setScale(Math.ceil(s * 2) / 2);
     const ss = Math.max(2, Math.floor((height / 720) * 4 * 2) / 2);
     this.signImg.setPosition(width / 2, height * 0.24).setScale(ss);
     this.title.setPosition(width / 2, height * 0.24 + 2 * ss).setScale(ss * 0.9);

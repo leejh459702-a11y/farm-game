@@ -1,5 +1,6 @@
 /** 건물 이미지 + 상태 말풍선 + 방문상인 + 야간 조명 위치 */
 import Phaser from 'phaser';
+import { Art } from '../../assets/AssetRegistry';
 import { BUILDING_BY_ID, footprint } from '../../data/buildings';
 import type { World } from '../../core/World';
 import { DEPTH, FH, TS } from './constants';
@@ -42,7 +43,9 @@ export class BuildingRenderer {
         this.images.set(b.uid, img);
       }
       const { w, h } = footprint(b.type, b.rot);
-      img.setTexture(this.textureFor(b.type, b.rot));
+      const key = this.textureFor(b.type, b.rot);
+      img.setTexture(key);
+      img.setScale(Art.scale(key));
       img.setOrigin(0, 1);
       img.setPosition(b.x * TS, (b.y + h) * TS);
       img.setDepth(DEPTH.objects + (b.y + h) * TS - 1);
@@ -99,11 +102,11 @@ export class BuildingRenderer {
       const b = this.w.state.buildings[uid];
       const { w, h } = footprint(b.type, b.rot);
       const tex = this.scene.textures.get(this.textureFor(b.type, b.rot));
-      const topY = (b.y + h) * TS - tex.getSourceImage().height;
+      const topY = (b.y + h) * TS - tex.getSourceImage().height * Art.scale(this.textureFor(b.type, b.rot));
       const bg = this.scene.add.graphics();
       bg.fillStyle(0xfffaf0, 1).fillRoundedRect(-11, -11, 22, 22, 6).lineStyle(2, 0x3b2a22, 1).strokeRoundedRect(-11, -11, 22, 22, 6);
       bg.fillStyle(0xfffaf0, 1).fillTriangle(-4, 10, 4, 10, 0, 15);
-      const ic = this.scene.add.image(0, 0, icon);
+      const ic = this.scene.add.image(0, 0, icon).setScale(Art.scale(icon));
       const cont = this.scene.add.container((b.x + w / 2) * TS, topY + 4, [bg, ic]).setDepth(DEPTH.ui - 10);
       cont.setData('icon', icon);
       this.scene.tweens.add({ targets: cont, y: cont.y - 4, duration: 700, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
@@ -125,7 +128,8 @@ export class BuildingRenderer {
     this.merchantTile = t;
     const special = this.w.state.merchant.special;
     // 수레는 t.x ~ t.x+1 두 칸 안에, 상인은 수레 앞(아래)에 선다
-    const cart = this.scene.add.image(t.x * TS + 4, (t.y + 1) * TS - 2, special ? 'cart_special' : 'cart').setOrigin(0, 1);
+    const cartKey = special ? 'cart_special' : 'cart';
+    const cart = this.scene.add.image(t.x * TS + 4, (t.y + 1) * TS - 2, cartKey).setOrigin(0, 1).setScale(Art.scale(cartKey));
     cart.setDepth(DEPTH.objects + (t.y + 1) * TS - 2);
     const m = this.scene.add.sprite(t.x * TS + 46, (t.y + 1) * TS + 10, special ? 'merchant_special' : 'merchant', 0).setOrigin(0.5, 1);
     m.setDepth(DEPTH.objects + (t.y + 1) * TS + 10);

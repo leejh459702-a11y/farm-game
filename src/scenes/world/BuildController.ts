@@ -3,6 +3,7 @@
  * 설치 / 이동 / 회전 / 철거 / 다중 선택 / 여러 시설 이동 / 토지 구매.
  */
 import Phaser from 'phaser';
+import { Art } from '../../assets/AssetRegistry';
 import { BUILDING_BY_ID, footprint } from '../../data/buildings';
 import type { World } from '../../core/World';
 import { Session } from '../../core/Session';
@@ -319,7 +320,7 @@ export class BuildController {
       const { w, h } = footprint(this.placeType, this.rot);
       const ok = this.placeValid().ok;
       this.drawFootprint(this.ghost.x, this.ghost.y, w, h, ok);
-      const img = this.scene.add.image(this.ghost.x * TS, (this.ghost.y + h) * TS, this.buildings.textureFor(this.placeType, this.rot)).setOrigin(0, 1).setAlpha(0.6).setDepth(DEPTH.ui - 15);
+      const img = this.scene.add.image(this.ghost.x * TS, (this.ghost.y + h) * TS, this.buildings.textureFor(this.placeType, this.rot)).setScale(Art.scale(this.buildings.textureFor(this.placeType, this.rot))).setOrigin(0, 1).setAlpha(0.6).setDepth(DEPTH.ui - 15);
       if (!ok) img.setTint(0xff9a8a);
       this.ghostImgs.push(img);
     }
@@ -332,7 +333,7 @@ export class BuildController {
         const x = b.x + this.moveDelta.x;
         const y = b.y + this.moveDelta.y;
         this.drawFootprint(x, y, w, h, ok);
-        const img = this.scene.add.image(x * TS, (y + h) * TS, this.buildings.textureFor(b.type, rot)).setOrigin(0, 1).setAlpha(0.7).setDepth(DEPTH.ui - 15);
+        const img = this.scene.add.image(x * TS, (y + h) * TS, this.buildings.textureFor(b.type, rot)).setScale(Art.scale(this.buildings.textureFor(b.type, rot))).setOrigin(0, 1).setAlpha(0.7).setDepth(DEPTH.ui - 15);
         if (!ok) img.setTint(0xff9a8a);
         this.ghostImgs.push(img);
         ghostUids.add(uid);

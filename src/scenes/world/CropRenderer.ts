@@ -1,5 +1,6 @@
 /** 작물 스프라이트 — 오브젝트 풀 + 화면 밖 컬링 + dirty 갱신 */
 import Phaser from 'phaser';
+import { Art } from '../../assets/AssetRegistry';
 import { CROP_BY_ID } from '../../data/crops';
 import { canGrowToday, cropStage, seasonAllowsGrowth } from '../../systems/CropSystem';
 import type { World } from '../../core/World';
@@ -84,6 +85,7 @@ export class CropRenderer {
     const c = CROP_BY_ID[p.cropId];
     const stage = cropStage(p);
     s.setTexture(c.spriteKey, stage);
+    s.setScale(Art.scale(c.spriteKey));
     // 프레임 내 지면선 = CROP_FH-10
     s.setOrigin(0.5, (CROP_FH - 10) / CROP_FH);
     s.setPosition(p.x * TS + TS / 2, p.y * TS + TS / 2 + 6);

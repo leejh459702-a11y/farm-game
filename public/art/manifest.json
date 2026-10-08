@@ -1,0 +1,1305 @@
+{
+ "assets": [
+  {
+   "src": "animal_chicken_adult.png",
+   "file": "animal_chicken_adult.png",
+   "kind": "animal",
+   "w": 149,
+   "h": 160,
+   "keys": [
+    "an_chicken"
+   ],
+   "portrait": "portrait_chicken"
+  },
+  {
+   "src": "animal_chicken_baby.png",
+   "file": "animal_chicken_baby.png",
+   "kind": "animal",
+   "w": 148,
+   "h": 160,
+   "keys": [
+    "an_chicken_baby"
+   ]
+  },
+  {
+   "src": "animal_cow_adult.png",
+   "file": "animal_cow_adult.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 125,
+   "keys": [
+    "an_cow"
+   ],
+   "portrait": "portrait_cow"
+  },
+  {
+   "src": "animal_cow_baby.png",
+   "file": "animal_cow_baby.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 137,
+   "keys": [
+    "an_cow_baby"
+   ]
+  },
+  {
+   "src": "animal_duck_adult.png",
+   "file": "animal_duck_adult.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 152,
+   "keys": [
+    "an_duck"
+   ],
+   "portrait": "portrait_duck"
+  },
+  {
+   "src": "animal_goat_adult.png",
+   "file": "animal_goat_adult.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 149,
+   "keys": [
+    "an_goat"
+   ],
+   "portrait": "portrait_goat"
+  },
+  {
+   "src": "animal_rabbit_adult.png",
+   "file": "animal_rabbit_adult.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 158,
+   "keys": [
+    "an_rabbit"
+   ],
+   "portrait": "portrait_rabbit"
+  },
+  {
+   "src": "animal_sheep_adult.png",
+   "file": "animal_sheep_adult.png",
+   "kind": "animal",
+   "w": 160,
+   "h": 134,
+   "keys": [
+    "an_sheep"
+   ],
+   "portrait": "portrait_sheep"
+  },
+  {
+   "src": "bg_forest_area.png",
+   "file": "bg_forest_area.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_forest"
+   ]
+  },
+  {
+   "src": "bg_merchant_spot.png",
+   "file": "bg_merchant_spot.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_merchant"
+   ]
+  },
+  {
+   "src": "bg_quarry_area.png",
+   "file": "bg_quarry_area.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_hill"
+   ]
+  },
+  {
+   "src": "bg_river_area.png",
+   "file": "bg_river_area.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "bg_river"
+   ]
+  },
+  {
+   "src": "bg_title_farm.png",
+   "file": "bg_title_farm.jpg",
+   "kind": "bg",
+   "w": 1280,
+   "h": 720,
+   "keys": [
+    "menu_bg"
+   ]
+  },
+  {
+   "src": "building_big_storage.png",
+   "file": "building_big_storage.png",
+   "kind": "building",
+   "w": 288,
+   "h": 264,
+   "keys": [
+    "bld_bigwarehouse",
+    "bld_bigwarehouse_r"
+   ]
+  },
+  {
+   "src": "building_breeding_center.png",
+   "file": "building_breeding_center.png",
+   "kind": "building",
+   "w": 288,
+   "h": 252,
+   "keys": [
+    "bld_breeding",
+    "bld_breeding_r"
+   ]
+  },
+  {
+   "src": "building_breeding_lab.png",
+   "file": "building_breeding_lab.png",
+   "kind": "building",
+   "w": 288,
+   "h": 250,
+   "keys": [
+    "bld_breedlab",
+    "bld_breedlab_r"
+   ]
+  },
+  {
+   "src": "building_chicken_coop.png",
+   "file": "building_chicken_coop.png",
+   "kind": "building",
+   "w": 288,
+   "h": 250,
+   "keys": [
+    "bld_coop"
+   ]
+  },
+  {
+   "src": "building_cold_storage.png",
+   "file": "building_cold_storage.png",
+   "kind": "building",
+   "w": 288,
+   "h": 266,
+   "keys": [
+    "bld_fridge",
+    "bld_fridge_r",
+    "bld_coldstorage",
+    "bld_coldstorage_r"
+   ]
+  },
+  {
+   "src": "building_cow_barn.png",
+   "file": "building_cow_barn.png",
+   "kind": "building",
+   "w": 288,
+   "h": 254,
+   "keys": [
+    "bld_cowbarn"
+   ]
+  },
+  {
+   "src": "building_duck_coop.png",
+   "file": "building_duck_coop.png",
+   "kind": "building",
+   "w": 288,
+   "h": 253,
+   "keys": [
+    "bld_duckhouse"
+   ]
+  },
+  {
+   "src": "building_greenhouse.png",
+   "file": "building_greenhouse.png",
+   "kind": "building",
+   "w": 288,
+   "h": 277,
+   "keys": [
+    "bld_greenhouse"
+   ]
+  },
+  {
+   "src": "building_house_lv1.png",
+   "file": "building_house_lv1.png",
+   "kind": "building",
+   "w": 288,
+   "h": 274,
+   "keys": [
+    "bld_house_1"
+   ]
+  },
+  {
+   "src": "building_house_lv2.png",
+   "file": "building_house_lv2.png",
+   "kind": "building",
+   "w": 288,
+   "h": 276,
+   "keys": [
+    "bld_house_2"
+   ]
+  },
+  {
+   "src": "building_house_lv3.png",
+   "file": "building_house_lv3.png",
+   "kind": "building",
+   "w": 288,
+   "h": 281,
+   "keys": [
+    "bld_house_3"
+   ]
+  },
+  {
+   "src": "building_house_lv4.png",
+   "file": "building_house_lv4.png",
+   "kind": "building",
+   "w": 288,
+   "h": 279,
+   "keys": [
+    "bld_house_4"
+   ]
+  },
+  {
+   "src": "building_house_lv5.png",
+   "file": "building_house_lv5.png",
+   "kind": "building",
+   "w": 288,
+   "h": 281,
+   "keys": [
+    "bld_house_5"
+   ]
+  },
+  {
+   "src": "building_house_lv6.png",
+   "file": "building_house_lv6.png",
+   "kind": "building",
+   "w": 288,
+   "h": 280,
+   "keys": [
+    "bld_house_6"
+   ]
+  },
+  {
+   "src": "building_kitchen.png",
+   "file": "building_kitchen.png",
+   "kind": "building",
+   "w": 288,
+   "h": 259,
+   "keys": [
+    "bld_kitchen"
+   ]
+  },
+  {
+   "src": "building_large_barn.png",
+   "file": "building_large_barn.png",
+   "kind": "building",
+   "w": 288,
+   "h": 265,
+   "keys": [
+    "bld_bigbarn",
+    "bld_bigbarn_r"
+   ]
+  },
+  {
+   "src": "building_meat_processing.png",
+   "file": "building_meat_processing.png",
+   "kind": "building",
+   "w": 288,
+   "h": 246,
+   "keys": [
+    "bld_butcher",
+    "bld_butcher_r"
+   ]
+  },
+  {
+   "src": "building_merchant_cart.png",
+   "file": "building_merchant_cart.png",
+   "kind": "cart",
+   "w": 192,
+   "h": 170,
+   "keys": [
+    "cart"
+   ]
+  },
+  {
+   "src": "building_pig_barn.png",
+   "file": "building_pig_barn.png",
+   "kind": "building",
+   "w": 288,
+   "h": 267,
+   "keys": [
+    "bld_pigsty"
+   ]
+  },
+  {
+   "src": "building_premium_merchant_cart.png",
+   "file": "building_premium_merchant_cart.png",
+   "kind": "cart",
+   "w": 192,
+   "h": 177,
+   "keys": [
+    "cart_special"
+   ]
+  },
+  {
+   "src": "building_processing_house.png",
+   "file": "building_processing_house.png",
+   "kind": "building",
+   "w": 288,
+   "h": 263,
+   "keys": [
+    "bld_processor"
+   ]
+  },
+  {
+   "src": "building_rabbit_hutch.png",
+   "file": "building_rabbit_hutch.png",
+   "kind": "building",
+   "w": 288,
+   "h": 280,
+   "keys": [
+    "bld_rabbithutch"
+   ]
+  },
+  {
+   "src": "building_sheep_goat_barn.png",
+   "file": "building_sheep_goat_barn.png",
+   "kind": "building",
+   "w": 288,
+   "h": 267,
+   "keys": [
+    "bld_sheepbarn",
+    "bld_sheepbarn_r"
+   ]
+  },
+  {
+   "src": "building_small_storage.png",
+   "file": "building_small_storage.png",
+   "kind": "building",
+   "w": 288,
+   "h": 269,
+   "keys": [
+    "bld_warehouse"
+   ]
+  },
+  {
+   "src": "building_textile_workshop.png",
+   "file": "building_textile_workshop.png",
+   "kind": "building",
+   "w": 285,
+   "h": 288,
+   "keys": [
+    "bld_loom"
+   ]
+  },
+  {
+   "src": "crop_carrot_stage1.png",
+   "file": "crop_carrot_stage1.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 81,
+   "keys": [
+    "crop_carrot"
+   ],
+   "frame": 1
+  },
+  {
+   "src": "crop_carrot_stage2.png",
+   "file": "crop_carrot_stage2.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 108,
+   "keys": [
+    "crop_carrot"
+   ],
+   "frame": 2
+  },
+  {
+   "src": "crop_carrot_stage3.png",
+   "file": "crop_carrot_stage3.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 108,
+   "keys": [
+    "crop_carrot"
+   ],
+   "frame": 3
+  },
+  {
+   "src": "crop_carrot_stage4.png",
+   "file": "crop_carrot_stage4.png",
+   "kind": "crop",
+   "w": 127,
+   "h": 128,
+   "keys": [
+    "crop_carrot"
+   ],
+   "frame": 4
+  },
+  {
+   "src": "crop_potato_stage1.png",
+   "file": "crop_potato_stage1.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 88,
+   "keys": [
+    "crop_potato"
+   ],
+   "frame": 1
+  },
+  {
+   "src": "crop_potato_stage2.png",
+   "file": "crop_potato_stage2.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 95,
+   "keys": [
+    "crop_potato"
+   ],
+   "frame": 2
+  },
+  {
+   "src": "crop_potato_stage3.png",
+   "file": "crop_potato_stage3.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 111,
+   "keys": [
+    "crop_potato"
+   ],
+   "frame": 3
+  },
+  {
+   "src": "crop_potato_stage4.png",
+   "file": "crop_potato_stage4.png",
+   "kind": "crop",
+   "w": 128,
+   "h": 122,
+   "keys": [
+    "crop_potato"
+   ],
+   "frame": 4
+  },
+  {
+   "src": "fish_ayu.png",
+   "file": "fish_ayu.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 67,
+   "keys": [
+    "it_sweetfish"
+   ]
+  },
+  {
+   "src": "fish_bass.png",
+   "file": "fish_bass.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 75,
+   "keys": [
+    "it_bass"
+   ]
+  },
+  {
+   "src": "fish_carp.png",
+   "file": "fish_carp.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 80,
+   "keys": [
+    "it_carp"
+   ]
+  },
+  {
+   "src": "fish_catfish.png",
+   "file": "fish_catfish.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 70,
+   "keys": [
+    "it_catfish"
+   ]
+  },
+  {
+   "src": "fish_chub.png",
+   "file": "fish_chub.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 68,
+   "keys": [
+    "it_char"
+   ]
+  },
+  {
+   "src": "fish_crucian_carp.png",
+   "file": "fish_crucian_carp.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 89,
+   "keys": [
+    "it_crucian"
+   ]
+  },
+  {
+   "src": "fish_eel.png",
+   "file": "fish_eel.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 74,
+   "keys": [
+    "it_eel"
+   ]
+  },
+  {
+   "src": "fish_goby.png",
+   "file": "fish_goby.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 68,
+   "keys": [
+    "it_ricefish"
+   ]
+  },
+  {
+   "src": "fish_loach.png",
+   "file": "fish_loach.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 60,
+   "keys": [
+    "it_loach"
+   ]
+  },
+  {
+   "src": "fish_minnow.png",
+   "file": "fish_minnow.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 61,
+   "keys": [
+    "it_minnow"
+   ]
+  },
+  {
+   "src": "fish_perch.png",
+   "file": "fish_perch.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 76,
+   "keys": [
+    "it_mandarin_fish"
+   ]
+  },
+  {
+   "src": "fish_pike.png",
+   "file": "fish_pike.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 54,
+   "keys": [
+    "it_lenok"
+   ]
+  },
+  {
+   "src": "fish_rainbow_trout.png",
+   "file": "fish_rainbow_trout.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 60,
+   "keys": [
+    "it_masu"
+   ]
+  },
+  {
+   "src": "fish_rare_autumn.png",
+   "file": "fish_rare_autumn.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 75,
+   "keys": [
+    "it_maple_salmon"
+   ]
+  },
+  {
+   "src": "fish_rare_spring.png",
+   "file": "fish_rare_spring.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 71,
+   "keys": [
+    "it_sakura_trout"
+   ]
+  },
+  {
+   "src": "fish_rare_summer.png",
+   "file": "fish_rare_summer.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 82,
+   "keys": [
+    "it_golden_catfish"
+   ]
+  },
+  {
+   "src": "fish_rare_winter.png",
+   "file": "fish_rare_winter.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 73,
+   "keys": [
+    "it_ice_king"
+   ]
+  },
+  {
+   "src": "fish_salmon.png",
+   "file": "fish_salmon.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 67,
+   "keys": [
+    "it_salmon"
+   ]
+  },
+  {
+   "src": "fish_smelt.png",
+   "file": "fish_smelt.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 47,
+   "keys": [
+    "it_smelt"
+   ]
+  },
+  {
+   "src": "fish_snakehead.png",
+   "file": "fish_snakehead.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 45,
+   "keys": [
+    "it_snakehead"
+   ]
+  },
+  {
+   "src": "fish_trout.png",
+   "file": "fish_trout.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 71,
+   "keys": [
+    "it_trout"
+   ]
+  },
+  {
+   "src": "forage_acorn.png",
+   "file": "forage_acorn.png",
+   "kind": "icon",
+   "w": 108,
+   "h": 128,
+   "keys": [
+    "it_acorn"
+   ]
+  },
+  {
+   "src": "forage_blueberry.png",
+   "file": "forage_blueberry.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 103,
+   "keys": [
+    "it_wild_blueberry"
+   ]
+  },
+  {
+   "src": "forage_chestnut.png",
+   "file": "forage_chestnut.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 105,
+   "keys": [
+    "it_chestnut"
+   ]
+  },
+  {
+   "src": "forage_clam.png",
+   "file": "forage_clam.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 120,
+   "keys": [
+    "it_clam"
+   ]
+  },
+  {
+   "src": "forage_flower.png",
+   "file": "forage_flower.png",
+   "kind": "icon",
+   "w": 122,
+   "h": 128,
+   "keys": [
+    "it_wildflower"
+   ]
+  },
+  {
+   "src": "forage_herb.png",
+   "file": "forage_herb.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 120,
+   "keys": [
+    "it_herb"
+   ]
+  },
+  {
+   "src": "forage_mushroom_brown.png",
+   "file": "forage_mushroom_brown.png",
+   "kind": "icon",
+   "w": 125,
+   "h": 128,
+   "keys": [
+    "it_shiitake"
+   ]
+  },
+  {
+   "src": "forage_reed.png",
+   "file": "forage_reed.png",
+   "kind": "icon",
+   "w": 123,
+   "h": 128,
+   "keys": [
+    "it_reed"
+   ]
+  },
+  {
+   "src": "forage_wild_strawberry.png",
+   "file": "forage_wild_strawberry.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 101,
+   "keys": [
+    "it_wild_strawberry"
+   ]
+  },
+  {
+   "src": "fx_harvest_sparkle.png",
+   "file": "fx_harvest_sparkle.png",
+   "kind": "fx",
+   "w": 128,
+   "h": 119,
+   "keys": [
+    "fx_harvest"
+   ]
+  },
+  {
+   "src": "fx_water_splash.png",
+   "file": "fx_water_splash.png",
+   "kind": "fx",
+   "w": 128,
+   "h": 100,
+   "keys": [
+    "fx_splash"
+   ]
+  },
+  {
+   "src": "icon_action_harvest.png",
+   "file": "icon_action_harvest.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 114,
+   "keys": [
+    "ic_harvest"
+   ]
+  },
+  {
+   "src": "icon_coin.png",
+   "file": "icon_coin.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 109,
+   "keys": [
+    "ic_coin"
+   ]
+  },
+  {
+   "src": "icon_farming.png",
+   "file": "icon_farming.png",
+   "kind": "icon",
+   "w": 121,
+   "h": 128,
+   "keys": [
+    "ic_farming"
+   ]
+  },
+  {
+   "src": "icon_fishing.png",
+   "file": "icon_fishing.png",
+   "kind": "icon",
+   "w": 127,
+   "h": 128,
+   "keys": [
+    "ic_fish"
+   ]
+  },
+  {
+   "src": "icon_weather_sunny.png",
+   "file": "icon_weather_sunny.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 126,
+   "keys": [
+    "ic_sunny"
+   ]
+  },
+  {
+   "src": "item_alpaca_wool.png",
+   "file": "item_alpaca_wool.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 106,
+   "keys": [
+    "it_alpaca_wool"
+   ]
+  },
+  {
+   "src": "item_buffalo_milk.png",
+   "file": "item_buffalo_milk.png",
+   "kind": "icon",
+   "w": 120,
+   "h": 128,
+   "keys": [
+    "it_buffalo_milk"
+   ]
+  },
+  {
+   "src": "item_carrot.png",
+   "file": "item_carrot.png",
+   "kind": "icon",
+   "w": 116,
+   "h": 128,
+   "keys": [
+    "it_carrot"
+   ]
+  },
+  {
+   "src": "item_duck_egg.png",
+   "file": "item_duck_egg.png",
+   "kind": "icon",
+   "w": 106,
+   "h": 128,
+   "keys": [
+    "it_duck_egg"
+   ]
+  },
+  {
+   "src": "item_egg.png",
+   "file": "item_egg.png",
+   "kind": "icon",
+   "w": 101,
+   "h": 128,
+   "keys": [
+    "it_egg"
+   ]
+  },
+  {
+   "src": "item_goat_milk.png",
+   "file": "item_goat_milk.png",
+   "kind": "icon",
+   "w": 99,
+   "h": 128,
+   "keys": [
+    "it_goat_milk"
+   ]
+  },
+  {
+   "src": "item_goose_egg.png",
+   "file": "item_goose_egg.png",
+   "kind": "icon",
+   "w": 100,
+   "h": 128,
+   "keys": [
+    "it_goose_egg"
+   ]
+  },
+  {
+   "src": "item_milk.png",
+   "file": "item_milk.png",
+   "kind": "icon",
+   "w": 78,
+   "h": 128,
+   "keys": [
+    "it_milk"
+   ]
+  },
+  {
+   "src": "item_ostrich_egg.png",
+   "file": "item_ostrich_egg.png",
+   "kind": "icon",
+   "w": 103,
+   "h": 128,
+   "keys": [
+    "it_ostrich_egg"
+   ]
+  },
+  {
+   "src": "item_pork.png",
+   "file": "item_pork.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 99,
+   "keys": [
+    "it_pork"
+   ]
+  },
+  {
+   "src": "item_potato.png",
+   "file": "item_potato.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 118,
+   "keys": [
+    "it_potato"
+   ]
+  },
+  {
+   "src": "item_rabbit_fur.png",
+   "file": "item_rabbit_fur.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 120,
+   "keys": [
+    "it_rabbit_wool"
+   ]
+  },
+  {
+   "src": "item_turkey_meat.png",
+   "file": "item_turkey_meat.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 107,
+   "keys": [
+    "it_turkey_meat"
+   ]
+  },
+  {
+   "src": "item_wool.png",
+   "file": "item_wool.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 113,
+   "keys": [
+    "it_wool"
+   ]
+  },
+  {
+   "src": "node_rock_small.png",
+   "file": "node_rock_small.png",
+   "kind": "node",
+   "w": 160,
+   "h": 136,
+   "keys": [
+    "node_rock_stone"
+   ]
+  },
+  {
+   "src": "node_tree_small.png",
+   "file": "node_tree_small.png",
+   "kind": "node",
+   "w": 142,
+   "h": 160,
+   "keys": [
+    "node_tree_small_0",
+    "node_tree_small_1"
+   ]
+  },
+  {
+   "src": "notification_merchant.png",
+   "file": "notification_merchant.png",
+   "kind": "icon",
+   "w": 117,
+   "h": 128,
+   "keys": [
+    "ic_merchant"
+   ]
+  },
+  {
+   "src": "prop_bench.png",
+   "file": "prop_bench.png",
+   "kind": "building",
+   "w": 288,
+   "h": 248,
+   "keys": [
+    "bld_bench"
+   ]
+  },
+  {
+   "src": "prop_compost_bin.png",
+   "file": "prop_compost_bin.png",
+   "kind": "building",
+   "w": 281,
+   "h": 288,
+   "keys": [
+    "bld_compost"
+   ]
+  },
+  {
+   "src": "prop_lamp.png",
+   "file": "prop_lamp.png",
+   "kind": "building",
+   "w": 167,
+   "h": 288,
+   "keys": [
+    "bld_lamp"
+   ]
+  },
+  {
+   "src": "prop_storage_box.png",
+   "file": "prop_storage_box.png",
+   "kind": "building",
+   "w": 288,
+   "h": 285,
+   "keys": [
+    "bld_chest"
+   ]
+  },
+  {
+   "src": "prop_well.png",
+   "file": "prop_well.png",
+   "kind": "building",
+   "w": 244,
+   "h": 288,
+   "keys": [
+    "bld_well"
+   ]
+  },
+  {
+   "src": "prop_wood_fence.png",
+   "file": "prop_wood_fence.png",
+   "kind": "building",
+   "w": 288,
+   "h": 219,
+   "keys": [
+    "bld_fence"
+   ]
+  },
+  {
+   "src": "resource_clay.png",
+   "file": "resource_clay.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 97,
+   "keys": [
+    "it_clay"
+   ]
+  },
+  {
+   "src": "resource_copper_ore.png",
+   "file": "resource_copper_ore.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 110,
+   "keys": [
+    "it_copper_ore"
+   ]
+  },
+  {
+   "src": "resource_iron_ore.png",
+   "file": "resource_iron_ore.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 111,
+   "keys": [
+    "it_iron_ore"
+   ]
+  },
+  {
+   "src": "resource_stone.png",
+   "file": "resource_stone.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 112,
+   "keys": [
+    "it_stone"
+   ]
+  },
+  {
+   "src": "resource_wood.png",
+   "file": "resource_wood.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 102,
+   "keys": [
+    "it_wood"
+   ]
+  },
+  {
+   "src": "tile_grass.png",
+   "file": "tile_grass.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "grassA",
+    "grassB",
+    "grassFlower"
+   ],
+   "seasons": [
+    0,
+    1
+   ]
+  },
+  {
+   "src": "tile_path_dirt.png",
+   "file": "tile_path_dirt.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "path"
+   ]
+  },
+  {
+   "src": "tile_path_stone.png",
+   "file": "tile_path_stone.png",
+   "kind": "building",
+   "w": 288,
+   "h": 288,
+   "keys": [
+    "bld_stonepath"
+   ]
+  },
+  {
+   "src": "tile_soil_dry.png",
+   "file": "tile_soil_dry.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "soilDry"
+   ]
+  },
+  {
+   "src": "tile_soil_wet.png",
+   "file": "tile_soil_wet.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "soilWet"
+   ]
+  },
+  {
+   "src": "tile_water.png",
+   "file": "tile_water.png",
+   "kind": "tile",
+   "w": 64,
+   "h": 64,
+   "tiles": [
+    "waterA",
+    "waterB"
+   ]
+  },
+  {
+   "src": "tool_axe.png",
+   "file": "tool_axe.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 127,
+   "keys": [
+    "tool_axe"
+   ]
+  },
+  {
+   "src": "tool_fishing_rod.png",
+   "file": "tool_fishing_rod.png",
+   "kind": "icon",
+   "w": 117,
+   "h": 128,
+   "keys": [
+    "tool_rod"
+   ]
+  },
+  {
+   "src": "tool_pickaxe.png",
+   "file": "tool_pickaxe.png",
+   "kind": "icon",
+   "w": 118,
+   "h": 128,
+   "keys": [
+    "tool_pickaxe"
+   ]
+  },
+  {
+   "src": "tool_watering_can.png",
+   "file": "tool_watering_can.png",
+   "kind": "icon",
+   "w": 128,
+   "h": 107,
+   "keys": [
+    "tool_water"
+   ]
+  },
+  {
+   "src": "ui_action_button.png",
+   "file": "ui_action_button.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 256,
+   "keys": [
+    "ui_action_button"
+   ]
+  },
+  {
+   "src": "ui_button_primary.png",
+   "file": "ui_button_primary.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 128,
+   "keys": [
+    "ui_button_primary"
+   ]
+  },
+  {
+   "src": "ui_hotbar_slot.png",
+   "file": "ui_hotbar_slot.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 256,
+   "keys": [
+    "ui_hotbar_slot"
+   ]
+  },
+  {
+   "src": "ui_inventory_slot.png",
+   "file": "ui_inventory_slot.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 256,
+   "keys": [
+    "ui_inventory_slot"
+   ]
+  },
+  {
+   "src": "ui_panel_large.png",
+   "file": "ui_panel_large.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 171,
+   "keys": [
+    "ui_panel_large"
+   ]
+  },
+  {
+   "src": "ui_tab_normal.png",
+   "file": "ui_tab_normal.png",
+   "kind": "ui",
+   "w": 256,
+   "h": 128,
+   "keys": [
+    "ui_tab_normal"
+   ]
+  }
+ ]
+}

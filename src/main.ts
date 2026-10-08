@@ -15,6 +15,7 @@ import { RegionScene } from './scenes/RegionScene';
 import { AppRef } from './core/AppRef';
 import { Session } from './core/Session';
 import { installOpeners, openPanel } from './ui/openers';
+import { loadArtOverrides } from './assets/ArtOverrides';
 import { applyUiScale } from './ui/panels/SettingsPanel';
 import { SettingsStore } from './services/SettingsStore';
 import { AudioManager } from './audio/AudioManager';
@@ -44,7 +45,7 @@ function registerServiceWorker(): void {
 
 async function boot(): Promise<void> {
   applyUiScale();
-  await loadFonts();
+  await Promise.all([loadFonts(), loadArtOverrides()]);
   installOpeners();
   Session.installLifecycleSave();
   // 첫 사용자 입력에서 오디오 활성화 (모바일 자동재생 정책)

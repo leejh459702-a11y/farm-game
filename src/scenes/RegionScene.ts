@@ -206,11 +206,11 @@ export class RegionScene extends Phaser.Scene {
       const depth = DEPTH.objects + by - 2;
       if (n.kind === 'tree') {
         const key = n.respawnDay !== null ? 'node_stump' : `node_tree_${n.big ? 'big' : 'small'}_${s}`;
-        objs.push(this.add.image(bx, by + 2, key).setOrigin(0.5, 1).setDepth(depth));
+        objs.push(this.add.image(bx, by + 2, key).setOrigin(0.5, 1).setScale(Art.scale(key)).setDepth(depth));
       } else if (n.respawnDay !== null) {
         continue;
       } else if (n.kind === 'rock') {
-        objs.push(this.add.image(bx, by + 2, `node_${n.itemId}`).setOrigin(0.5, 1).setDepth(depth));
+        objs.push(this.add.image(bx, by + 2, `node_${n.itemId}`).setOrigin(0.5, 1).setScale(Art.scale(`node_${n.itemId}`)).setDepth(depth));
       } else if (n.kind === 'ladder') {
         const l = this.add.image(bx, by, 'node_ladder').setOrigin(0.5, 1).setDepth(DEPTH.soil + 1);
         this.tweens.add({ targets: l, alpha: 0.75, duration: 600, yoyo: true, repeat: -1 });
@@ -221,7 +221,7 @@ export class RegionScene extends Phaser.Scene {
         objs.push(c);
       } else {
         objs.push(this.add.image(bx, by, 'node_forage').setOrigin(0.5, 1).setDepth(depth - 1));
-        const ic = this.add.image(bx, by - 10, `it_${n.itemId}`).setOrigin(0.5, 1).setDepth(depth);
+        const ic = this.add.image(bx, by - 10, `it_${n.itemId}`).setOrigin(0.5, 1).setScale(Art.scale(`it_${n.itemId}`)).setDepth(depth);
         this.tweens.add({ targets: ic, y: ic.y - 2, duration: 900 + Math.random() * 400, yoyo: true, repeat: -1, ease: 'Sine.easeInOut' });
         objs.push(ic);
       }
